@@ -1328,6 +1328,7 @@ class lec1_s8(Scene):
         for i in range(len(blocks)):
             chain = Difference(chain, blocks[ i ])
 
+
         scripts.set_z_index(2)
         blocks.set_z_index(1)
         chain.set_z_index(0)
