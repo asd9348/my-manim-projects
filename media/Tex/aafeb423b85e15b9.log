@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=latex 2022.4.24)  23 MAY 2022 16:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=latex 2022.4.24)  25 MAY 2022 23:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -348,8 +348,7 @@ File: lucenc.dfu 2007/09/05 UTF-8 support for dhucs
 \josatoks=\toks27
 (c:/texlive/2022/texmf-dist/tex/latex/cjk-ko/kolabels-utf.sty
 Package: kolabels-utf 2015/03/20 v1.5 UTF-8 Hangul item labels
-)))
-No file aafeb423b85e15b9.aux.
+))) (media/Tex/aafeb423b85e15b9.aux)
 \openout1 = `aafeb423b85e15b9.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
@@ -460,8 +459,8 @@ File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 l.29 \end{align*}
                   
 Here is how much of TeX's memory you used:
- 8857 strings out of 479627
- 139330 string characters out of 5884235
+ 8859 strings out of 479627
+ 139390 string characters out of 5884235
  471280 words of memory out of 5000000
  26687 multiletter control sequences out of 15000+600000
  491470 words of font info for 56 fonts, out of 8000000 for 9000

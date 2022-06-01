@@ -2,10 +2,53 @@ from manim import *
 
 config.frame_width = 16
 config.frame_height = 9
-
+q=0.3
 from colour import Color
 
 utils.tex.TexTemplate(tex_compiler="latex")
+
+class intro(Scene):
+    def construct(self):
+        ax = Axes(
+            x_range=[-30,30 , 1],
+            y_range=[0, 1, 1],
+            tips=False,
+
+        )
+
+
+        sig_func = FunctionGraph(
+            lambda x: 1/(1+e**(-x)),
+            color=RED,
+        )
+
+
+        sig=ax.plot(lambda x: 1/(1+e**(-x)))
+        sig.set_color(color= [RED, GREEN, BLUE])
+        vertical = Line(start=np.array([0, 10, 0.]), end=np.array([0, -10, 0.]))
+        vertical.set_color(color= [RED, GREEN, BLUE])
+
+        horizontal = Line(end=np.array([20, 0, 0]), start=np.array([-20, 0, 0]))
+        horizontal.set_color(color= [RED, GREEN, BLUE])
+
+
+        self.play(Create(sig))
+
+        self.play(ReplacementTransform(sig,horizontal,rate_func=linear))
+        self.play(ReplacementTransform(horizontal, vertical, rate_func=linear))
+
+        vertical_2 = vertical.copy()
+
+        vertical_n_black_1= VGroup(vertical, Square(10,fill_color=BLACK, fill_opacity=1).next_to(vertical, LEFT ,buff=0))
+        vertical_n_black_2= VGroup(vertical_2, Square(10,fill_color=BLACK, fill_opacity=1).next_to(vertical_2, RIGHT,buff=0))
+
+        defi_text =Tex("DeFi").move_to(np.array([0,0,-1]))
+
+        self.add(defi_text)
+
+        self.play(vertical_n_black_1.animate.shift(LEFT*10),vertical_n_black_2.animate.shift(RIGHT*10), rate_functions= rush_from,run_time=0.7)
+
+        self.wait(2)
 
 
 class all(Scene):

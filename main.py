@@ -1,5 +1,9 @@
+import math
+
 from manim import *
 import itertools as it
+import random as rd
+import numpy as np
 
 config.frame_width = 16
 config.frame_height = 9
@@ -8,17 +12,41 @@ import binascii
 
 from colour import Color
 
-utils.tex.TexTemplate(tex_compiler="latex")
 
+# utils.tex.TexTemplate(tex_compiler="latex")
 
-# def sha256_bit_int(message):
-#     hexdigest = sha256(message.encode('utf-8')).hexdigest()
-#     return int(hexdigest, 16)
-#
 
 def sha256_bit_string(message):
     hexdigest = sha256(message.encode('utf-8')).hexdigest()
     return bin(int(hexdigest, 16))[ 2: ]
+
+
+q = 0.3
+
+
+def reverse(t: float) -> float:
+    return -t + 1
+
+
+# class SimpleLine(Line):
+
+
+def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
+    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
+    text = Text(text, color=BLACK).scale(height)
+
+    return VGroup(box, text)
+
+
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
+    person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+    box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+    text = Text(asset_name, color=BLACK).scale(asset_height)
+
+    asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+
+    return VGroup(person, asset)
 
 
 #
@@ -41,6 +69,38 @@ def sha256_bit_string(message):
 #
 #     return result
 #
+
+
+class LabeledRectangle(RoundedRectangle):
+
+    def __init__(
+            self,
+            label: str or SingleStringMathTex or Text or Tex,
+            width: float or None = None,
+            height: float or None = None,
+            corner_radius: float or None = None,
+            direction: np.ndarray = UP,
+            **kwargs, ) -> None:
+
+        if isinstance(label, str):
+            from manim import Tex
+
+            rendered_label = Tex(label, color=WHITE)
+        else:
+            rendered_label = label
+
+        if width is None:
+            width = 0.2 + max(rendered_label.width, rendered_label.height)
+        if height is None:
+            height = 0.2 + max(rendered_label.height, rendered_label.height)
+
+        if corner_radius is None:
+            corner_radius = 0.2
+
+        super().__init__(width=width, height=height, corner_radius=corner_radius, **kwargs)
+        rendered_label.next_to(self, direction)
+        self.add(rendered_label)
+
 
 def msg_to_mob(msg, width, rows, buff=0.2):
     if rows % 2 != 0:
@@ -94,512 +154,252 @@ def create_entity(person_name, person_radius, person_color, asset_name, asset_co
     return VGroup(person, asset)
 
 
+class final(Scene):
+    def construct(self):
+        pass
+        # lec1_s1.construct(self)
+        # lec1_s2.construct(self)
+        # lec1_s3.construct(self)
+        # lec1_s4.construct(self)
+        # working.construct(self)
+        self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
+        self.play(A_asset_btc.animate.move_to(B_asset_pos))
+        self.play(A_asset_btc.animate.move_to(A_asset_pos))
+        self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
+        self.play(A_asset_btc.animate.move_to(A_wallet_rect))
+        # self.play(A_asset_btc.animate.move_to(ex_wallet_rect))
+        self.play(A_asset_btc.animate.move_to(ex_server))
+
+
 class working(Scene):
     def construct(self):
-        defi_text = Tex("DeFi", substrings_to_isolate=[ "De", "Fi" ])
+        # 스테이블 코인 텍스트 보여줌
+        stablecoin = Tex('Stablecoin').scale(2)
+        self.play(Create(stablecoin))
 
-        self.play(Write(defi_text))
-
-        defi_text_extended = Tex("Decentralized Finance", substrings_to_isolate=[ "Decentralized", "Finance" ])
-        # self.add(index_labels(defi_text))
-        self.add(index_labels(defi_text_extended))
-
-        self.play(TransformMatchingShapes(defi_text[ 0 ], defi_text_extended[ 0 ].move_to([ 0, 0.5, 0 ])),
-                  TransformMatchingShapes(defi_text[ 1 ], defi_text_extended[ 2 ].move_to([ 0, -0.5, 0 ])))
-        self.wait(1)
-        self.play(FadeOut(defi_text_extended))
-
-        cefi_text = Tex("CeFi", substrings_to_isolate=[ "Ce", "Fi" ])
-
-        self.play(Write(cefi_text))
-
-        cefi_text_extended = Tex("Centralized Finance", substrings_to_isolate=[ "Centralized", "Finance" ])
-        self.play(TransformMatchingShapes(cefi_text[ 0 ], cefi_text_extended[ 0 ].move_to([ 0, 0.5, 0 ])),
-                  TransformMatchingShapes(cefi_text[ 1 ], cefi_text_extended[ 2 ].move_to([ 0, -0.5, 0 ])))
-        self.wait(1)
-        self.play(FadeOut(cefi_text_extended))
-
-        market_rect = RoundedRectangle(corner_radius=0.5, height=6.0, width=4.5)
-        market_rect_text = Tex("Market").next_to(market_rect, UP, buff=0.2)
-        market = VGroup(market_rect, market_rect_text)
-
-        self.play(Create(market))
-        self.wait(1)
-
-        # person_a = LabeledDot("A",radius=0.4,fill_opacity=1.0, color='#3FF3FF')
-        # person_a_asset = create_asset_mob("¥")
-        # A = VGroup(person_a, person_a_asset.next_to(person_a,DOWN, buff =0.1))
-
-        A = create_entity("A", 0.5, WHITE, "€", GREEN, 0.5, 0.3)
-        B = create_entity("B", 0.5, WHITE, "$", GREEN, 0.5, 0.3)
-        C = create_entity("C", 0.5, WHITE, "₩", GREEN, 0.5, 0.3)
-        D = create_entity("D", 0.5, WHITE, "BTC", ORANGE, 0.5, 0.3)
-        E = create_entity("E", 0.5, WHITE, "ETH", BLUE, 0.5, 0.3)
-        F = create_entity("F", 0.5, WHITE, "RICE", YELLOW, 0.5, 0.3)
-        G = create_entity("G", 0.5, WHITE, "", GREEN, 0.5, 0.3)
-        H = create_entity("H", 0.5, WHITE, "USD", GREEN, 0.5, 0.3)
-
-        # self.play(Create(create_asset_mob("$")))
-
-        self.play(Create(A.to_edge(UR)))
-        self.wait(1)
+        self.wait(q)
+        self.play(Uncreate(stablecoin))
+        #
 
 
-class lec1_s1(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s2(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s3(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s4(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s5(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s6(Scene):
-    def construct(self):
-        pass
-
-
-class lec1_s7(Scene):
-    def construct(self):
-        pass
-
-
-class eliptical(Scene):
-    def construct(self):
-        var = Variable(-2, Tex("x value"), num_decimal_places=3)
-        my_tracker = var.tracker
-
-        ax = Axes().move_to(ORIGIN)
-        graph = ax.plot(
-            lambda x: x + 3,
-            color=RED, )
-
-        # c2p_point2 = plane.c2p(my_tracker.get_value(), graph.get_point_from_function(my_tracker.get_value()))
-        graph1 = ax.plot_implicit_curve(lambda x, y: -y ** 2 + x ** 3 - 3 * x + 3, color=RED
-                                        )
-
-        def get_my_dot():
-            # c2p_point2 = ax.c2p(my_tracker.get_value(), graph.get_point_from_function(1))
-            # c2p_point2 = ax.c2p(*graph.get_point_from_function(my_tracker.get_value()))
-            c2p_point2 = ax.c2p(my_tracker.get_value(),
-                                graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 0 ])
-
-            c2p_point1 = ax.c2p(my_tracker.get_value(),
-                                graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 0 ])
-            c2p_point2 = ax.c2p(my_tracker.get_value(),
-                                graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 1 ])
-            point2_y_val = graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 1 ]
-            dot1 = Dot(c2p_point1, color=YELLOW)
-            dot2 = Dot(c2p_point2, color=BLUE)
-
-            arrow1 = Arrow(ax.get_center(), dot1.get_center(), buff=0)
-            arrow1 = Arrow(ax.get_center(), dot2.get_center(), buff=0)
-            # label = Tex(f"({my_tracker.get_value()},{point2_y_val})").next
-
-            group = VGroup(dot1, dot2, arrow1)
-            return group
-
-        dots = always_redraw(lambda: get_my_dot())
-        self.play(Create(var))
-        self.play(Create(dots), Create(ax), Create(graph1))
-        self.play(my_tracker.animate.set_value(3))
-        self.wait(1)
-        self.play(my_tracker.animate.set_value(-2))
-
-
-class working_aside(Scene):
-    def construct(self):
-        plane = NumberPlane(x_range=[ -10, 10 ], y_range=[ -10, 10 ], background_line_style={"stroke_opacity": 0.8},
-                            axis_config={"include_numbers": True, "stroke_width": 10, "color": PURPLE})
-
-        # graph = ImplicitFunction(
-        #     lambda x, y: -y ** 2 + x ** 3 - 3 * x + 3,
-        #     color=YELLOW
-        # )
-        # plane.plot(graph)
-
-        ax = Axes(
-            x_range=[ -10, 10, 1 ],
-            y_range=[ -100, 100, 1 ],
-            tips=False,
-
-        )
-
-        graph1 = plane.plot_implicit_curve(lambda x, y: -y ** 2 + x ** 3 - 3 * x + 3, color=RED
-                                           )
-
-        point = ax.c2p(5, 3)
-
-        dot = Dot(point)
-        v_line = plane.get_line_from_axis_to_point(1, point, line_func=Line, line_config={}, color=BLUE, stroke_width=5)
-
-        my_tracker = ValueTracker(3)
-
-        c2p_point1 = plane.c2p(my_tracker.get_value(),
-                               graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 0 ])
-        c2p_point2 = plane.c2p(my_tracker.get_value(),
-                               graph1.get_points_from_function(my_tracker.get_value(), "-y ** 2 + x ** 3 - 3 * x + 3")[ 1 ])
-
-        dot1 = always_redraw(lambda: Dot(c2p_point1, color=YELLOW))
-        dot2 = Dot(c2p_point2, color=BLUE, radius=0.2)
-        # dot1.add_updater(lambda mob : mob.ne)
-
-        # h_line = Line(start=plane.c2p(0,graph.get_point_from_function(1)), end=plane.c2p(-2,graph.get_curve_functions(1)))
-
-        # label = plane.get_graph_label(graph=graph1,label=Tex("this is a point"),x_val=4.798567064438934, dot=True, direction=DR, dot_config={"color":BLUE})
-        # t_label = plane.get_T_label(x_val=4, graph=graph1, label=Tex("x-value"))
-
-        # area = plane.get_area(graph1, x_range=(-1,5))
-        # self.play(Create(graph1), Create(plane), Create(dot), Create(v_line), Create(h_line))
-        self.play(Create(NumberPlane()), Create(graph1), Create(dot1), Create(dot2))
-        self.play(my_tracker.animate.set_value(5))
-        self.wait(0.5)
-        self.play(Create(dot1))
-        self.wait(0.5)
-
-        # self.play(my_tracker.animate.set_value(0))
-        # self.play(ApplyMethod(my_tracker.set_value(),2, run_time=2))
+        # 기업 혹은 거래소 박스 형성 (중앙ㅇ에 할거고 이건 왼쪽은 은행이나 채권 만들고)
+        tether_company = LabeledRectangle('Company or Exchange', height=8,width=4 corner_radius=0.5, direction=UP)
+        self.play(Create(tether_company))
+        #
+        # 고객 엔터티 오른 쪽에 생성하고 법정화폐 붙임
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
 
         #
-        # backg_plane = NumberPlane(x_range=[-7,7,1], y_range=[-4,4,1])
-        # backg_plane.add_coordinates()
+        # 그리고 고객들 돈을 기업으로 전송
         #
-        # my_plane = NumberPlane(x_range = [-6,6], x_length = 5,
-        # y_range = [-10,10], y_length=5)
-        # my_plane.add_coordinates()
-        # my_plane.shift(RIGHT*3)
+        # 기업에서 테더 발행
         #
-        # my_function = my_plane.plot(lambda x : 0.1*(x-5)*x*(x+5),
-        # x_range=[-6,6], color = GREEN_B)
+        # 테더는 다시 엔터티에게 전송
         #
-        # label = MathTex("f(x)=0.1x(x-5)(x+5)").next_to(
-        #     my_plane, UP, buff=0.2)
+        # 그리고 달러 중 일부는 은행이나 채권등으로 투자
         #
-        # area = my_plane.get_area(graph = my_function,
-        # x_range = [-5,5], color = BLUE)
+        # 엔터티 중 한명이 테더를 반납하면 달러로 돌려줌
         #
-        # horiz_line = Line(
-        #     start = my_plane.c2p(0, my_function.underlying_function(-2)),
-        # end = my_plane.c2p(-2, my_function.underlying_function(-2)),
-        # stroke_color = YELLOW, stroke_width = 10)
+        # 전부 ㅇ벗어지고 알고리드믹 스테이블코인, 코인담보 스테이블 등이 있으나 나중에 알아보자
         #
-        # self.play(backg_plane.animate.set_opacity(0.2))
-        # self.wait()
-        # self.play(DrawBorderThenFill(my_plane), run_time=2)
-        # self.wait()
-        # self.play(Create(my_function), Write(label), run_time=2)
-        # self.wait()
-        # self.play(FadeIn(area), run_time = 2)
-        # self.wait()
-        # self.play(Create(horiz_line), run_time = 2)
-        # self.wait()
 
-        # banner = ManimBanner()
-        title = Title("How does a computer understand a letter?")
-        # btc_msg1 = sha256_tex_mob("BTC")
-        # btc_msg2 = Tex(sha256_bit_string("BTC"))
-        # btc_msg3 = bit_string_to_mobject("BTC")
-        # self.play(Create(btc_msg3))
 
-        # self.play(Write(title, run_time=1))
 
-        ascii_table = MathTable(
-            [ [ "Alpha", "Decimal", "Hex" ],
-              [ "A", 65, 41 ],
-              [ "B", 66, 42 ],
-              [ "L", 76, "4C" ],
-              [ "X", 88, 58 ],
-              [ "Y", 89, 59 ],
-              [ "Z", 90, "5A" ]
+
+        pair_rect = RoundedRectangle(corner_radius=0.5, height=8, width=4)
+        pair_rect_text = Tex("BTCUSD").next_to(pair_rect, UP, buff=0.2).scale(0.8)
+        pair = VGroup(pair_rect, pair_rect_text).move_to(ORIGIN)
+        pair.set_z_index(3)
+
+        # self.add(pair, ru))
+
+        self.wait(q)
+
+        dummy = IntegerTable(
+            [
+                [ 1000000 ]
+            ],
+            row_labels=[ Tex(r"105\$") ],
+            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
+            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 0.5}).scale(0.5)
+
+        # self.play(Create(dummy))
+        # self.add(index_labels(dummy))
+
+        curr_px_height = dummy[ 1 ].get_y() - dummy[ 2 ].get_y()
+        curr_px_width = dummy[ 4 ].get_x() - dummy[ 3 ].get_x()
+        curr_px_rect = Rectangle(width=curr_px_width, height=curr_px_height, color=RED)
+        curr_px_rect.set_z_index(3)
+
+        curr_px_valuetracker = ValueTracker(100)
+        curr_px_val = str(int(curr_px_valuetracker.get_value()))
+        # curr_px_number = Tex(rf'{curr_px_val}\$').move_to(curr_px_rect)
+        curr_px_number_100 = Integer(curr_px_valuetracker.get_value(), unit=r"\$", color=RED).move_to(curr_px_rect)
+        curr_px_number_103 = Integer(curr_px_valuetracker.get_value(), unit=r"\$", color=GREEN).move_to(curr_px_rect)
+
+        # curr_px_number.add_updater(lambda x : x.become(Integer(curr_px_valuetracker.get_value(), unit=r"\$")))
+
+        # curr_px =VGroup(curr_px_rect,curr_px_number_100)
+
+        int_valuetracker = ValueTracker(100)
+
+        my_int = Integer(int_valuetracker.get_value(), unit=r"\$").to_edge(UR)
+
+        # # my_int.add_updater()
+        # self.play(Create(curr_px_rect))
+        # # self.play(curr_px_valuetracker.animate.set_value(120))
+        #
+        # self.play(FadeIn(curr_px_number_100), run_time=0.01)
+        #
+        order_book_shrt_table = IntegerTable(
+            [ [ 300000 ],
+              [ 200000 ],
+              [ 100000 ],
+              [ 10000 ],
+              [ 1000 ],
+              [ 100 ],
+              [ 50 ]
               ],
-            include_outer_lines=True)
+            row_labels=[ Tex(r"107\$"),
+                         Tex(r"106\$"),
+                         Tex(r"105\$"),
+                         Tex(r"104\$"),
+                         Tex(r"103\$"),
+                         Tex(r"102\$"),
+                         Tex(r"101\$")
+                         ],
+            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
+            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 1}).scale(0.5).next_to(curr_px_rect, UP, buff=0)
 
-        ascii_table.scale(0.7)
+        for i in range(1, 8):
+            for j in range(1, 3):
+                order_book_shrt_table.add_highlighted_cell((i, j), fill_opacity=0.2, color=RED_A)
 
-        def dot_position(mobject):
-            mobject.set_value(dot.get_center()[ 0 ])
-            mobject.next_to(dot)
+        order_book_shrt_table.set_row_colors(RED, RED, RED, RED, RED, RED, RED)
 
-        dot = Dot(RIGHT * 3)
-        label = DecimalNumber()
-        label.add_updater(dot_position)
-        # self.add(dot, label)
-        Text1 = Text("BTC")
-        # text_int = Va
-        # tracker = ValueTracker(sha256_bit_int(5))
+        order_book_long_table = IntegerTable(
+            [ [ 0 ],
+              [ 0 ],
+              [ 50 ],
+              [ 100 ],
+              [ 1000 ],
+              [ 10000 ],
+              [ 100000 ]
+              ],
+            row_labels=[ Tex(r"102\$"),
+                         Tex(r"101\$"),
+                         Tex(r"100\$"),
+                         Tex(r"99\$"),
+                         Tex(r"98\$"),
+                         Tex(r"97\$"),
+                         Tex(r"96\$")
+                         ],
+            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
+            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 1}).scale(0.5).next_to(curr_px_rect, DOWN, buff=0)
 
-        a = Integer(0)
+        for i in range(1, 6):
+            for j in range(1, 3):
+                order_book_long_table.add_highlighted_cell((i, j), fill_opacity=0.2, color=GREEN_A)
 
-        a.add_updater(lambda a: a.set_value(tracker.get_value()))
-        # decimal = MathTex(r"")
+        order_book_long_table.set_row_colors(GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN)
 
-        # def int_to_bin(int_mob):
-        #     val = int(int_mob.get_value())
-        #     bin1 = format(val, '0256b')[0:63]
-        #     # bin2 = format(val, '0256b')[64:127]
-        #     # bin3 = format(val, '0256b')[128:191]
-        #     bin4 = format(val, '0256b')[192:255]
+        def change_waiting_order(self, table, r, c, new_val, run_time):
+            a = table.get_entries(pos=(r, c))
+            b = Integer(new_val, fill_color=a.fill_color, font_size=a.font_size)
+            return Transform(a, b.move_to(a.get_center()).align_to(a, LEFT), run_time=run_time)
+
+        def change_waiting_order_by_perc(self, table, r, c, perc, run_time):
+            a = table.get_entries(pos=(r, c))
+
+            new_val = int(a.get_value() * ((100 + perc) / 100))
+            b = Integer(new_val, fill_color=a.fill_color, font_size=a.font_size)
+            return Transform(a, b.move_to(a.get_center()).align_to(a, LEFT), run_time=run_time)
+
+        # self.play(Create(order_book_long_table), Create(order_book_shrt_table))
+
+        # self.play(curr_px_number_100)
+
+        def table2cells(table, r, c, opa, color):
+            cells = VGroup()
+            for i in range(1, r + 1):
+                for j in range(1, c + 1):
+                    text = table.get_entries(pos=(i, j)).copy()
+                    box = table.get_cell((i, j), stroke_width=table.line_config[ "stroke_width" ],
+                                         stroke_opacity=table.line_config[ "stroke_opacity" ],
+                                         stroke_color=table.line_config[ "stroke_color" ])
+                    bg_rect = table.get_highlighted_cell(pos=(i, j), fill_opacity=opa, color=color)
+                    cell = VGroup(text, box, bg_rect)
+                    cells.add(cell)
+
+            return cells
+
+        separated_shrt_table = table2cells(order_book_shrt_table, 7, 2, 0.2, RED_A)
+        separated_shrt_table.set_z_index(1)
+
+        shrt_black_sheet = Rectangle(width=4, height=5, fill_color=BLACK, fill_opacity=1, stroke_opacity=0, stroke_width=0).next_to(
+            separated_shrt_table[ 4 ], UP, buff=0.01).shift(RIGHT)
+        shrt_black_sheet.set_z_index(2)
+
+        separated_long_table_org = table2cells(order_book_long_table, 7, 2, 0.2, GREEN_A)
+        separated_long_table = separated_long_table_org[ 4: ].next_to(curr_px_rect, DOWN, buff=0.01)
+
+        long_black_sheet = Rectangle(width=4, height=5, fill_color=BLACK, fill_opacity=1, stroke_opacity=0, stroke_width=0).next_to(
+            separated_long_table[ 9 ], DOWN, buff=0).shift(LEFT)
+        long_black_sheet.set_z_index(2)
+
+        # self.add(index_labels(separated_long_table))
+        # self.play(Create(shrt_black_sheet), run_time=0.1)
+        # self.play(Create(long_black_sheet), run_time=0.1)
+        # self.play(Create(separated_shrt_table),
+        #           Create(separated_long_table))
+
+        self.add(shrt_black_sheet, long_black_sheet)
+        order_book = VGroup(pair, curr_px_number_100, curr_px_rect, separated_shrt_table, separated_long_table)
+
+
+        self.play(Create(order_book))
+
+
+        self.wait(q)
+
+        cross = Cross(stroke_width=25).scale(3)
+
+        self.play(Create(cross))
+
+        # self.play(FadeOut(*[self.mobjects]))
+
+        self.play(FadeOut(VGroup(order_book,cross)))
+        self.remove(shrt_black_sheet, long_black_sheet)
+
+
+
         #
-        #     return VGroup(Tex(bin1),MathTex(r"\vdots"),Tex(bin4)).arrange_in_grid(3,1,buff=0.2)
-        # def bin_list(int_mob):
-        #     val = int(int_mob.get_value())
-        #     bin1 = format(val, '0256b')[0:63]
-        #     bin2 = format(val, '0256b')[64:127]
-        #     bin3 = format(val, '0256b')[128:191]
-        #     bin4 = format(val, '0256b')[192:255]
-        #     bin_list=[bin1,bin2,bin3,bin4]
+        # 유동성 풀과 엑스와이는 케이 공식 텍스트로 보여주고
         #
-        #     return bin_list
-
-        # decimal= always_redraw(int_to_bin(tracker).next_to(a, DOWN))
-        # decimal= Text("2").add_updater(lambda x : int_to_bin(tracker).next_to(a, DOWN))
-        # decimal= always_redraw(lambda : int_to_bin(tracker).move_to(DOWN).scale(0.7))
-
-        circle = Circle(radius=1, color=RED)
-
-        square = Square(1, color=BLUE)
-        # group = VGroup(circle)
-
-        circle.add(square)
-        circle.arrange_in_grid(2, 1, buff=2)
+        # 엑스는 거래쌍 중에 코인 A의 양 와이는 코인 비의 양 화살표로 보여주고 없애기
         #
-        self.add(msg_to_mob("BTC", 32, 4))
-
-        # self.play(Create(Text1))
-        # self.play(Create(a), Create(decimal))
-        # self.play(tracker.animate.set_value(1565645),run_time=1)
-        # self.play(Text1.animate.set_value("djfkd"),run_time=1)
-        # self.play(ApplyMethod(tracker.set_value(),1231231231231236456789789789789789879789789789789789, run_time=2)
-
-        # tracker.set_value(12312312312312123131312312312313123123113123123121233)
-        # a.set_value(50)
-        # self.wait(2)
-
-        # start = 2.0
+        # 와이는 엑스부느이 케이로 변형
         #
-        # x_var = Variable(start, 'x', num_decimal_places=3)
-        # sqr_var = Variable(start**2, 'x^2', num_decimal_places=3)
-        # Group(x_var, sqr_var).arrange(DOWN)
+        # 엑스는 와이분의 일 그래프 예시로 보여주기
         #
-        # sqr_var.add_updater(lambda v: v.tracker.set_value(x_var.tracker.get_value()**2))
+        # 중학교 때 배운 반비례 그래프
         #
-        # self.add(x_var, sqr_var)
-        # self.play(x_var.tracker.animate.set_value(5), run_time=2, rate_func=linear)
-        # self.wait(0.1)
+        # 전부 없어짐
+        #
+        # 최초의 덱스 렉탱글 만들고 btc usd 풀로 만듦
+        #
+        #
+        # 유동성 거래자 엔터티 만듦
+        #
+        #
+        # 중앙화 거래혹 조그만 거 만듦,  가격 인테저 만듦
+        #
+        # 유동성 거래자가 중앙화 거래소 가격이 300달러인 걸 보고 비트코인 10개와 3000테더를 전송
+        #
 
 
-class IntroduceSHA256(Scene):
-    def construct(self):
-        self.introduce_evaluation()
-        self.inverse_function_question()
-        self.issue_challenge()
-        self.shift_everything_down()
-        self.guess_and_check()
 
-    def introduce_evaluation(self):
-        messages = [
-            "3Blue1Brown",
-            "3Blue1Crown",
-            "Mathologer",
-            "Infinite Series",
-            "Numberphile",
-            "Welch Labs",
-            "3Blue1Brown",
-        ]
-        groups = VGroup()
-        for message in messages:
-            lhs = TexText(
-                "SHA256", "(``", message, "'') =",
-                arg_separator=""
-            )
-            lhs.set_color_by_tex(message, BLUE)
-            digest = sha256_tex_mob(message)
-            digest.next_to(lhs, RIGHT)
-            group = VGroup(lhs, digest)
-            group.to_corner(UP + RIGHT)
-            group.shift(MED_LARGE_BUFF * DOWN)
-            groups.add(group)
-
-        group = groups[ 0 ]
-        lhs, digest = group
-        sha, lp, message, lp = lhs
-        sha_brace = Brace(sha, UP)
-        message_brace = Brace(message, DOWN)
-        digest_brace = Brace(digest, DOWN)
-        sha_text = sha_brace.get_text("", "Hash function")
-        sha_text.set_color(YELLOW)
-        message_text = message_brace.get_text("Message/file")
-        message_text.set_color(BLUE)
-        digest_text = digest_brace.get_text("``Hash'' or ``Digest''")
-        brace_text_pairs = [
-            (sha_brace, sha_text),
-            (message_brace, message_text),
-            (digest_brace, digest_text),
-        ]
-
-        looks_random = TexText("Looks random")
-        looks_random.set_color(MAROON_B)
-        looks_random.next_to(digest_text, DOWN)
-
-        self.add(group)
-        self.remove(digest)
-        for brace, text in brace_text_pairs:
-            if brace is digest_brace:
-                self.play(LaggedStartMap(
-                    FadeIn, digest,
-                    run_time=4,
-                    lag_ratio=0.05
-                ))
-                self.wait()
-            self.play(
-                GrowFromCenter(brace),
-                Write(text, run_time=2)
-            )
-            self.wait()
-        self.play(Write(looks_random))
-        self.wait(2)
-        for mob in digest, message:
-            self.play(LaggedStartMap(
-                ApplyMethod, mob,
-                lambda m: (m.set_color, YELLOW),
-                rate_func=there_and_back,
-                run_time=1
-            ))
-        self.wait()
-        self.play(FadeOut(looks_random))
-
-        new_lhs, new_digest = groups[ 1 ]
-        char = new_lhs[ 2 ][ -5 ]
-        arrow = Arrow(UP, ORIGIN, buff=0)
-        arrow.next_to(char, UP)
-        arrow.set_color(RED)
-        self.play(ShowCreation(arrow))
-        for new_group in groups[ 1: ]:
-            new_lhs, new_digest = new_group
-            new_message = new_lhs[ 2 ]
-            self.play(
-                Transform(lhs, new_lhs),
-                message_brace.stretch_to_fit_width, new_message.get_width(),
-                message_brace.next_to, new_message, DOWN,
-                MaintainPositionRelativeTo(message_text, message_brace),
-                MaintainPositionRelativeTo(sha_brace, lhs[ 0 ]),
-                MaintainPositionRelativeTo(sha_text, sha_brace)
-            )
-            self.play(Transform(
-                digest, new_digest,
-                run_time=2,
-                lag_ratio=0.5,
-                path_arc=np.pi / 2
-            ))
-            if arrow in self.get_mobjects():
-                self.wait()
-                self.play(FadeOut(arrow))
-        self.wait()
-
-        new_sha_text = TexText(
-            "Cryptographic", "hash function"
-        )
-        new_sha_text.next_to(sha_brace, UP)
-        new_sha_text.shift_onto_screen()
-        new_sha_text.set_color(YELLOW)
-        new_sha_text[ 0 ].set_color(GREEN)
-        self.play(Transform(sha_text, new_sha_text))
-        self.wait()
-
-        self.lhs = lhs
-        self.message = message
-        self.digest = digest
-        self.digest_text = digest_text
-        self.message_text = message_text
-
-    def inverse_function_question(self):
-        arrow = Arrow(3 * RIGHT, 3 * LEFT, buff=0)
-        arrow.set_stroke(width=8)
-        arrow.set_color(RED)
-        everything = VGroup(*self.get_mobjects())
-        arrow.next_to(everything, DOWN)
-        words = TexText("Inverse is infeasible")
-        words.set_color(RED)
-        words.next_to(arrow, DOWN)
-
-        self.play(ShowCreation(arrow))
-        self.play(Write(words))
-        self.wait()
-
-    def issue_challenge(self):
-        desired_output_text = TexText("Desired output")
-        desired_output_text.move_to(self.digest_text)
-        desired_output_text.set_color(YELLOW)
-        new_digest = sha256_tex_mob("Challenge")
-        new_digest.replace(self.digest)
-        q_marks = TexText("???")
-        q_marks.move_to(self.message_text)
-        q_marks.set_color(BLUE)
-
-        self.play(
-            Transform(
-                self.digest, new_digest,
-                run_time=2,
-                lag_ratio=0.5,
-                path_arc=np.pi / 2
-            ),
-            Transform(self.digest_text, desired_output_text)
-        )
-        self.play(
-            FadeOut(self.message),
-            Transform(self.message_text, q_marks)
-        )
-        self.wait()
-
-    def shift_everything_down(self):
-        everything = VGroup(*self.get_top_level_mobjects())
-        self.play(
-            everything.scale, 0.85,
-            everything.to_edge, DOWN
-        )
-
-    def guess_and_check(self):
-        groups = VGroup()
-        for x in range(32):
-            message = "Guess \\#%d" % x
-            lhs = TexText(
-                "SHA256(``", message, "'') = ",
-                arg_separator=""
-            )
-            lhs.set_color_by_tex("Guess", BLUE)
-            digest = sha256_tex_mob(message)
-            digest.next_to(lhs, RIGHT)
-            group = VGroup(lhs, digest)
-            group.scale(0.85)
-            group.next_to(self.digest, UP, aligned_edge=RIGHT)
-            group.to_edge(UP)
-            groups.add(group)
-
-        group = groups[ 0 ]
-        self.play(FadeIn(group))
-        for new_group in groups[ 1: ]:
-            self.play(Transform(
-                group[ 0 ], new_group[ 0 ],
-                run_time=0.5,
-            ))
-            self.play(Transform(
-                group[ 1 ], new_group[ 1 ],
-                run_time=1,
-                lag_ratio=0.5
-            ))
+        self.wait(q)
