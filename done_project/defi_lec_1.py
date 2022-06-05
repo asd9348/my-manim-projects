@@ -12,40 +12,20 @@ import binascii
 
 from colour import Color
 
-# utils.tex.TexTemplate(tex_compiler="latex")
-
-
-def sha256_bit_string(message):
-    hexdigest = sha256(message.encode('utf-8')).hexdigest()
-    return bin(int(hexdigest, 16))[ 2: ]
 
 
 q = 0.3
+qq = 2 * q
+qqq = 3 * q
+
+L = LEFT
+R = RIGHT
+U = UP
+D = DOWN
 
 
 def reverse(t: float) -> float:
     return -t + 1
-
-
-# class SimpleLine(Line):
-
-
-def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
-    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
-    text = Text(text, color=BLACK).scale(height)
-
-    return VGroup(box, text)
-
-
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
-    person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
-
-    box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = Text(asset_name, color=BLACK).scale(asset_height)
-
-    asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
-
-    return VGroup(person, asset)
 
 
 #
@@ -101,31 +81,6 @@ class LabeledRectangle(RoundedRectangle):
         self.add(rendered_label)
 
 
-def msg_to_mob(msg, width, rows, buff=0.2):
-    if rows % 2 != 0:
-        raise Exception('2의 배수가 아닙니다.')
-
-    msg = sha256_bit_string(msg)
-
-    half_rows = int(rows / 2)
-    i = 0
-    chopped_list = [ msg[ i: i + width ] for i in range(0, len(msg), width) ]
-    starts = chopped_list[ :half_rows - 1 ]
-    ends = chopped_list[ -half_rows - 1: ]
-
-    starts.extend(ends)
-    starts.insert(half_rows, r"\vdots")
-
-    mobs = VGroup()
-    for row in range(rows + 1):
-        mobs.add(MathTex(starts[ row ]))
-        # if row= half_rows:
-        # mobs.add(MathTex(""))
-
-    mobs.arrange_in_grid(6, 1, buff=buff)
-
-    return mobs
-
 
 #
 # def sha256_tex_mob(message, n_forced_start_zeros=30):
@@ -161,26 +116,128 @@ class final(Scene):
         # lec1_s3.construct(self)
         # lec1_s4.construct(self)
         # working.construct(self)
-        self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
-        self.play(A_asset_btc.animate.move_to(B_asset_pos))
-        self.play(A_asset_btc.animate.move_to(A_asset_pos))
-        self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
-        self.play(A_asset_btc.animate.move_to(A_wallet_rect))
-        # self.play(A_asset_btc.animate.move_to(ex_wallet_rect))
-        self.play(A_asset_btc.animate.move_to(ex_server))
 
 
-class working(Scene):
+class intro_and_barter(Scene):
     def construct(self):
-        pass
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
+        A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
 
 
-class lec1_s2(Scene):
+class stablecoin(Scene):
     def construct(self):
-        pass
+        # 스테이블 코인 텍스트 보여줌
+        stablecoin = Tex('Stablecoin').scale(2)
+        self.play(Create(stablecoin))
+
+        self.wait(q)
+        self.play(Uncreate(stablecoin))
+        #
+
+        # 기업 혹은 거래소 박스 형성 (중앙ㅇ에 할거고 이건 왼쪽은 은행이나 채권 만들고)
+        tether_company_rect = RoundedRectangle(height=8, width=4, corner_radius=0.5)
+        tether_company_text = Tex('Company or Exchange').next_to(tether_company_rect, UP)
+
+        tether_company = VGroup(tether_company_rect, tether_company_text).move_to(ORIGIN)
+
+        tether_company.set_z_index(3)
+
+        # self.add(index_labels(tether_company[0]))
+        self.play(Create(tether_company))
+
+        #
+        # 고객 엔터티 오른 쪽에 생성하고 법정화폐 붙임
+
+        def create_entity_tether(person_name, person_radius, person_color, asset_name, how_many, asset_color, asset_width, asset_height):
+            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+            text = Text(asset_name, color=BLACK).scale(asset_height)
+
+            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+            assets = VGroup(asset)
+
+            assets = VGroup(*[ asset.copy() for i in range(how_many) ])
+            # for i in range(how_many):
+            #     VGroup.add(asset.copy())
+
+            assets.arrange(DOWN, buff=0.1).next_to(person, DOWN)
+
+            return VGroup(person, assets)
+
+        A = create_entity_tether("A", 0.5, WHITE, "USD", 15, GREEN, 0.7, 0.3)
+        B = create_entity_tether("B", 0.5, WHITE, "USD", 10, GREEN, 0.7, 0.3)
+        C = create_entity_tether("C", 0.5, WHITE, "USD", 3, GREEN, 0.7, 0.3)
+        D = create_entity_tether("D", 0.5, WHITE, "USD", 8, GREEN, 0.7, 0.3)
+
+        A_asset_pos = A[ 1 ].get_center
+        # self.add(index_labels())
+
+        people_list = [ A, B, C, D ]
+        people = VGroup(A, B, C, D).arrange(RIGHT, buff=0.2, aligned_edge=UP).to_edge(UR)
+
+        self.play(Create(people))
+        #
+        # 그리고 고객들 돈을 기업으로 전송
+        each_money = VGroup()
+        for person in people_list:
+            for i in range(len(person[ 1 ])):
+                each_money.add(person[ 1 ][ i ])
+
+        self.play(each_money.animate.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ]))
+        #
+        # 기업에서 테더 발행 원래 받은 USD는 위로 밀리면서 새로운 USDT 뭉치가 생겨남
+
+        tether_1ea = create_entity_tether("A", 0.5, WHITE, "USDT", 36, BLUE, 0.7, 0.3)[ 1 ]
+
+        tethers = VGroup()
+        for i in range(len(tether_1ea)):
+            tethers.add(tether_1ea[ i ])
+        tethers.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ])
+        self.play(GrowFromCenter(tethers))
+        # tethers.arrange()
+        self.play(VGroup(each_money, tethers).animate.arrange(DOWN, buff=0.25).move_to(tether_company[ 0 ]))
+
+        #
+        # 테더는 다시 엔터티에게 전송
+        self.play(tethers[ 0:15 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
+        self.play(tethers[ 15:25 ].animate.arrange(DOWN, buff=0.1).next_to(B[ 0 ], DOWN))
+        self.play(tethers[ 25:28 ].animate.arrange(DOWN, buff=0.1).next_to(C[ 0 ], DOWN))
+        self.play(tethers[ 28:36 ].animate.arrange(DOWN, buff=0.1).next_to(D[ 0 ], DOWN))
+        #
+        # 그리고 달러 중 일부는 은행이나 채권등으로 투자
+        invest = LabeledRectangle('Banks Bonds etc', width=4, height=6, direction=UP, corner_radius=0.5).to_edge(LEFT)
+
+        self.play(Create(invest))
+
+        self.play(each_money[ 0:16 ].animate.arrange_in_grid(4, 4, buff=0.1).move_to(invest))
+
+        #
+        # 엔터티 중 한명이 테더를 반납하면 달러로 돌려줌
+        self.play(tethers[ 0:15 ].animate.arrange_in_grid(4, 4, buff=0.1).next_to(each_money[ 28:36 ], DOWN, buff=0.25))
+        # self.play(VGroup(each_money[16:36],tethers[ 0:15 ]).animate.arrange(DOWN))
+
+        self.play(each_money[ 23:36 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
+
+        self.play(Uncreate(tethers[ 0:15 ]))
+        #
+        # 전부 ㅇ벗어지고 알고리드믹 스테이블코인, 코인담보 스테이블 등이 있으나 나중에 알아보자
+
+        self.play(FadeOut(each_money),
+                  FadeOut(tethers),
+                  FadeOut(tether_company),
+                  FadeOut(invest),
+                  FadeOut(people),
+                  )
 
 
-class lec1_s3(Scene):
+class pair(Scene):
     def construct(self):
         BTC_slash_USD_text = Tex("BTC/USD").scale(2)
         BTC_dash_USD_text = Tex("BTC-USD").scale(2)
@@ -217,7 +274,70 @@ class lec1_s3(Scene):
         self.wait(q)
 
 
-class lec1_s4(Scene):
+class price(Scene):
+    def construct(self):
+        def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
+            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+            text = Text(asset_name, color=BLACK).scale(0.8 * asset_height)
+
+            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+
+            return VGroup(person, asset)
+
+        price = Tex('Price').scale(2)
+
+        self.play(Create(price))
+
+        price_text = Tex(
+            r'A price is the (usually not negative) quantity of payment \\or compensation given by one party to another\\in return for goods or services.').next_to(
+            price, D)
+        self.play(Create(price_text))
+
+        self.play(Uncreate(price),
+                  Uncreate(price_text))
+
+        btc_equal_38000 = Tex('1 BTC = 38000')
+        cross = Cross(stroke_width=25).scale(3)
+        btc_equal_38000dollars = Tex('1 BTC = 38000 USD')
+        circle = Circle(color=GREEN, radius=3, stroke_width=25).rotate(PI / 2)
+        self.play(Create(btc_equal_38000))
+
+        self.play(Create(cross))
+
+        self.play(FadeOut(cross))
+        self.play(TransformMatchingShapes(btc_equal_38000, btc_equal_38000dollars))
+
+        self.play(Create(circle))
+
+        self.play(Uncreate(circle),
+                  Uncreate(btc_equal_38000dollars))
+
+        self.wait(q)
+
+        usdt = create_entity("A", 0.5, WHITE, "USDT", BLUE, 2, 1)[ 1 ]
+        usd = create_entity("A", 0.5, WHITE, "USD", GREEN, 2, 1)[ 1 ]
+        equal = MathTex(r'\neq').scale(2)
+
+        n_eq_form = VGroup(usd, equal, usdt).arrange(RIGHT, buff=0.5).scale(2)
+        # usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
+        # us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(DR, buff=0.5)
+        #
+        # backed_by_1 = Tex('Backed by').move_to(np.array([usdt.get_x(),0,0]))
+        # backed_by_2 = Tex('Backed by')
+        # backed_by_3 = Tex('Backed by').move_to(np.array([usg.get_x(),0,0]))
+
+        self.play(Create(n_eq_form))
+
+        self.play(Uncreate(n_eq_form))
+
+        price_of_usdt = Tex(r'Price of 1 "USDT" is \\normally 1.01 \textasciitilde \  0.99 "USD"').scale(1.5)
+
+        self.play(Create(price_of_usdt))
+
+
+class order_book_market_and_limit_order(Scene):
     def construct(self):
         pair_rect = RoundedRectangle(corner_radius=0.5, height=8, width=4)
         pair_rect_text = Tex("BTCUSD").next_to(pair_rect, UP, buff=0.2).scale(0.8)
@@ -538,7 +658,7 @@ class lec1_s4(Scene):
         self.wait(1)
 
 
-class lec1_s5(Scene):
+class mark_price(Scene):
     def construct(self):
         mark_price = MathTex(r'Mark\ Price').shift(UP)
 
@@ -703,7 +823,7 @@ class lec1_s5(Scene):
         self.wait(1)
 
 
-class lec1_s6(Scene):
+class slippage(Scene):
     def construct(self):
         slippage = Tex('Slippage').scale(2)
 
@@ -1083,7 +1203,7 @@ class lec1_s6(Scene):
         self.wait(5)
 
 
-class lec1_s7_supply_and_demand(Scene):
+class supply_and_demand(Scene):
     def construct(self):
         x_range = 20
         ax = Axes(x_range=[ 0, x_range, x_range / 10 ],
@@ -1185,7 +1305,7 @@ class lec1_s7_supply_and_demand(Scene):
         self.wait(3)
 
 
-class lec1_s8(Scene):
+class A_and_B_withdrawal(Scene):
     def construct(self):
         A = create_entity("A", 0.5, WHITE, "1 BTC", ORANGE, 0.7, 0.3).shift(RIGHT * 4 + UP * 1)
         B = create_entity("B", 0.5, WHITE, "100 $", GREEN, 0.7, 0.3).shift(RIGHT * 4 + DOWN * 1)
@@ -1327,7 +1447,6 @@ class lec1_s8(Scene):
 
         for i in range(len(blocks)):
             chain = Difference(chain, blocks[ i ])
-
 
         scripts.set_z_index(2)
         blocks.set_z_index(1)
@@ -1497,26 +1616,6 @@ class lec1_s8(Scene):
         # self.play(A_asset_btc.animate.move_to(B_asset_pos))
 
         self.wait(1)
-
-
-class lec2_s1(Scene):
-    def construct(self):
-        pass
-
-
-class lec2_s2(Scene):
-    def construct(self):
-        pass
-
-
-class lec2_s3(Scene):
-    def construct(self):
-        pass
-
-
-class lec2_s4(Scene):
-    def construct(self):
-        pass
 
 
 class lec2_s1(Scene):
@@ -1741,4 +1840,3 @@ class working_aside(Scene):
         # self.add(x_var, sqr_var)
         # self.play(x_var.tracker.animate.set_value(5), run_time=2, rate_func=linear)
         # self.wait(0.1)
-

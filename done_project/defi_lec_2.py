@@ -12,71 +12,14 @@ import binascii
 
 from colour import Color
 
-
-# utils.tex.TexTemplate(tex_compiler="latex")
-
-
-def sha256_bit_string(message):
-    hexdigest = sha256(message.encode('utf-8')).hexdigest()
-    return bin(int(hexdigest, 16))[ 2: ]
-
-
 q = 0.3
 qq = 2 * q
 qqq = 3 * q
-
-
-def reverse(t: float) -> float:
-    return -t + 1
-
 
 L = LEFT
 R = RIGHT
 U = UP
 D = DOWN
-
-
-# class SimpleLine(Line):
-
-
-def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
-    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
-    text = Text(text, color=BLACK).scale(height)
-
-    return VGroup(box, text)
-
-
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
-    person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
-
-    box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = Text(asset_name, color=BLACK).scale(asset_height)
-
-    asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
-
-    return VGroup(person, asset)
-
-
-#
-# def bit_string_to_mobject(bit_string):
-#     line = Tex("0" * 32)
-#     pre_result = VGroup(*[
-#         line.copy() for row in range(8)
-#     ])
-#     pre_result.arrange(DOWN, buff=SMALL_BUFF)
-#     result = VGroup(*it.chain(*pre_result))
-#     result.scale(0.7)
-#     bit_string = (256 - len(bit_string)) * "0" + bit_string
-#     result
-#
-#     for i, (bit, part) in enumerate(zip(bit_string, result)):
-#         if bit == "1":
-#             one = Tex("1")[ 0 ]
-#             one.replace(part, dim_to_match=1)
-#             result.submobjects[ i ] = one
-#
-#     return result
-#
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -109,41 +52,6 @@ class LabeledRectangle(RoundedRectangle):
         rendered_label.next_to(self, direction)
         self.add(rendered_label)
 
-
-def msg_to_mob(msg, width, rows, buff=0.2):
-    if rows % 2 != 0:
-        raise Exception('2의 배수가 아닙니다.')
-
-    msg = sha256_bit_string(msg)
-
-    half_rows = int(rows / 2)
-    i = 0
-    chopped_list = [ msg[ i: i + width ] for i in range(0, len(msg), width) ]
-    starts = chopped_list[ :half_rows - 1 ]
-    ends = chopped_list[ -half_rows - 1: ]
-
-    starts.extend(ends)
-    starts.insert(half_rows, r"\vdots")
-
-    mobs = VGroup()
-    for row in range(rows + 1):
-        mobs.add(MathTex(starts[ row ]))
-        # if row= half_rows:
-        # mobs.add(MathTex(""))
-
-    mobs.arrange_in_grid(6, 1, buff=buff)
-
-    return mobs
-
-
-#
-# def sha256_tex_mob(message, n_forced_start_zeros=30):
-#     true_bit_string = sha256_bit_string(message)
-#     n = n_forced_start_zeros
-#     bit_string = "0" * n + true_bit_string[ n: ]
-#     return bit_string_to_mobject(bit_string)
-#
-
 def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
     box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
     text = Text(text, color=BLACK).scale(height)
@@ -165,15 +73,13 @@ def create_entity(person_name, person_radius, person_color, asset_name, asset_co
 class final(Scene):
     def construct(self):
         pass
-
         # lec1_s1.construct(self)
         # lec1_s2.construct(self)
         # lec1_s3.construct(self)
         # lec1_s4.construct(self)
         # working.construct(self)
 
-
-class working1(Scene):
+class backed_by(Scene):
     def construct(self):
         def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
             person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
@@ -189,38 +95,22 @@ class working1(Scene):
         usdt = create_entity("A", 0.5, WHITE, "USDT", BLUE, 2, 1)[ 1 ].to_edge(UL, buff=1)
         usd = create_entity("A", 0.5, WHITE, "USD", GREEN, 2, 1)[ 1 ].to_edge(DL, buff=1)
         usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
-        us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(D, buff=0.5).to_edge(R,buff=1)
-
-        usd_copy = usd.copy().move_to(ORIGIN).to_edge(U, buff=1)
-
-        usg_copy = usg.copy().move_to(ORIGIN).to_edge(U, buff=0.5).to_edge(R,buff=1)
+        us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(DR, buff=0.5)
 
         backed_by_1 = Tex('Backed by').move_to(np.array([usdt.get_x(),0,0]))
         backed_by_2 = Tex('Backed by')
-        backed_by_3 = Tex('Backed by').move_to(np.array([us_people.get_x(),0,0]))
-
+        backed_by_3 = Tex('Backed by').move_to(np.array([usg.get_x(),0,0]))
 
 
         self.play(Create(usdt))
         self.play(Create(backed_by_1))
         self.play(Create(usd))
-        self.play(TransformFromCopy(usd,usd_copy ))
+        self.play(TransformFromCopy(usd, usd.copy().move_to(ORIGIN).to_edge(U, buff=1)))
         self.play(Create(backed_by_2))
         self.play(Create(usg))
-        self.play(TransformFromCopy(usg, usg_copy))
+        self.play(TransformFromCopy(usg, usg.copy().move_to(ORIGIN).to_edge(UR, buff=0.5)))
         self.play(Create(backed_by_3))
         self.play(Create(us_people))
-
-
-        self.play(FadeOut(VGroup(usd,backed_by_1)))
-        self.play(Uncreate(usdt))
-
-        self.play(FadeOut(VGroup(usg,backed_by_2)))
-        self.play(Uncreate(usd_copy))
-
-        self.play(FadeOut(VGroup(us_people,backed_by_3)))
-        self.play(Uncreate(usg_copy))
-
 
         self.wait(q)
 
@@ -228,42 +118,255 @@ class working1(Scene):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        self.wait(2)
-
-
-class working2(Scene):
+class dex_and_smart_contract(Scene):
     def construct(self):
+        dex_text = MathTex('DEX').scale(2).shift(L * 4)
+        cex_text = MathTex('CEX').scale(2).shift(R * 4)
+        self.play(Create(dex_text), Create(cex_text))
+
+        q_mark = Tex('?').scale(8)
+
+        self.play(ReplacementTransform(VGroup(dex_text, cex_text), q_mark))
+
+        self.play(Uncreate(q_mark))
+        self.wait(q)
+        chain1 = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
+        chain2 = Line(ORIGIN, L * 0.4).move_to(chain1).shift(L * 0.2)
+        chain = VGroup()
+        for i in range(3):
+            chain.add(chain2.copy())
+            chain.add(chain1.copy())
+        chain.add(chain2.copy())
+        chain.arrange(R, buff=-0.12)
+
+        blocks = VGroup(*[ Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE) for i in range(5) ]).arrange(R,
+                                                                                                                          buff=chain.width)
+        scripts = VGroup(*[ Tex(f"{format(i, '04b')}", stroke_color=WHITE).move_to(blocks[ i ]).scale(0.5) for i in range(5) ])
+
+        blockchain = VGroup()
+        for i in range(len(blocks)):
+            blockchain.add(blocks[ i ])
+            blockchain.add(scripts[ i ])
+            blockchain.add(chain.copy().next_to(blocks[ i ], R, buff=0))
+
+        blockchain.to_edge(L)
+
+        self.play(Create(blockchain), run_time=10)
+
+        self.play(Uncreate(blockchain))
+
+        smart_c_text = Tex('Smart Contract').scale(2)
+
+        self.play(Create(smart_c_text))
+        self.play(Uncreate(smart_c_text))
+
+        line1 = Line(LEFT * 3, RIGHT * 3, stroke_width=5)
+        line2 = Line(DOWN * 3, UP * 3, stroke_width=5)
+        dot = Dot(radius=0.3)
+        rev_door = VGroup(dot, line1, line2).rotate(PI / 4)
+
+        wall_line = Rectangle(height=10, width=0.7, stroke_width=25, )
+        wall_sq = Square(7, fill_color=BLUE, fill_opacity=1)
+
+        # self.play(Create(wall_sq))
+        wall = Difference(wall_line, wall_sq, color=DARK_GREY, fill_color=DARK_GREY, fill_opacity=1)
+        sector1 = AnnularSector(outer_radius=3.9, inner_radius=3.2, angle=PI / 2, color=DARK_GREY, fill_color=DARK_GREY,
+                                fill_opacity=1).rotate_about_origin(PI / 4)
+        sector2 = AnnularSector(outer_radius=3.9, inner_radius=3.2, angle=PI / 2, color=DARK_GREY, fill_color=DARK_GREY,
+                                fill_opacity=1).rotate_about_origin(-PI / 4 - PI / 2)
+
+        walls = VGroup(wall, sector1, sector2)
+        self.play(GrowFromCenter(wall),
+                  GrowFromCenter(sector1),
+                  GrowFromCenter(sector2)
+                  )
+        self.play(Create(rev_door))
+        self.play(Rotate(rev_door, angle=10 * PI), run_time=5, rate_func=rate_functions.exponential_decay)
+
+        A = create_entity("A", 0.7, WHITE, "BTC", ORANGE, 0.8, 0.3).scale(1.2).to_edge(L)
+        B = create_entity("B", 0.7, WHITE, "ETH", BLUE, 0.8, 0.3).scale(1.2).to_edge(R)
+
+        A_asset = A[ 1 ]
+        B_asset = B[ 1 ]
+        A_asset_pos = A[ 1 ].get_center()
+        B_asset_pos = B[ 1 ].get_center()
+
+        A_asset_arc = Arc(radius=1.5, angle=-PI).flip(axis=UP)
+        B_asset_arc = Arc(radius=1.5, angle=PI)
+
+        self.play(Create(A),
+                  Create(B))
+
+        condition = Tex(r'A gives BTC to B\\B gives ETH to A').to_edge(UL)
+        self.play(Create(condition))
+
+        self.play(A_asset.animate.move_to(LEFT * 1.5),
+                  B_asset.animate.move_to(RIGHT * 1.5))
+
+        self.play(Rotate(rev_door),
+                  MoveAlongPath(A_asset, A_asset_arc),
+                  MoveAlongPath(B_asset, B_asset_arc))
+
+        self.play(A_asset.animate.move_to(B_asset_pos),
+                  B_asset.animate.move_to(A_asset_pos))
+
+        self.play(Uncreate(condition))
+
+        rev_door_text_1 = Tex(r'Company\\or Third Party Entity').scale(0.7).next_to(dot, R)
+        rev_door_text_2 = Tex(r'Programming Language\\without Emotion').scale(0.7).next_to(dot, R)
+
+        self.play(Create(rev_door_text_1))
+        self.play(Uncreate(rev_door_text_1))
+
+        self.play(Create(rev_door_text_2))
+        self.play(Uncreate(rev_door_text_2))
+
+        self.play(FadeOut(VGroup(walls, A, B, rev_door, rev_door_text_2)))
+        self.wait(q)
+
+class cons_of_smart_c(Scene):
+    def construct(self):
+        dex_text = MathTex('DEX').scale(2).shift(L * 4)
+        cex_text = MathTex('CEX').scale(2).shift(R * 4)
+        self.play(Create(dex_text), Create(cex_text))
+
+        q_mark = Tex('?').scale(8)
+
+        self.play(ReplacementTransform(VGroup(dex_text, cex_text), q_mark))
+
+        self.play(Uncreate(q_mark))
+        self.wait(q)
+        chain1 = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
+        chain2 = Line(ORIGIN, L * 0.4).move_to(chain1).shift(L * 0.2)
+        chain = VGroup()
+        for i in range(3):
+            chain.add(chain2.copy())
+            chain.add(chain1.copy())
+        chain.add(chain2.copy())
+        chain.arrange(R, buff=-0.12).rotate(-PI/2)
+
+        blocks = VGroup(*[ Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE) for i in range(2) ]).arrange(D,
+                                                                                                                          buff=chain.height)
+        scripts = VGroup(*[ Tex(f"{format(i, '04b')}", stroke_color=WHITE).move_to(blocks[ i ]).scale(0.5) for i in range(2) ])
+
+        blockchain = VGroup()
+        for i in range(len(blocks)):
+            blockchain.add(blocks[ i ])
+            blockchain.add(scripts[ i ])
+            blockchain.add(chain.copy().next_to(blocks[ i ], D, buff=0))
+
+        blockchain.to_edge(U)
+
+        self.play(Create(blockchain), run_time=10)
+
+        # self.play(Uncreate(blockchain))
+
+        def create_just_order(place_or_cancel, buy_or_sell, px, qty, asset):
+
+            order_paper = Rectangle(height=1.8, width=1.5)
+            order_text_1 = Tex(f"{place_or_cancel}").scale(0.4)
+            order_text_2 = Tex(rf"{buy_or_sell} ").scale(0.4)
+            order_text_3 = Tex(rf"{qty} {asset}").scale(0.4)
+            order_text_4 = Tex(rf"at {px}\$").scale(0.4)
+            order_text = VGroup(order_text_1, order_text_2, order_text_3, order_text_4).arrange(DOWN, buff=0.1).move_to(
+                order_paper)
+            order_request = VGroup(order_paper, order_text).scale(0.7)
+            return order_request
+
+        # [ 585, 793, 998, 481, 902, 418, 391, 281, 377, 806, 267, 436, 286, 715, 574 ]
+        # [ 958, 548, 834, 667, 96, 464, 555, 890, 740, 404, 853, 329, 415, 579, 281 ]
+        place_cancel_list_1 = [ 'Cancel', 'Place', 'Cancel', 'Cancel', 'Place', 'Cancel', 'Cancel', 'Cancel', 'Place', 'Place', 'Cancel',
+                                'Cancel', 'Cancel',
+                                'Cancel', 'Place' ]
+        place_cancel_list_2 = [ 'Cancel', 'Place', 'Place', 'Cancel', 'Cancel', 'Place', 'Cancel', 'Place', 'Cancel', 'Cancel', 'Cancel',
+                                'Place', 'Place',
+                                'Place', 'Place' ]
+        buy_sell_list_1 = [ 'BUY', 'SELL', 'SELL', 'SELL', 'SELL', 'SELL', 'BUY', 'BUY', 'BUY', 'SELL', 'SELL', 'BUY', 'BUY', 'BUY',
+                            'SELL' ]
+        buy_sell_list_2 = [ 'BUY', 'SELL', 'SELL', 'BUY', 'BUY', 'SELL', 'SELL', 'BUY', 'SELL', 'BUY', 'BUY', 'SELL', 'SELL', 'SELL',
+                            'SELL' ]
+
+        # [ 5559, 489, 6391, 5846, 53, 6524, 261, 4085, 7125, 1469, 992, 6371, 3573, 3977, 2597 ]
+        px_list_1 = [ 1234, 4176, 2147, 1176, 7696, 6887, 7656, 3569, 987, 4132, 2648, 8526, 9250, 6579, 9631 ]
+        px_list_2 = [ 1234, 4176, 2147, 1176, 7696, 6887, 7656, 3569, 987, 4132, 2648, 8526, 9250, 6579, 9631 ]
+        qty_list_1 = [ 5791, 8883, 8891, 5444, 9804, 9794, 8271, 3465, 534, 2722, 7260, 2788, 8760, 6763, 7481 ]
+        qty_list_2 = [ 4246, 4949, 4666, 1270, 8461, 1531, 3198, 8123, 6257, 3186, 883, 3460, 490, 9394, 4736 ]
+        asset_list_1 = [ 'SOL', 'MATIC', 'MATIC', 'MATIC', 'ADA', 'MATIC', 'UNI', 'DOT', 'XLM', 'ADA', 'BTC', 'DOT', 'MATIC', 'TRX', 'ETH' ]
+        asset_list_2 = [ 'DOT', 'MATIC', 'AVAX', 'TRX', 'ADA', 'SOL', 'UNI', 'XLM', 'XLM', 'ADA', 'UNI', 'AVAX', 'XLM', 'ETH', 'DOT' ]
+
+        orders_left = VGroup()
+        orders_left_list = []
+        for i in range(15):
+            element = create_just_order(place_cancel_list_1[i], buy_sell_list_1[i], px_list_1[i], qty_list_1[i], asset_list_1[i])
+            orders_left.add(element)
+            orders_left_list.append(element)
+        orders_right = VGroup()
+        orders_right_list = []
+        for i in range(15):
+            element = create_just_order(place_cancel_list_2[i], buy_sell_list_2[i], px_list_2[i], qty_list_2[i], asset_list_2[i])
+            orders_right.add(element)
+            orders_right_list.append(element)
+
+
+        orders_left.arrange_in_grid(5, 3).to_edge(L)
+        orders_right.arrange_in_grid(5,3, buff=0.4).to_edge(R)
+
+        self.play(FadeIn(orders_right),
+                  FadeIn(orders_left))
+
+        self.play(LaggedStart(*[FadeOut(order, target_position=blocks[1]) for order in orders_left_list+orders_right_list]))
+
+        # self.play(Uncreate(blockchain))
+
+        # chain1 = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
+        # chain2 = Line(ORIGIN, L * 0.4).move_to(chain1).shift(L * 0.2)
+        # chain = VGroup()
+        # for i in range(3):
+        #     chain.add(chain2.copy())
+        #     chain.add(chain1.copy())
+        # chain.add(chain2.copy())
+        # chain.arrange(R, buff=-0.12)
+        #
+        # blocks = VGroup(*[ Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE) for i in range(3) ]).arrange(R,
+        #                                                                                                                   buff=chain.width)
+        # scripts = VGroup(*[ Tex(f"{format(i, '04b')}", stroke_color=WHITE).move_to(blocks[ i ]).scale(0.5) for i in range(3) ])
+        #
+        # blockchain = VGroup()
+        # for i in range(len(blocks)):
+        #     blockchain.add(blocks[ i ])
+        #     blockchain.add(scripts[ i ])
+        #     blockchain.add(chain.copy().next_to(blocks[ i ], R, buff=0))
+        #
+        # blockchain.to_edge(L)
+        #
+        # self.play(Create(blockchain), run_time=10)
+
+        fees = Tex('Lots of Fees').shift(L*4.5)
+        fees_arrow = MathTex(r'\Uparrow').scale(2).next_to(fees, U,buff=0.5)
+        speed = Tex('Slow Speed').shift(R*4.5)
+        speed_arrow = MathTex(r'\Downarrow').scale(2).next_to(speed, D,buff=0.5)
+
+        self.play(Create(fees))
+
+        self.play(fees.animate.scale(2),
+                  Create(fees_arrow))
+
+        self.play(Create(speed))
+
+        self.play(speed.animate.scale(2),
+                  Create(speed_arrow))
+
+
+class amm_xyk(Scene):
+    def construct(self):
+
+        amm_text = Tex('Automatic Market Maker').scale(2)
+
+
         #
         # 유동성 풀과 엑스와이는 케이 공식 텍스트로 보여주고
-        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2)
+        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2).next_to(amm_text, D)
+        self.play(Create(amm_text))
         self.play(Write(xyk))
 
         #
@@ -941,16 +1044,14 @@ class working2(Scene):
 
         # 가격 상승#####################################################################################
 
-        # self.play(Create())
         self.play(
             btc_tracker.animate.set_value(7),
             usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
             run_time=1, rate_func=rate_functions.ease_in_out_quint)
 
-        mathtex_1 = MathTex('')
-        px_up = MathTex('Price goes up')
-        self.play(Write(px_up))
-        self.play(Unwrite(px_up))
+        # px_up = Tex('Price goes up')
+        # self.play(Write(px_up))
+        # self.play(Unwrite(px_up))
 
         # 가격이 올라간다는 건 btc가 usdt보다 상대적으로 인기가 많아진다는 것입니다.
 
@@ -960,7 +1061,7 @@ class working2(Scene):
         self.add(k_org_px_up_dot)
 
         # 가격 하락#####################################################################################
-        # \$#            ####;:$@&^~_~
+
         self.play(
             btc_tracker.animate.set_value(13),
             usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
@@ -1340,7 +1441,6 @@ class working2(Scene):
         self.wait(2)
 
         # 라인 생성#####################################################################################
-        # \$qw%7/-/\%%%%%\;;;;;;:::::::::::
 
         def making_a_line_3points(p1, p2, p3, color):
             l1 = Line(p1.get_center(), p2.get_center(), color=color)
@@ -1365,3 +1465,4 @@ class working2(Scene):
         self.play(Create(px_dn_k_line))
 
         self.wait(2)
+
