@@ -13,70 +13,16 @@ import binascii
 from colour import Color
 
 
-# utils.tex.TexTemplate(tex_compiler="latex")
-
-
-def sha256_bit_string(message):
-    hexdigest = sha256(message.encode('utf-8')).hexdigest()
-    return bin(int(hexdigest, 16))[ 2: ]
 
 
 q = 0.3
 qq = 2 * q
 qqq = 3 * q
 
-
-def reverse(t: float) -> float:
-    return -t + 1
-
-
 L = LEFT
 R = RIGHT
 U = UP
 D = DOWN
-
-
-# class SimpleLine(Line):
-
-
-def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
-    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
-    text = Text(text, color=BLACK).scale(height)
-
-    return VGroup(box, text)
-
-
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
-    person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
-
-    box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = Text(asset_name, color=BLACK).scale(asset_height)
-
-    asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
-
-    return VGroup(person, asset)
-
-
-#
-# def bit_string_to_mobject(bit_string):
-#     line = Tex("0" * 32)
-#     pre_result = VGroup(*[
-#         line.copy() for row in range(8)
-#     ])
-#     pre_result.arrange(DOWN, buff=SMALL_BUFF)
-#     result = VGroup(*it.chain(*pre_result))
-#     result.scale(0.7)
-#     bit_string = (256 - len(bit_string)) * "0" + bit_string
-#     result
-#
-#     for i, (bit, part) in enumerate(zip(bit_string, result)):
-#         if bit == "1":
-#             one = Tex("1")[ 0 ]
-#             one.replace(part, dim_to_match=1)
-#             result.submobjects[ i ] = one
-#
-#     return result
-#
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -109,47 +55,11 @@ class LabeledRectangle(RoundedRectangle):
         rendered_label.next_to(self, direction)
         self.add(rendered_label)
 
-
-def msg_to_mob(msg, width, rows, buff=0.2):
-    if rows % 2 != 0:
-        raise Exception('2의 배수가 아닙니다.')
-
-    msg = sha256_bit_string(msg)
-
-    half_rows = int(rows / 2)
-    i = 0
-    chopped_list = [ msg[ i: i + width ] for i in range(0, len(msg), width) ]
-    starts = chopped_list[ :half_rows - 1 ]
-    ends = chopped_list[ -half_rows - 1: ]
-
-    starts.extend(ends)
-    starts.insert(half_rows, r"\vdots")
-
-    mobs = VGroup()
-    for row in range(rows + 1):
-        mobs.add(MathTex(starts[ row ]))
-        # if row= half_rows:
-        # mobs.add(MathTex(""))
-
-    mobs.arrange_in_grid(6, 1, buff=buff)
-
-    return mobs
-
-
-#
-# def sha256_tex_mob(message, n_forced_start_zeros=30):
-#     true_bit_string = sha256_bit_string(message)
-#     n = n_forced_start_zeros
-#     bit_string = "0" * n + true_bit_string[ n: ]
-#     return bit_string_to_mobject(bit_string)
-#
-
 def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
     box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
     text = Text(text, color=BLACK).scale(height)
 
     return VGroup(box, text)
-
 
 def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
@@ -160,7 +70,6 @@ def create_entity(person_name, person_radius, person_color, asset_name, asset_co
     asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
 
     return VGroup(person, asset)
-
 
 class final(Scene):
     def construct(self):
@@ -173,1195 +82,238 @@ class final(Scene):
         # working.construct(self)
 
 
+
 class working1(Scene):
     def construct(self):
-        def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
-            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+        swap_text = Tex('Swap').scale(2)
+        # 그렇다면 덱스가 존재하는 이유는 무엇일까요
+        tex_1 = Tex('Why dex?').scale(2)
 
-            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-            text = Text(asset_name, color=BLACK).scale(0.8*asset_height)
-
-            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
-
-            return VGroup(person, asset)
-
-
-        usdt = create_entity("A", 0.5, WHITE, "USDT", BLUE, 2, 1)[ 1 ].to_edge(UL, buff=1)
-        usd = create_entity("A", 0.5, WHITE, "USD", GREEN, 2, 1)[ 1 ].to_edge(DL, buff=1)
-        usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
-        us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(D, buff=0.5).to_edge(R,buff=1)
-
-        usd_copy = usd.copy().move_to(ORIGIN).to_edge(U, buff=1)
-
-        usg_copy = usg.copy().move_to(ORIGIN).to_edge(U, buff=0.5).to_edge(R,buff=1)
-
-        backed_by_1 = Tex('Backed by').move_to(np.array([usdt.get_x(),0,0]))
-        backed_by_2 = Tex('Backed by')
-        backed_by_3 = Tex('Backed by').move_to(np.array([us_people.get_x(),0,0]))
+        #####     그렇다면 덱스가 존재하는 이유는 무엇일까요
+        # 중앙화 노드 왼쪽 탈중앙화 노드 오른쪽
 
 
 
-        self.play(Create(usdt))
-        self.play(Create(backed_by_1))
-        self.play(Create(usd))
-        self.play(TransformFromCopy(usd,usd_copy ))
-        self.play(Create(backed_by_2))
-        self.play(Create(usg))
-        self.play(TransformFromCopy(usg, usg_copy))
-        self.play(Create(backed_by_3))
-        self.play(Create(us_people))
+        #####     일단 중앙화 주체 없이 운영되는 거래소이기 때문에 오는 장점이 잇습니다
+        # 중앙화 노드로 공격 애니메이션
+        # 중앙 노드가 없어지면서 라인도 네트워크 라인도 같이 제거
 
 
-        self.play(FadeOut(VGroup(usd,backed_by_1)))
-        self.play(Uncreate(usdt))
+        #####  덱스는 중앙화 서버가 없고 블록체인에 의존하기 때문에 서버가 죽는 위험에 노출되지 않습니다
+        # 탈중앙화는 살아있음
 
-        self.play(FadeOut(VGroup(usg,backed_by_2)))
-        self.play(Uncreate(usd_copy))
-
-        self.play(FadeOut(VGroup(us_people,backed_by_3)))
-        self.play(Uncreate(usg_copy))
+        ##### 그러나 블록체인 네트워크도 트래픽이 많으면 느려지고 심지어 최근 솔라나나 클레이튼 대형체인도
+        # 블록생성하다가 속도 존나 줄이기
+        # 블록생성하다가 멈추고 뒤에 빨ㄹ간스톱사인
 
 
-        self.wait(q)
+        ##### 정지하는 일도 심심치 않게 발생합니다. 그래서 무작정 중앙서버보다 좋다고만은 할 수도 없습니다
 
 
+        ##### 또 정부의 검열으로부터 자유로울 수 있고 프라이버시를 보호할 수 있습니다
+        # 덱스중앙에 텍스트
+        # 눈 아이콘생성
+        # 방어막
+
+        ##### 모든 기록이 블록체인에 남지만 그 주소가 누군지 매칭이 안 되기 때문에 익명성이 보장됩니다
+        # 블록하나 왼쪽상단 옆에는 프럼 주소 아래 화살표와 내용 그리고 투 주소
+        # 그리고 물음표 아이콘
+
+        ##### 그리고 거래소의 심사 없이 코인을 자유롭게 상장할 수 있ㅅ브니다
+        ##### 크립토 프로젝트들은 거래소에서 심사를 거쳐 상장이 되야하는데 이 기준이 엄격하다보닏
+        ##### 거래소에는 한정된 코인들만 있ㅅ브니다.
+        ##### 그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다
+
+        # 중앙화 거래소 오른쪽에 생성 그리고 중앙에 Eval and audit 으로 필터 막대 설정
+        # 잡코인들 존나 부닥치고 튕겨나감
+        # 덱스똑같이 생성시키고 유동성제공자 만든 다음에 지폐 두장 보내면 덱스에서 페어 아이콘으로 형성
+        # 할 때 코인 이름 구린걸로
+
+        ##### 그러면 도대체 누구 좋으라고 유동성을 공급해줄까요?
+        # 포 왓 띄워줌
+        # 자선사업가임
+
+        ##### 덱스가 존재하는 이유 중 하나는 수익원 제공입니다
+        # 돈아이콘 띄움
+
+        ##### 덱스로 수익을 낼수 있는 루트 중 하나는 유동성 풀 제공입니다
+        # 유동성 풀에서 돈이 나오는 애니메이션
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        ##### 아까 말했듯이 비트코인과 테더를 묶어 유동성 풀에 넣게 되면 공급자의 지갑에서 비트와 테더는 없어지고 엘피토큰이 남습니다.
+        ##### 이 엘피 토큰은 전체 풀 사이즈에서 내가 차지하는 비중이 얼마인지를 나타냅니다
+        # 유동성 제공자가 유동성 제공하고
+        스왑이 일어나는데 스왑하려고 보낼 때
 
 
 
-        self.wait(2)
+        ##### 최초로 누군가 비트테더 풀을 만들고 엘피토큰을 10개 받았습니다
+        ##### 그리고 거래가 발생할 때마다 보통 0.3퍼센트의 수수료를 내는데 이 수수료는 lP풀에 쌓이게 됩니다
+        ##### 그 뒤로 누군가 유동성을 추가하면 그 전체 유동성 풀의 가치에
+        ##### 그리고 엘피토큰을 부수고 다시 엘피를 이루는 비트와 테더로 받을 때
+        ##### 전체 유동성 풀에서 차지하는 비중 만큼 코인을 빼오지만 풀 자체가 수수료로 점점 커졌기 때문에
+        ##### 수익이 발생합니다.
+        #####
+        ##### 유동성 풀 말고도 덱스는 다양한 금융상품등을 제공합니다
+        ##### 이에 대해서는 나중에 더 자세하게 알아봅니다
 
 
 class working2(Scene):
     def construct(self):
-        #
-        # 유동성 풀과 엑스와이는 케이 공식 텍스트로 보여주고
-        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2)
-        self.play(Write(xyk))
+        circle = Circle(radius=20, fill_color=ORANGE, fill_opacity=1)
+        # self.add(circle)
+        self.play(Create(circle))
+        self.wait(15)
+
+
+
+##### 그리하여 오늘은 에이엠엠ㅇ과 엑스와잉는 케이 공식에 대해 알아보겠습니다
+#####
+##### 원래 덱스는 이더리움 생태계에서 나왔고 비트코인이 wbtc같이 이더리움 체인에서
+##### 사용된 건 시간이 걸렸지만 이해를 위해 그냥 비티씨를 사용하겠스빈다
+##### 최초의 뎩스가 탄생하고 사람들은 비트코인과 usdt의 거래쌍을 만들고 싶었습니다.
+##### 그래서 중앙화 거래소에서 비트코인 가격이 300달러인 걸 보고
+##### 비트코인 10개와 3000달러를 함께 유동성 풀이라는 것에 넣었습니다
+##### 이것은 일종의 스마트 컨트랙트로 자신의 자산으로 유동성을 제공하곘다는 것입니다.
+##### 이제 이 유동성 제공자로 인하여 덱스참여자는 비트코인과 테더 거래쌍을 이용할 수 있습니다
+#####
+#####
+#####
+#####
+##### 말만 들으면 뭔지 이해가 안 될테니 이제 자세히 알아보겠습니다
+#####
+##### 일단 우리가 알고있는 오더북이 없이 어떻게 거래를 하는가가 궁금하실 겁니다
+##### 오더북에서는 그저 사람들이 거래하는 것을 바탕으로 알아서 각겨이 정해집니다
+##### 덱스에서는 오더북대신 오토매틱마켓메이커를 사용하고
+##### 그냥 프로그램 혹은 가격을 정하는 방식같은 추상적 개념이라고 생각하시면 됩니다
+##### 오토매틱마켓메이커는 줄여서 amm이라고 부르고
+##### 오토매틱마켓메이커를 돌리는데는 일반적으로 유동성 풀이 필요합니다
+##### 이 유동성 풀은 우리가 중앙화 거래소에서 봤던 거래쌍이라고 생각하시면 됩니ㅏㄷ
+##### 우리가 비티씨나 테더를 들고 중앙화 거래소에서 비티씨테더 거래쌍 창으로 가듯이
+##### 덱스에서는 유동성 풀에 접근해서 거래를 하게됩니다
+##### 그렇다면 비티씨테더 풀이라는 것은 이더리움 같은게 아니라 비티씨와 테더를 가지고 있어야할 것입니다
+##### 중앙화 거래소 비티씨테더 페어에서 사람들이 이더리움을 들고 모인게 아니라
+##### 비티씨와 테더를 들고 모인것 처럼 말입니다
+##### 당연한 얘기지만 비티씨 테더 페어에 만약 비티씨만 존재한다면 아무것도 일어나지 않을 것입니다
+##### 왜냐하면 비티씨 테더 페어라는 것은 두가지의 교환이 일어나는 공간이라는 것인데
+##### 둘 중 하나만 있으면 교환이 성립하지 않으니까요
+#####
+##### 그래서 우리는 풀에 사람들이 거래할 수 있도록 유동성을 공급하고
+##### 유동성을 공급한다는 것은 비티씨와 테더를 같이 넣어준다는 것입니다
+##### 반드시 같이 넣어야하는 이유는 곧 알게됩니다
+#####
+##### 풀이 운영되는 기본 원칙은 언제나 같은 가치의 자산이 들어있게 한다는 것입니다
+##### 그래서 이걸 기반으로 오토매틱 마켔메이커는 가격을 산정합니다
+##### 현재 초기 공급자만 비티씨와 테더를 넣었고
+##### 10비티씨와 3000테더라고 하겠습니다
+##### 10비트와 3000테더가 같은 가치기 때문에
+##### 비티씨는 1개에 300테더입니다
+##### 이제 사람들은 풀에 자신이 테더를 넣고 그에 상응하는 비트코인을 빼가든지
+##### 가진 비트코인을 넣고 그에 상응하는 테더를 빼가든지 할 수 있습니다
+##### 각각 비트코인 매도와 매수에 대응하는 행위입니다
+#####
+##### 덱스의 있는 참여자는 크게 두 종류입니다
+##### 유동성 제공자와 거래자입니다
+##### 유동성 제공자는 아까처럼 말한 것처럼 비티씨와 테더를 같이 넣어주거나 빼면서
+##### 유동성을 조절합니다. 즉 풀 사이즈를 키우거나 줄입니다. 이것은 나중에 보겠지만
+##### 케이값을 움직이는 것입니다. 곧 보게 될테니 걱정 안 하셔도 됩니다
+##### 그리고 거래자는 그 풀에서 자신이 원하는대로 코인을 사고 팔며 거래합니다
+##### 이것은 그래프위의 점을 이동시키는 행위입니다.
+##### 이것또한 곳 보게 될테니 걱정 안 하셔도 됩니다
+##### 유동성제공자는 케이값을 움직이고 거래자는 점을 이동시킨다라고만 기억해두십시오
+#####
+##### 그리고 유동성 제공자는 거래자들이 내는 수수료를 받으면서 수익을 냅니다
+##### 거래자들은 코인을 사고 팔며 가격차익을 얻습니다
+#####
+##### 이것은 모두 미리 작성된 프로그래밍 언어의 스크립트를 실행하는 것으로 이루어집니다
+##### 스마트 컨트랙트 덕분에 우리는 중앙화 거래서와 같은 제3자를 거치지 않을 수 있게 됐습니다
+#####
+#####
+#####
+##### 간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데
+##### 이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다
+#####
+#####
+##### 조금 더 자셰히 알아봅시다
+#####
+##### 엑스와이는 케이에서 엑스를 이항시키면
+##### 와이는 엑스부느이 케이 형태입니다
+##### 여러분 모두 중학교 때 함수를 배웠을 것이고
+##### 기본적인  와이는 2엑스도 배웠고 와이는 엑스분의 1을 빼운기억이 날겁니다
+##### 그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다
+##### 그리고 이 반비레함수는 케이값에 따라서
+##### 보이는 것과 같이 원점에서 점점 멀어지는 함수입니다
+##### 일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다
+##### 도대체 어떻게 가격을 결정하는지 알아보겠습니다
+#####
+##### 여기서 엑스는 a코인의 양 와이는 비코인의 양입니다
+##### 페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나
+##### 앞으로 이해하기 쉽게 풀내부의 베이스에셋의 양이 풀내부의 엑스 쿼트에셋의 양이 와이라고
+##### 우리가 살펴볼 비티씨테더 페어에서는
+##### 엑스는 풀내부 비티씨의 양
+##### 왕이는 풀내부 테더의 양입니다
+#####
+##### 복잡하게 생각할 건 없고 와이는 엑스분의케이 그래프에서 케이는 그냥 어떤 값입니다.
+##### 그런데 아까 우리는 케이가 엑스 곱하기 와이인 걸 봤습니다.
+#####
+##### 자 그렇다면 현재 비티씨테더 풀의 공식은
+##### 와이는 엑스분의 30000입니다
+#####
+##### 아까 말한 것처럼 가격은 풀에 각 코인이 얼마나 있는지로 결정되기 때문에
+##### 풀의 상태로 우리는 가격을 계산할 수 있습니다
+##### 엑스와이는 케이가 풀을 나타내는 방정식이고
+##### 풀의 상태는 아까 본 와이는 엑스분의 케이라는 함수의 그래프 위의
+##### 한 점으로 나타낼 수 있습니다. 여기에는 가격정보도 들어있는 것입니다.
+#####
+##### 그리고 누군가 풀을 대상으로 비티씨를 매수하거나 매도한다는 것은
+##### 풀의 상태를 변화 시키는 것이기에 현재 있는 지점에서 그래프 상의 다른 지점으로 이동한다는 것입니다
+#####
+##### 그리고 유동성을 공급하거나 제거한다는 것은 케이값을 움직이는 것입니다.
+##### 엑스와 와이가 둘다 줄면 당연히 케이값도 줄것이고
+##### 유동성을 공급하는 것은 엑스와 와이가 둘다 늘면
+#####
+#####
+##### 이걸 원점으로 생각하고 상황에따라 어떻게 변하는지 보겠습니다.
+#####
+##### .
+#####
+#####
+#####
+#####
+#####
+##### 우린 엑스와이케이를 컨스턴트 프로덕트 즉 곱의 값이 일정한 모델이라 부릅니다
+##### 곱의 값이 일정하려면 하나가 늘면 하나가 줄어야합니다.
+##### 풀에 비티씨가 들어오면 즉 비티씨를 매도하는 사람이 있으면 테더가 빠져나가는 것입니다
+##### 비티씨를 매도한다는 것은 풀에 비티씨를 넣고 테더를 빼간다는 것이고
+##### 이 때 변화가 일어난 후에도 엑스와이는 케이에 따르면 케이값은 일정해야 한다는 것이 주요 아이디어입니다
+#####
+#####
+#####
+##### 순서를 곰곰히 따져봅시다
+##### 현재 이벤트가 발생하는 순서는
+##### 1 거래자가 자신이 비티씨를 매도하고 싶어서 풀에 5비티씨를 넣었다
+##### 2 풀에서는 스마트 컨트랙트대로 그에 상응하는 테더를 꺼내준다
+##### 변화의 시작이 어디였을까요?바로 비티씨의 추가입니다
+##### 그러면 1번 이벤트까지만 진행됐을 때 우리는 엑스값을 변화시켜줍니다
+##### 케이값은 30000이었고 엑스와이는 케이에서 이제 새로운 엑스값
+##### 3개가 추가됐으니 15을 알고 케이값을 압니다 그러면 나머지 y를 계산할 수 있게 됩니다.
+##### 이 와이값은 케이가 30000이고 x, 즉 풀내부의 비티씨가 15개일 때 존재햬야만 하는 테더의 양입니다
+##### 계산해보면 2000테더이고 2000테더가 존재해야만 하니까 매도자는 현재 3000테더에서 2000을 뺀
+##### 1000테더를 가져갈 수 있는 것입니다
+##### 이제 2번 이벤트에 필요한 정보를 알고있으니 2번 이벤트가 발생하고 거래가 완료됩니다
+#####
+#####
+##### 순서를 곰곰히 따져봅시다
+##### 현재 이벤트가 발생하는 순서는
+##### 1 거래자가 자신이 비티씨를 매도하고 싶어서 풀에 5비티씨를 넣었다
+##### 2 풀에서는 스마트 컨트랙트대로 그에 상응하는 테더를 꺼내준다
+##### 변화의 시작이 어디였을까요?바로 비티씨의 추가입니다
+##### 그러면 1번 이벤트까지만 진행됐을 때 우리는 엑스값을 변화시켜줍니다
+##### 케이값은 30000이었고 엑스와이는 케이에서 이제 새로운 엑스값
+##### 3개가 추가됐으니 15을 알고 케이값을 압니다 그러면 나머지 y를 계산할 수 있게 됩니다.
+##### 이 와이값은 케이가 30000이고 x, 즉 풀내부의 비티씨가 15개일 때 존재햬야만 하는 테더의 양입니다
+##### 계산해보면 2000테더이고 2000테더가 존재해야만 하니까 매도자는 현재 3000테더에서 2000을 뺀
+##### 1000테더를 가져갈 수 있는 것입니다
+##### 이제 2번 이벤트에 필요한 정보를 알고있으니 2번 이벤트가 발생하고 거래가 완료됩니다
 
-        #
-        # 엑스는 거래쌍 중에 코인 A의 양 와이는 코인 비의 양 화살표로 보여주고 없애기
-        A_coin_amt = Tex('A coin amount').shift(LEFT * 2 + DOWN * 2)
-        B_coin_amt = Tex('B coin amount').shift(RIGHT * 2 + DOWN * 2)
-        x_arrow = Arrow(end=A_coin_amt.get_top(), start=xyk[ 0 ].get_bottom())
-        y_arrow = Arrow(end=B_coin_amt.get_top(), start=xyk[ 2 ].get_bottom())
 
-        self.play(Create(x_arrow),
-                  Create(y_arrow)
-                  )
-
-        self.play(Create(A_coin_amt),
-                  Create(B_coin_amt))
-        self.play(Uncreate(A_coin_amt),
-                  Uncreate(B_coin_amt),
-                  Uncreate(x_arrow),
-                  Uncreate(y_arrow)
-                  )
-
-        #
-        # 와이는 엑스부느이 케이로 변형
-        xyk_fraction = MathTex('y', '=', r'\frac{k}{x}').scale(2)
-
-        self.play(TransformMatchingShapes(xyk, xyk_fraction))
-        self.play(xyk_fraction.animate.to_edge(UP).scale(0.6))
-
-        self.wait(1)
-        #
-
-        # 풀도 만들기
-
-        xyk_and_liq = VGroup(xyk_fraction)
-
-        self.play(xyk_and_liq.animate.to_edge(LEFT).shift(RIGHT))
-        #
-        # 엑스는 와이분의 일 그래프 예시로 보여주기
-        graph_range = 50
-
-        ax = Axes(x_range=[ 0, graph_range, int(graph_range / 10) ],
-                  y_range=[ 0, graph_range, int(graph_range / 10) ],
-                  x_length=6,
-                  y_length=6,
-
-                  tips=True,
-                  axis_config={"include_numbers": True, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
-                  )
-
-        self.play(Create(ax))
-
-        k_var = Variable(1, MathTex("k"), var_type=Integer)
-        k_tracker = k_var.tracker
-        k_tracker.set_value(1)
-        # var = 10.5
-        self.wait()
-
-        xyk_graph = ax.plot(lambda x: k_tracker.get_value() / x,
-                            x_range=[ 0.00001, 20 ],
-                            use_smoothing=False, color=BLUE)
-
-        xyk_graph.add_updater(lambda graph: graph.become(
-            ax.plot(lambda x: k_tracker.get_value() / x,
-                    x_range=[ k_tracker.get_value() / graph_range, graph_range ],
-                    use_smoothing=False, color=BLUE)))
-
-        self.play(Create(xyk_graph))
-        k_var.next_to(ax, UR)
-        self.play(Create(k_var))
-
-        self.play(k_tracker.animate.set_value(300), run_time=4)
-
-        xyk_fraction.save_state()
-
-        self.play(Uncreate(ax),
-                  Uncreate(xyk_graph),
-                  Uncreate(xyk_fraction),
-                  Uncreate(k_var))
-
-        liq_pool_rect = RoundedRectangle(height=6.3, width=4, corner_radius=0.5)
-        liq_pool_text = Tex('Liquidity Pool').next_to(liq_pool_rect, UP)
-
-        liq_pool = VGroup(liq_pool_rect, liq_pool_text).to_edge(UL)
-
-        liq_pool.set_z_index(3)
-
-        # self.add(index_labels(liq_pool[ 0 ]))
-        self.play(Create(liq_pool))
-
-        liq_provider = create_entity(Tex(r' \emph{Liq\\provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4, 0.3).next_to(
-            liq_pool_rect, RIGHT, buff=1.5)
-        btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", BLUE, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
-
-        liq_provider_asset = VGroup(btc_asset, usdt_asset)
-
-        liq_provider.add(usdt_asset)
-        self.play(Create(liq_provider))
-
-        # self.play(liq_provider_asset.animate.arrange(RIGHT,buff=0.5))
-
-        graph_range = 50
-        ax = Axes(x_range=[ 0, 18, 4 ],
-                  y_range=[ 0, 6500, 1000 ],
-                  x_length=5,
-                  y_length=5,
-
-                  tips=True,
-                  axis_config={"include_numbers": False, 'include_ticks': False, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
-                  y_axis_config={"include_numbers": False, 'font_size': 20}
-                  ).to_edge(DR, buff=0.8)
-
-        y_axis_label = ax.get_y_axis_label(MathTex('Amount of USDT in Pool').rotate(PI / 2).scale(0.4), edge=LEFT, direction=LEFT, buff=0.5)
-        # self.add(y_axis_label)
-
-        x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool').scale(0.4), edge=DOWN, direction=DOWN, buff=0.5)
-        # self.add(x_axis_label)
-
-        axis_labels = VGroup(x_axis_label, y_axis_label)
-
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
-
-        bars = VGroup(btc_bar, usdt_bar)
-        bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
-
-        usdt_bar_pos = usdt_bar.get_bottom()
-        btc_bar_pos = btc_bar.get_bottom()
-
-        k_tracker.set_value(30000)
-
-        btc_var = Variable(10, MathTex("BTC"), var_type=Integer)
-        btc_tracker = btc_var.tracker
-
-        usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
-        usdt_tracker = usdt_var.tracker
-
-        usdt_var[ 0 ][ 0 ].set_color(BLUE)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
-
-        # usdt_var_bar=usdt_var[ 1 ].copy()
-        # btc_var_bar=usdt_var[ 1 ].copy()
-        # usdt_var_bar.set_color(BLACK)
-        # btc_var_bar.set_color(BLACK)
-
-        vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT)
-
-        vars.next_to(liq_pool_rect, DOWN, buff=0.25)
-
-        self.play(ReplacementTransform(usdt_asset, usdt_bar),
-                  ReplacementTransform(btc_asset, btc_bar))
-
-        # self.play(Write(usdt_var_bar),
-        #           Write(btc_var_bar))
-        #
-        self.play(Write(usdt_var),
-                  Write(btc_var))
-
-        usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-                usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-                btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-
-        # usdt_bar.add_updater(lambda usdt_bar : usdt_bar.become(Rectangle(height=usdt_tracker.get_value()/10, width=1.2, color=BLUE).align_to(usdt_bar_pos, DOWN)))
-
-        # self.play(usdt_tracker.animate.set_value(4000))
-        # self.play(btc_tracker.animate.set_value(30))
-
-        # self.play(k_var.animate.set_value(30000))
-        k_var = Variable(30000, MathTex("k"), var_type=Integer).to_edge(UR, buff=0.5)
-        k_tracker = k_var.tracker
-
-        # self.add(index_labels(btc_var))
-        pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
-            liq_pool_rect, RIGHT, buff=1.5).to_edge(UP)
-        pool_price_tracker = pool_price.tracker
-        pool_price.add_updater(lambda v: pool_price_tracker.set_value(usdt_tracker.get_value() / btc_tracker.get_value()))
-
-        xyk_fraction.restore()
-        self.play(Write(k_var[ 0 ]))
-        self.play(Create(ax),
-                  Create(axis_labels),
-                  Create(pool_price),
-                  TransformMatchingShapes(Group(btc_var[ 1 ].copy(), usdt_var[ 1 ].copy()), k_var[ 1 ].copy()),
-                  Create(xyk_fraction.next_to(k_var, LEFT, buff=1))
-                  )
-        self.play(FadeOut(liq_provider))
-        xyk_graph_btc = ax.plot(lambda x: k_tracker.get_value() / x,
-                                x_range=[ 0.00001, 6000 ],
-                                use_smoothing=False, color=PURPLE)
-
-        xyk_graph_btc.add_updater(lambda graph: graph.become(
-            ax.plot(lambda x: k_tracker.get_value() / x,
-                    x_range=[ k_tracker.get_value() / 6000, 20 ],
-                    use_smoothing=False, color=GREY)))
-
-        curr_dot = Dot(radius=0.1, color=GREY).move_to(ax.c2p(btc_tracker.get_value(),
-                                                              xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-        curr_dot.set_z_index(2)
-
-        curr_dot.add_updater(lambda dot: dot.move_to(ax.c2p(btc_tracker.get_value(),
-                                                            xyk_graph_btc.underlying_function(btc_tracker.get_value()))))
-
-        lines_to_point = ax.get_lines_to_point(ax.c2p(1, 1), color=GREEN_B)
-
-        vertical_line = ax.get_vertical_line(ax.c2p(btc_tracker.get_value(),
-                                                    xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-        horizontal_line = ax.get_horizontal_line(ax.c2p(btc_tracker.get_value(),
-                                                        xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-
-        new_horzontal_line = VGroup()
-        for i in range(1, len(horizontal_line) + 1):
-            new_horzontal_line.add(horizontal_line[ -i ])
-
-        horizontal_line = new_horzontal_line
-
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
-        x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
-        x_marker_val = Integer(btc_tracker.get_value())
-        x_marker_val.add_updater(
-            lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
-
-        y_marker = Triangle(color=BLUE, fill_color=BLUE, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
-        y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
-        y_marker_val = Integer(usdt_tracker.get_value())
-        y_marker_val.add_updater(lambda integer: integer.become(
-            Integer(usdt_tracker.get_value()).scale(0.4).rotate(PI / 2).next_to(horizontal_line, LEFT, buff=0.3)))
-
-        lines = VGroup(vertical_line, horizontal_line)
-        markers = VGroup(x_marker, x_marker_val, y_marker, y_marker_val)
-
-        # lines_to_point.add_updater(lambda lines: lines.become(ax.get_lines_to_point(
-        #     ax.c2p(btc_tracker.get_value(),
-        #            xyk_graph_btc.underlying_function(btc_tracker.get_value())),color=BLUE)))
-        #
-        self.play(Create(xyk_graph_btc))
-        self.play(Create(curr_dot))
-
-        self.play(Create(lines), run_time=2)
-        self.play(Create(markers), run_time=2)
-
-        vertical_line.add_updater(lambda line: line.become(ax.get_vertical_line(ax.c2p(btc_tracker.get_value(),
-                                                                                       xyk_graph_btc.underlying_function(
-                                                                                           btc_tracker.get_value())))))
-        horizontal_line.add_updater(lambda line: line.become(ax.get_horizontal_line(ax.c2p(btc_tracker.get_value(),
-                                                                                           xyk_graph_btc.underlying_function(
-                                                                                               btc_tracker.get_value())))))
-
-        # 사각형을 만들고 그 넓이와 길이는 점선 그리고 정렬을 원점에 nexxt to DR buff 0
-        area = Rectangle(width=curr_dot.get_x() - ax.get_origin()[ 0 ], height=curr_dot.get_y() - ax.get_origin()[ 1 ], fill_color=GREEN,
-                         fill_opacity=0.5, stroke_width=0).align_to(curr_dot.get_center(), UR)
-        area.add_updater(lambda area: area.become(
-            Rectangle(width=curr_dot.get_x() - ax.get_origin()[ 0 ], height=curr_dot.get_y() - ax.get_origin()[ 1 ], fill_color=GREEN,
-                      fill_opacity=0.5, stroke_width=0).align_to(curr_dot.get_center(), UR)))
-
-        area_text = MathTex(r'BTC \times  USDT').scale(0.5).arrange(DOWN, buff=0.1)
-        area_text.add_updater(
-            lambda text: text.become(MathTex(r'BTC \times USDT', 'in \  Pool').scale(0.4).arrange(DOWN, buff=0.1).move_to(area)))
-
-        # area.add_updater(lambda)
-        # print(ax.get_origin()-curr_dot.get_x())
-        # print(ax.get_origin().get-curr_dot.get_y())
-
-        self.play(Create(area))
-        self.play(Create(area_text))
-
-        # self.play(btc_tracker.animate.set_value(13),
-        #           usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)))
-        #
-        # self.wait(1)
-        #
-        # self.play(btc_tracker.animate.set_value(7),
-        #           usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)))
-        #
-        # self.play(FadeOut(liq_provider[ 0 ]))
-
-        ####scnee 1 user will get btc from the pool in exchange of usdt
-
-        ########################################################################################올라갔을 때
-        ######################################Scen1#############################올라갔을 때
-        ########################################################################################올라갔을 때
-
-        # user = create_entity(Tex(r' \emph{User}', color=BLACK).scale(0.5), 0.5, WHITE, "1286 USDT", BLUE,1.4, 0.3).next_to(liq_pool_rect, RIGHT,
-        #                                                                                                                buff=2)
-        # user_asset_usdt = user[ 1 ]
-        # user_asset_pos = user_asset_usdt.get_center()
-        # user_asset_btc = create_entity("A", 0.5, WHITE, "3 BTC", ORANGE, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
-        #
-        # user_line = Tex(r'I want 3 BTC\\I have some USDT').scale(0.5).next_to(user, DOWN)
-        #
-        # self.play(Create(user))
-        # self.play(Create(user_line))
-        # self.play(Uncreate(user_line))
-        #
-        # # self.add(index_labels(btc_bar))###
-        #
-        # # scene1_btc_dashed_box = Rectangle(color=RED).align_to(btc_bar[0],UL,alignment_vect=btc_bar[0].get_edge_center(UP))
-        # scene1_7btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.3, stroke_width=3, stroke_color=RED_E).align_to(
-        #     btc_bar[ 0 ], UL)
-        # scene1_13btc_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.4286, stroke_width=3,
-        #                              stroke_color=GREEN_E).next_to(usdt_bar, UP, buff=0)
-        #
-        # scene1_7btc_fill_box = scene1_7btc_box.copy().set_fill(ORANGE, opacity=1)
-        # scene1_13btc_fill_box = scene1_13btc_box.copy().set_fill(BLUE, opacity=1)
-        # scene1_7btc_fill_box.set_stroke(width=0, opacity=0)
-        # scene1_13btc_fill_box.set_stroke(width=0, opacity=0)
-        # scene1_7btc_fill_box.set_z_index(3)
-        # scene1_13btc_fill_box.set_z_index(3)
-
-        # self.play(Create(scene1_7btc_box))
-        # self.play(Create(scene1_13btc_box))
-        # scene1_7btc_brace = BraceBetweenPoints(scene1_7btc_box.get_corner(UL), scene1_7btc_box.get_corner(DL), color=RED_E,
-        #                                        stroke_color=RED_E,
-        #                                        stroke_width=3,
-        #                                        ).next_to(scene1_7btc_box, LEFT)
-        # scene1_13btc_brace = BraceBetweenPoints(scene1_13btc_box.get_corner(UR), scene1_13btc_box.get_corner(DR), color=GREEN_E,
-        #                                         stroke_color=GREEN_E, stroke_width=3
-        #                                         ).flip(axis=np.array([ 0., 1., 0. ])).next_to(scene1_13btc_box,
-        #                                                                                       RIGHT)
-        #
-        # scene1_7btc_brace_label = Integer(btc_tracker.get_value())
-        # scene1_7btc_brace_label.add_updater(lambda label: label.become(
-        #     Integer(3).scale(0.4).rotate(PI / 2).next_to(scene1_7btc_brace, LEFT, buff=0.3)))
-        # scene1_13btc_brace_label = Integer(usdt_tracker.get_value())
-        # scene1_13btc_brace_label.add_updater(lambda label: label.become(
-        #     Integer(1286).scale(0.4).rotate(-PI / 2).next_to(scene1_13btc_brace, RIGHT, buff=0.3)))
-        #
-        # scene1_braces = VGroup(scene1_7btc_brace, scene1_13btc_brace)
-        # scene1_brace_labels = VGroup(scene1_7btc_brace_label, scene1_13btc_brace_label)
-        #
-        # self.play(Create(scene1_braces),
-        #           Create(scene1_brace_labels))
-        #
-        # usdt_bar.clear_updaters()
-        # btc_bar.clear_updaters()
-        #
-        # self.add(scene1_7btc_fill_box)
-        # # usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-        # #     Rectangle(height=4283 / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-        # #         usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        #     Rectangle(height=7 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-        #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-        #
-        # origin_dot = curr_dot.copy()
-        # origin_dot.clear_updaters()
-        # origin_dot.set_color(GREEN)
-        # origin_dot.set_z_index(1.5)
-        # self.play(Create(origin_dot))
-        # self.play(btc_tracker.animate.set_value(7),
-        # #         usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
-        #           Transform(scene1_7btc_fill_box, user_asset_btc),
-        #           Transform(user_asset_usdt, scene1_13btc_fill_box))
-        #
-        # scene1_arrow = CurvedArrow(origin_dot.get_center(), curr_dot.get_center(), radius=-4, tip_length=0.25).shift(
-        #     RIGHT * 0.3 + UP * 0.3)
-        # scene1_arrow_label = Tex('Buy BTC in exchange of USDT').scale(0.3).next_to(scene1_arrow, UR)
-        #
-        # self.play(Create(scene1_arrow))
-        #
-        # scene1_slippage_text = Tex(r'I just used 1283 USDT \\to buy 3 BTC').scale(0.5).next_to(user_asset_pos, DOWN)
-        # scene1_slippage_form = MathTex(r'1283 \divisionsymbol 3').next_to(scene1_slippage_text, DOWN)
-        # scene1_slippage_result = MathTex(rf'{int((k_tracker.get_value() / btc_tracker.get_value()-3000)/3)}\$ \  per\ BTC ').move_to(scene1_slippage_form.get_center())
-        #
-        # self.play(Create(scene1_slippage_form),
-        #           Create(scene1_slippage_text))
-        #
-        # self.play(ReplacementTransform(scene1_slippage_form,scene1_slippage_result))
-        #
-        # # self.play()
-        #
-        #
-        #
-        # # self.play(Restore(whole_mobs))
-        #
-        # self.wait(2)
-
-        #######################################################################################
-        #################################scene2##############################################
-        #######################################################################################
-
-        #
-        # user = create_entity(Tex(r' \emph{User}', color=BLACK).scale(0.5), 0.5, WHITE, "3BTC", ORANGE, 1.4, 0.3).next_to(liq_pool_rect,
-        #                                                                                                                 RIGHT, buff=2)
-        # user_asset_btc = user[ 1 ]
-        # user_asset_pos = user_asset_btc.get_center()
-        # user_asset_usdt = create_entity("A", 0.5, WHITE, "692USDT", BLUE, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
-        #
-        # user_line = Tex(r'I want to sell 3 BTC\\I dont have some USDT').scale(0.5).next_to(user, DOWN)
-        #
-        # self.play(Create(user))
-        # self.play(Create(user_line))
-        # self.play(Uncreate(user_line))
-        #
-        # # self.add(index_labels(btc_bar))###
-        #
-        # # scene2_btc_dashed_box = Rectangle(color=RED).align_to(btc_bar[0],UL,alignment_vect=btc_bar[0].get_edge_center(UP))
-        # scene2_2308usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.2307, stroke_width=3,
-        #                                 stroke_color=RED_E).align_to(
-        #     usdt_bar, UL)
-        # scene2_13btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.3, stroke_width=3,
-        #                              stroke_color=GREEN_E).next_to(btc_bar, UP, buff=0)
-        #
-        # scene2_2308usdt_fill_box = scene2_2308usdt_box.copy().set_fill(BLUE, opacity=1)
-        # scene2_13btc_fill_box = scene2_13btc_box.copy().set_fill(ORANGE, opacity=1)
-        #
-        # scene2_2308usdt_fill_box.set_stroke(width=0, opacity=0)
-        # scene2_13btc_fill_box.set_stroke(width=0, opacity=0)
-
-        # scene2_2308usdt_fill_box.set_z_index(3)
-        # scene2_13btc_fill_box.set_z_index(3)
-
-        # self.play(Create(scene2_2308usdt_box))
-        # self.play(Create(scene2_13btc_box))
-        # scene2_2308usdt_brace = BraceBetweenPoints(scene2_2308usdt_box.get_corner(UR), scene2_2308usdt_box.get_corner(DR), color=RED_E,
-        #                                            stroke_color=RED_E,
-        #                                            stroke_width=3,
-        #                                            ).flip(axis=np.array([ 0., 1., 0. ])).next_to(scene2_2308usdt_fill_box,
-        #                                                                                          RIGHT)
-        # scene2_13btc_brace = BraceBetweenPoints(scene2_13btc_box.get_corner(UL), scene2_13btc_box.get_corner(DL), color=GREEN_E,
-        #                                         stroke_color=GREEN_E, stroke_width=3
-        #                                         ).next_to(scene2_13btc_fill_box,
-        #                                                   LEFT)
-        #
-        # scene2_2308usdt_brace_label = Integer(btc_tracker.get_value())
-        # scene2_2308usdt_brace_label.add_updater(lambda label: label.become(
-        #     Integer(692).scale(0.4).rotate(-PI / 2).next_to(scene2_2308usdt_brace, RIGHT, buff=0.3)))
-        # scene2_13btc_brace_label = Integer(usdt_tracker.get_value())
-        # scene2_13btc_brace_label.add_updater(lambda label: label.become(
-        #     Integer(3).scale(0.4).rotate(PI / 2).next_to(scene2_13btc_brace, LEFT, buff=0.3)))
-        #
-        # scene2_braces = VGroup(scene2_2308usdt_brace, scene2_13btc_brace)
-        # scene2_brace_labels = VGroup(scene2_2308usdt_brace_label, scene2_13btc_brace_label)
-        #
-        # self.play(Create(scene2_braces),
-        #           Create(scene2_brace_labels))
-        #
-        # usdt_bar.clear_updaters()
-        # btc_bar.clear_updaters()
-        #
-        # self.add(scene2_2308usdt_fill_box)
-        # usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-        #     Rectangle(height= 2307/ 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-        #         usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        # # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        # #     Rectangle(height=13 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-        # #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-        #
-        # origin_dot = curr_dot.copy()
-        # origin_dot.clear_updaters()
-        # origin_dot.set_color(RED)
-        # origin_dot.set_z_index(1.5)
-        #
-        # self.play(Create(origin_dot))
-        # self.play(btc_tracker.animate.set_value(13),
-        #           # usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
-        #           Transform(scene2_2308usdt_fill_box, user_asset_usdt),
-        #           Transform(user_asset_btc, scene2_13btc_fill_box))
-        #
-        # scene2_arrow = CurvedArrow(origin_dot.get_center(), curr_dot.get_center(), radius=4, tip_length=0.25).shift(
-        #     RIGHT * 0.3 + UP * 0.3)
-        # scene2_arrow_label = Tex('Buy BTC in exchange of USDT').scale(0.3).next_to(scene2_arrow, UR)
-        #
-        # # bars.clear_updaters()
-        # # vars.clear_updaters()
-        # # k_var.clear_updaters()
-        # # area.clear_updaters()
-        # # curr_dot.clear_updaters()
-        # # axis_labels.clear_updaters()
-        # # markers.clear_updaters()
-        # self.play(Create(scene2_arrow))
-        #
-        # # self.play(Restore(whole_mobs))
-        #
-        # scene2_slippage_text = Tex(r'I just sold 3 BTC \\and got 602 USDT').scale(0.5).next_to(user_asset_pos, DOWN)
-        # scene2_slippage_form = MathTex(r'692 \divisionsymbol 3').next_to(scene2_slippage_text, DOWN)
-        # scene2_slippage_result = MathTex(rf'{int(-(k_tracker.get_value() / btc_tracker.get_value()-3000)/3)}\$ \  per\ BTC ').move_to(scene2_slippage_form.get_center())
-        #
-        # self.play(Create(scene2_slippage_form),
-        #           Create(scene2_slippage_text))
-        #
-        # self.play(ReplacementTransform(scene2_slippage_form,scene2_slippage_result))
-        #
-        #
-        # self.wait(2)
-        #
-        # self.wait(2)
-        #######################################################################################
-        #################################scene3##############################################
-        # 이건 k값 상승을 위한 것
-        #######################################################################################
-        # 아ㅣ거 유동성 5개 아니라 3개로 수정
-
-        # usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-        #     Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-        #         usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        #     Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-        #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-
-        # 유저 사라짐
-
-        # self.play(FadeOut(user),
-        #           FadeOut(user_asset_btc),
-        #           FadeOut(user_asset_usdt))
-        #
-        # 리퀴디티 프로바이더 다시 생성
-        # liq_provider = create_entity(Tex(r' \emph{Liq\\provider}', color=BLACK).scale(0.8), 1, WHITE, "5 BTC", ORANGE, 1.4, 0.3).next_to(
-        #     liq_pool_rect, RIGHT, buff=1.5)
-        # btc_asset = liq_provider[ 1 ]
-        # usdt_asset = create_entity("A", 0.5, WHITE, "500 USDT", BLUE, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
-        #
-        # self.play(Create(VGroup(liq_provider, usdt_asset)))
-        #
-        # btc_bar.clear_updaters()
-        # usdt_bar.clear_updaters()
-        #
-        # scene3_15btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.5, stroke_width=3,
-        #                              stroke_color=GREEN_E).next_to(btc_bar, UP, buff=0)
-        # scene3_4500usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.5, stroke_width=3,
-        #                                 stroke_color=GREEN_E).next_to(usdt_bar, UP, buff=0)
-        #
-        # self.play(Create(VGroup(scene3_15btc_box, scene3_4500usdt_box)))
-        #
-        # scene3_4500usdt_fill_box = scene3_4500usdt_box.copy().set_fill(BLUE, opacity=1)
-        # scene3_15btc_fill_box = scene3_15btc_box.copy().set_fill(ORANGE, opacity=1)
-        # scene3_15btc_fill_box.set_stroke(width=0, opacity=0)
-        # scene3_4500usdt_fill_box.set_stroke(width=0, opacity=0)
-        #
-        # scene3_15btc_fill_box.set_z_index(3)
-        # scene3_4500usdt_fill_box.set_z_index(3)
-        #
-        #
-        # scene3_4500usdt_brace = BraceBetweenPoints(scene3_4500usdt_box.get_corner(UR), scene3_4500usdt_box.get_corner(DR), color=GREEN_E,
-        #                                            stroke_color=GREEN_E,
-        #                                            stroke_width=3,
-        #                                            ).flip(axis=np.array([ 0., 1., 0. ])).next_to(scene3_4500usdt_fill_box,
-        #                                                                                          RIGHT)
-        # scene3_15btc_brace = BraceBetweenPoints(scene3_15btc_box.get_corner(UL), scene3_15btc_box.get_corner(DL), color=GREEN_E,
-        #                                         stroke_color=GREEN_E, stroke_width=3
-        #                                         ).next_to(scene3_15btc_fill_box,
-        #                                                   LEFT)
-        #
-        # scene3_4500usdt_brace_label = Integer(btc_tracker.get_value())
-        # scene3_4500usdt_brace_label.add_updater(lambda label: label.become(
-        #     Integer(1500).scale(0.4).rotate(-PI / 2).next_to(scene3_4500usdt_brace, RIGHT, buff=0.3)))
-        # scene3_15btc_brace_label = Integer(usdt_tracker.get_value())
-        # scene3_15btc_brace_label.add_updater(lambda label: label.become(
-        #     Integer(5).scale(0.4).rotate(PI / 2).next_to(scene3_15btc_brace, LEFT, buff=0.3)))
-        #
-        # scene3_braces = VGroup(scene3_4500usdt_brace, scene3_15btc_brace)
-        # scene3_brace_labels = VGroup(scene3_4500usdt_brace_label, scene3_15btc_brace_label)
-        #
-        # new_liquidity_text = MathTex('5BTC', '=', '1500USDT').scale(0.5).next_to(liq_provider, DOWN, buff=2)
-        #
-        # scene3_origin_graph = xyk_graph_btc.copy()
-        # scene3_origin_graph.clear_updaters()
-        # scene3_origin_graph.set_color(RED)
-        # scene3_origin_graph.set_z_index(-1)
-        # self.add(scene3_origin_graph)
-        #
-        # # xyk_graph_btc = ax.plot(lambda x: k_tracker.get_value() / x,
-        # #                         x_range=[ 0.00001, 6000 ],
-        # #                         use_smoothing=False, color=PURPLE)
-        # #
-        # # xyk_graph_btc.add_updater(lambda graph: graph.become(
-        # #     ax.plot(lambda x: k_tracker.get_value() / x,
-        # #             x_range=[ k_tracker.get_value() / 6000, 20 ],
-        # #             use_smoothing=False, color=PURPLE)))
-        #
-        # self.play(Create(scene3_braces),
-        #           Create(scene3_brace_labels))
-        #
-        # # self.play(Create(origin_dot))
-        # self.play(k_tracker.animate.set_value(67500),
-        #           btc_tracker.animate.set_value(15),
-        #           usdt_tracker.animate.set_value(67500/15),
-        #           Transform(usdt_asset, scene3_4500usdt_fill_box),
-        #           Transform(btc_asset, scene3_15btc_fill_box),
-        #           run_time=6)
-        #
-        # self.wait(4)
-
-        #######################################################################################
-        #################################scene4##############################################
-        #######################################################################################
-        # 아ㅣ거 유동성 5개 아니라 3개로 수정
-
-        # liq_provider = create_entity(Tex(r' \emph{Liq\\provider}', color=BLACK).scale(0.8), 1, WHITE, "5 BTC", ORANGE, 1.4, 0.3).next_to(
-        #     liq_pool_rect, RIGHT, buff=1.5)
-        # btc_asset = liq_provider[ 1 ]
-        # usdt_asset = create_entity("A", 0.5, WHITE, "1500 USDT", BLUE, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
-        #
-        # self.play(Create(liq_provider[ 0 ]))
-        #
-        # btc_bar.clear_updaters()
-        # usdt_bar.clear_updaters()
-        #
-        # # # scene2_btc_dashed_box = Rectangle(color=RED).align_to(btc_bar[0],UL,alignment_vect=btc_bar[0].get_edge_center(UP))
-        # # scene2_2308usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.2307, stroke_width=3,
-        # #                                 stroke_color=RED_E).align_to(usdt_bar, UL)
-        #
-        # scene4_5btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.5, stroke_width=3,
-        #                             stroke_color=RED_E).align_to(btc_bar, UL)
-        # scene4_1500usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.5, stroke_width=3,
-        #                                 stroke_color=RED_E).align_to(usdt_bar, UL)
-        #
-        # scene4_1500usdt_fill_box = scene4_1500usdt_box.copy().set_fill(BLUE, opacity=1)
-        # scene4_5btc_fill_box = scene4_5btc_box.copy().set_fill(ORANGE, opacity=1)
-        #
-        # scene4_5btc_fill_box.set_stroke(width=0, opacity=0)
-        # scene4_1500usdt_fill_box.set_stroke(width=0, opacity=0)
-        # scene4_5btc_fill_box.set_z_index(3)
-        # scene4_1500usdt_fill_box.set_z_index(3)
-        #
-        # self.play(Create(VGroup(scene4_5btc_box, scene4_1500usdt_box)))
-        # self.add(scene4_5btc_fill_box,scene4_1500usdt_fill_box)
-        #
-        # scene4_1500usdt_brace = BraceBetweenPoints(scene4_1500usdt_box.get_corner(UR), scene4_1500usdt_box.get_corner(DR), color=RED_E,
-        #                                            stroke_color=RED_E,
-        #                                            stroke_width=3,
-        #                                            ).flip(axis=np.array([ 0., 1., 0. ])).next_to(scene4_1500usdt_fill_box,
-        #                                                                                          RIGHT)
-        # scene4_5btc_brace = BraceBetweenPoints(scene4_5btc_box.get_corner(UL), scene4_5btc_box.get_corner(DL), color=RED_E,
-        #                                        stroke_color=RED_E, stroke_width=3
-        #                                        ).next_to(scene4_5btc_fill_box,
-        #                                                  LEFT)
-        # usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-        #     Rectangle(height=1500 / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-        #         usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        #     Rectangle(height=5 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-        #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-        #
-        # scene4_1500usdt_brace_label = Integer(btc_tracker.get_value())
-        # scene4_1500usdt_brace_label.add_updater(lambda label: label.become(
-        #     Integer(1500).scale(0.4).rotate(-PI / 2).next_to(scene4_1500usdt_brace, RIGHT, buff=0.3)))
-        # scene4_5btc_brace_label = Integer(usdt_tracker.get_value())
-        # scene4_5btc_brace_label.add_updater(lambda label: label.become(
-        #     Integer(5).scale(0.4).rotate(PI / 2).next_to(scene4_5btc_brace, LEFT, buff=0.3)))
-        #
-        # scene4_braces = VGroup(scene4_1500usdt_brace, scene4_5btc_brace)
-        # scene4_brace_labels = VGroup(scene4_1500usdt_brace_label, scene4_5btc_brace_label)
-        #
-        # new_liquidity_text = MathTex('5BTC', '=', '1500USDT').scale(0.5).next_to(liq_provider, DOWN, buff=2)
-        #
-        # self.play(Create(new_liquidity_text))
-        #
-        # scene4_origin_graph = xyk_graph_btc.copy()
-        # scene4_origin_graph.clear_updaters()
-        # scene4_origin_graph.set_color(RED)
-        # scene4_origin_graph.set_z_index(-1)
-        # self.add(scene4_origin_graph)
-        #
-        # self.play(Create(scene4_braces),
-        #           Create(scene4_brace_labels))
-        #
-        # # self.play(Create(origin_dot))
-        # self.play(k_tracker.animate.set_value(7500),
-        #           btc_tracker.animate.set_value(5),
-        #           usdt_tracker.animate.set_value(7500 / 5),
-        #           Transform(scene4_1500usdt_fill_box, usdt_asset),
-        #           Transform(scene4_5btc_fill_box, btc_asset),
-        #           run_time=6,rate_func=rate_functions.ease_in_out_quint)
-        #
-        # self.wait(4)
-
-        #######################################################################################
-        #################################scene5##############################################
-        #######################################################################################
-        k_org_px_org_dot = curr_dot.copy().clear_updaters().set_color(GREY).set_z_index(1.5).scale(1.2)
-        self.play(Create(k_org_px_org_dot))
-
-        # 가격 상승#####################################################################################
-
-        # self.play(Create())
-        self.play(
-            btc_tracker.animate.set_value(7),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        mathtex_1 = MathTex('')
-        px_up = MathTex('Price goes up')
-        self.play(Write(px_up))
-        self.play(Unwrite(px_up))
-
-        # 가격이 올라간다는 건 btc가 usdt보다 상대적으로 인기가 많아진다는 것입니다.
-
-        self.wait(2)
-
-        k_org_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_C).set_z_index(1.5)
-        self.add(k_org_px_up_dot)
-
-        # 가격 하락#####################################################################################
-        # \$#            ####;:$@&^~_~
-        self.play(
-            btc_tracker.animate.set_value(13),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_dn = Tex('Price goes Down')
-        # self.play(Write(px_dn))
-        # self.play(Unwrite(px_dn))
-
-        # 가격이 내려간다는 건 btc가 usdt보다 상대적으로 인기가 없어진다는 것
-
-        self.wait(2)
-
-        k_org_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_C).set_z_index(1.5)
-        self.add(k_org_px_dn_dot)
-
-        # 가격 원점#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(7),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_origin = Tex('Price origin').scale(0.7).next_to()
-        # self.play(Write(px_origin))
-        # self.play(Unwrite(px_origin))
-
-        self.wait(2)
-
-        # K 하락#####################################################################################
-        self.play(k_tracker.animate.set_value(14700),
-                  btc_tracker.animate.set_value(7),
-                  usdt_tracker.animate.set_value(14700 / 7),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_dn = Tex('K goes down')
-        # self.play(Write(k_dn))
-        # self.play(Unwrite(k_dn))
-        # 케이가 하락한다는 건 풀에서 누군가 유동성을 빼간 것입니다.
-        # 명심할 것은 케이의 변동은 가격과 관계가 없음
-        # 내가 유동성 풀에 제거하고 싶으면
-        # 그냥 지금 가격에 맞게 빼가면 됨
-        # 스왑처럼 내가 가격을 움직이며 하는 행위가 아님
-        # 왜냐하면 가격이란 풀 내부의 비율인데
-        # 지금 비율(1개에 300달러) 그대로 빼기 때문에
-        # 가격은 움직이지 않고 그로인해 슬리피지등이 발생하지 않는다
-        # 착각 금지
-
-        self.wait(2)
-
-        k_dn_px_org_dot = curr_dot.copy().clear_updaters().set_color(WHITE).set_z_index(1.5)
-        self.add(k_dn_px_org_dot)
-
-        # K 상승#####################################################################################
-        self.play(k_tracker.animate.set_value(50700),
-                  btc_tracker.animate.set_value(13),
-                  usdt_tracker.animate.set_value(50700 / 13),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_up = Tex('K goes up')
-        # self.play(Write(k_up))
-        # self.play(Unwrite(k_up))
-        # 케이가 상승한다는 건 풀에 누군가 추가 유동성을 공급하는 것입니다.
-        # 마찬가지로 가격은 전혀 움직이지 않음
-        # 현재 가격에 맞게 비티씨와 유에스디티를 그대로 추가함
-        # 풀사이즈는 커짐
-
-        self.wait(2)
-
-        k_up_px_org_dot = curr_dot.copy().clear_updaters().set_color(DARK_GREY).set_z_index(1.5)
-        self.add(k_up_px_org_dot)
-
-        # K 원점#####################################################################################
-        self.play(k_tracker.animate.set_value(30000),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_origin = Tex('K origin')
-        # self.play(Write(k_origin))
-        # self.play(Unwrite(k_origin))
-
-        self.wait(2)
-
-        # K 상승#####################################################################################
-        self.play(k_tracker.animate.set_value(50700),
-                  btc_tracker.animate.set_value(13),
-                  usdt_tracker.animate.set_value(50700 / 13),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        k_up = Tex('K goes up')
-        self.play(Write(k_up))
-        self.play(Unwrite(k_up))
-
-        self.wait(2)
-
-        # K 상승 가격 하락#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(16),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(16)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_up_px_dn = Tex('K up, Price goes down')
-        # self.play(Write(k_up_px_dn))
-        # self.play(Unwrite(k_up_px_dn))
-
-        # 케이가 상승한 상황에서 가격이 하락
-        # 가격이 하락한다는 건 누군가 풀에서 비티씨를 넣고 테더를 빼가는 것
-        # 즉 풀에다 비티씨를 매도하는 것
-        # 여기서 명심할 건
-        # 케이가 상승했다는 건 풀 사이즈가 커진거곡
-        # 그만큼 리퀴디티가 충분하다는 것입니다
-        # 그러니까 같은 금액의 비티씨를 매도하더라도
-        # 이전보다 더 슬리피지가 적습니다
-        # 아까 봤을 때 300달러에서 3개 매도할 때는 슬리피지가 얼마 발생
-        # 근데 지금은 유동성이 더 충분한 상태고 300달러에서 3개 매도했는데
-        # 슬리피지 얼마 발생
-        # 유동성이 크면 좋은 것이다
-        # 같은 개수를 메도해도 내가 넣는 비티씨의 양이 풀내부에 차지하는 비율이
-        # 더 적어졌기 때문입니다
-        # 아까는 10개에서 3개 매도
-        # 지금은 15개에서 3개 매도
-        # 비율로 따지면 30퍼와 20퍼기 땨문에 풀에주는 영향력이 크다
-
-        self.wait(2)
-
-        k_up_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_E).set_z_index(1.5)
-        self.add(k_up_px_dn_dot)
-
-        # K 상승 가격 상승#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(10),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(10)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_up_px_up = Tex('K up, Price goes up')
-        # self.play(Write(k_up_px_up))
-        # self.play(Unwrite(k_up_px_up))
-
-        # 케이가 상승한 상황에서 가격이 올라가는 경우도 마찬가지
-        # 가격이 오른다는 건 누군가 풀에서 비티씨를 빼고 테더를 넣는 것
-        # 즉 풀에서 비티씨를 매수하는 것
-        # 명심할 건
-        # 케이가 상승한 건 풀사이즈가 커졌고
-        # 마찬가지로 아까 비티씨를 살 때 슬리피지를 겪었던 것보다
-        # 슬리피지를 적게 겪음
-        # 아까 300달러에서 3개매수는 슬리피지 얼마
-        # 근데 지금은 얼마
-        # 같은 개수를 매수해도 내가 빼는 비티씨의 양이 풀내부에 차지하는 비율이
-        # 더 적어졌기 때문입니다
-        # 아까는 10개에서 3개 매수
-        # 지금은 15개에서 3개 매ㅑ수
-        # 비율로 따지면 30퍼와 20퍼기 땨문에 풀에주는 영향력이 크다
-
-        self.wait(2)
-
-        k_up_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_E).set_z_index(1.5)
-        self.add(k_up_px_up_dot)
-
-        # K 원점#####################################################################################
-        self.play(k_tracker.animate.set_value(30000),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_origin_px_origin = Tex('K origin, px origin')
-        # self.play(Write(k_origin_px_origin))
-        # self.play(Unwrite(k_origin_px_origin))
-
-        self.wait(2)
-
-        # K 하락#####################################################################################
-        self.play(k_tracker.animate.set_value(14700),
-                  btc_tracker.animate.set_value(7),
-                  usdt_tracker.animate.set_value(14700 / 7),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_dn = Tex('K goes down')
-        # self.play(Write(k_dn))
-        # self.play(Unwrite(k_dn))
-
-        # 역으로 케이가 하락했는데
-        # 그말은 유동성이 줄었다는 거하고
-        # 아까 유동성이 늘었서 슬리피지가 덜 발행하던 것과 달리
-        # 지금부터는 슬리피지가 더 발생합니다
-        #
-
-        self.wait(2)
-
-        # K 하락 가격 하락#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(10),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(10)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_dn_px_dn = Tex('K down, Price goes dn')
-        # self.play(Write(k_dn_px_dn))
-        # self.play(Unwrite(k_dn_px_dn))
-
-        # 케이가 하락한 상태에서 누군가 풀에다 비티씨를 매도해서
-        # 가격도 하락합니다
-        # 비티씨를 매도하는데 아까와 같이 300달러에서 매도하지만
-        # 아까는 슬리피지 얼마
-        # 지금은 얼마입니다
-        # 당연히 아까는 10개에서 3개를 넣는 거였고
-        # 지금은 5개에서 3개를 넣는거니까
-        # 비율은 30퍼와 60퍼로
-        # 완전 차이나게 된다
-
-        k_dn_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_A).set_z_index(1.5)
-        self.add(k_dn_px_dn_dot)
-
-        self.wait(2)
-
-        # K 하락 가격 상승#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(4),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(4)),
-            # area_text.animate.rotate(PI / 2),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_dn_px_dn = Tex('K down, Price goes up')
-        # self.play(Write(k_dn_px_dn))
-        # self.play(Unwrite(k_dn_px_dn))
-
-        # 케이가 하락한 상태에서 누군가 풀에서 비티씨를 빼가면서 즉 매수하면서
-        # 가격도 상승합니다
-        # 비티씨를 매수하는데 아까와 같이 300달러ㅓ에서 매수하지만
-        # 아까는 슬리피지 얼마
-        # 지금은 얼마
-        # 당연히 아까는 10개에서 3개를 빼는 거였고
-        # 지금은 5개에서 3개를 빼는 것
-        # 비율은 30퍼와 60퍼로 상당히 차이난다
-
-        self.wait(2)
-
-        k_dn_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_A).set_z_index(1.5)
-        self.add(k_dn_px_up_dot)
-
-        # 원점#####################################################################################
-        self.play(k_tracker.animate.set_value(30000),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_origin_px_origin = Tex('K origin, px origin')
-        # self.play(Write(k_origin_px_origin))
-        # self.play(Unwrite(k_origin_px_origin))
-
-        self.wait(2)
-
-        # 가격 상승#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(7),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_up = Tex('Price goes up')
-        # self.play(Write(px_up))
-        # self.play(Unwrite(px_up))
-
-        # 이제는 가격이 상승한 상태에서 k를 움직여보겟습니다
-
-        # 가격 상승에서 K상승#####################################################################################
-        self.play(k_tracker.animate.set_value(3000000 / 49),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000000 / 49 / 10),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        px_up_k_up = Tex('Price goes up, K up')
-        self.play(Write(px_up_k_up))
-        self.play(Unwrite(px_up_k_up))
-
-        # 아까와는 상황이 다릅니다
-        # 현재 가격은 이미 움직여버렸습니다
-        # 현재가격은 이미 300에서 올라왔고 여기서
-        # 유동성을 넣기 때문에
-        # 같은 2비티씨를 유동성을 추가한다고 하면
-        # 1비티씨마다 상응하는 올라간 가격의 테더를 같이 넣어줘야합니다
-        #
-
-        self.wait(2)
-
-        px_up_k_up_dot = curr_dot.copy().clear_updaters().set_color(TEAL_E).set_z_index(1.5)
-        self.add(px_up_k_up_dot)
-
-        # 가격 상승에서 K하락#####################################################################################
-        self.play(k_tracker.animate.set_value(480000 / 49),
-                  btc_tracker.animate.set_value(4),
-                  usdt_tracker.animate.set_value(480000 / 49 / 4),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_up_k_dn = Tex('Price goes up, K dn')
-        # self.play(Write(px_up_k_dn))
-        # self.play(Unwrite(px_up_k_dn))
-
-        # 가격이 올랐을 때 케이가 떨어진다는 건
-        # 즉 유동성을 공급했던 사람이 유동성을 회수한다는 것은
-        # 풀 사이즈가 작아진다는 것입니다
-        # 그 말은 공급자가 1비티씨를 뺄 때 오른 가격만큼의 테더를 회수한다는 애기입니다
-        # 2비티씨를 빼면 얼마가 빠집니다
-
-        self.wait(2)
-
-        px_up_k_dn_dot = curr_dot.copy().clear_updaters().set_color(TEAL_A).set_z_index(1.5)
-        self.add(px_up_k_dn_dot)
-
-        # 원점점#####################################################################################
-        self.play(k_tracker.animate.set_value(30000),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # k_origin_px_origin = Tex('K origin, px origin')
-        # self.play(Write(k_origin_px_origin))
-        # self.play(Unwrite(k_origin_px_origin))
-
-        # 가격 하락#####################################################################################
-        self.play(
-            btc_tracker.animate.set_value(13),
-            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
-            run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_dn = Tex('Price goes down')
-        # self.play(Write(px_dn))
-        # self.play(Unwrite(px_dn))
-
-        # 가격이 하락한 상태에서 케이를 움직여보겟습니다
-
-        self.wait(2)
-
-        # 가격 하락에서 K상승#####################################################################################
-        self.play(k_tracker.animate.set_value(7680000 / 169),
-                  btc_tracker.animate.set_value(16),
-                  usdt_tracker.animate.set_value(7680000 / 169 / 16),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_dn_k_up = Tex('Price goes down, K up')
-        # self.play(Write(px_dn_k_up))
-        # self.play(Unwrite(px_dn_k_up))
-
-        # 가격이 하락한 상태에서 케이를 넣으렴녀 원래보다 돈이 적게 듭니다
-        # 왜냐하면 비티씨 1개를 넣을 때 하락한 각겨만큼의 테더를 넣으면 됩니다
-
-        self.wait(2)
-
-        px_dn_k_up_dot = curr_dot.copy().clear_updaters().set_color(MAROON_E).set_z_index(1.5)
-        self.add(px_dn_k_up_dot)
-
-        # 가격 하락에서 K하락#####################################################################################
-        self.play(k_tracker.animate.set_value(3000000 / 169),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000000 / 169 / 11),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_dn_k_dn = Tex('Price goes down, K dn')
-        # self.play(Write(px_dn_k_dn))
-        # self.play(Unwrite(px_dn_k_dn))
-
-        # 마찬가지로 하락한 상태에서 유동성을 제거하면
-        # 비티씨 한 개를 뺄 때 떨어진 가격만큼의 테더만 되찾을 수 있습니다
-
-        px_dn_k_dn_dot = curr_dot.copy().clear_updaters().set_color(MAROON_A).set_z_index(1.5)
-        self.add(px_dn_k_dn_dot)
-
-        self.wait(2)
-
-        # 가격 원점#####################################################################################
-        self.play(k_tracker.animate.set_value(30000),
-                  btc_tracker.animate.set_value(10),
-                  usdt_tracker.animate.set_value(3000),
-                  run_time=1, rate_func=rate_functions.ease_in_out_quint)
-
-        # px_origin = Tex('Price origin')
-        # self.play(Write(px_origin))
-        # self.play(Unwrite(px_origin))
-
-        self.wait(2)
-
-        # 라인 생성#####################################################################################
-        # \$qw%7/-/\%%%%%\;;;;;;:::::::::::
-
-        def making_a_line_3points(p1, p2, p3, color):
-            l1 = Line(p1.get_center(), p2.get_center(), color=color)
-            l2 = Line(p2.get_center(), p3.get_center(), color=color)
-            l1.set_z_index(-2)
-            l2.set_z_index(-2)
-            line = VGroup(l1, l2)
-
-            return line
-
-        self.play(FadeOut(area),
-                  FadeOut(area_text))
-        k_px_org_line = making_a_line_3points(k_dn_px_org_dot, k_org_px_org_dot, k_up_px_org_dot, DARK_GREY)
-        self.play(Create(k_px_org_line))
-        k_px_up_line = making_a_line_3points(k_dn_px_up_dot, k_org_px_up_dot, k_up_px_up_dot, GREEN_E)
-        self.play(Create(k_px_up_line))
-        k_px_dn_line = making_a_line_3points(k_dn_px_dn_dot, k_org_px_dn_dot, k_up_px_dn_dot, RED_E)
-        self.play(Create(k_px_dn_line))
-        px_up_k_line = making_a_line_3points(px_up_k_dn_dot, k_org_px_up_dot, px_up_k_up_dot, TEAL_E)
-        self.play(Create(px_up_k_line))
-        px_dn_k_line = making_a_line_3points(px_dn_k_dn_dot, k_org_px_dn_dot, px_dn_k_up_dot, MAROON_E)
-        self.play(Create(px_dn_k_line))
-
-        self.wait(2)

@@ -8,7 +8,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 
-p = subprocess.Popen("C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pql --fps 15 main.py working1",
+p = subprocess.Popen(f"C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pql --fps 7 main.py working1",
                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
 
 
@@ -47,7 +47,7 @@ for line in p.stdout:
 #     stdout_value = process.communicate()[0]
 #     return stdout_value
 #
-# pg = subprocess.Popen("C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pql --fps 15 main.py working", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+# pg = subprocess.Popen("C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pqk main.py working1", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 # buff,buffErr = pg.communicate()
 # import sys
 # sys.stdout.reconfigure(encoding='utf-8')

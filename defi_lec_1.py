@@ -12,8 +12,6 @@ import binascii
 
 from colour import Color
 
-
-
 q = 0.3
 qq = 2 * q
 qqq = 3 * q
@@ -79,7 +77,6 @@ class LabeledRectangle(RoundedRectangle):
         super().__init__(width=width, height=height, corner_radius=corner_radius, **kwargs)
         rendered_label.next_to(self, direction)
         self.add(rendered_label)
-
 
 
 #
@@ -235,6 +232,53 @@ class stablecoin(Scene):
                   FadeOut(invest),
                   FadeOut(people),
                   )
+
+
+class backed_by(Scene):
+    def construct(self):
+        def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
+            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+            text = Text(asset_name, color=BLACK).scale(0.8 * asset_height)
+
+            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+
+            return VGroup(person, asset)
+
+        usdt = create_entity("A", 0.5, WHITE, "USDT", BLUE, 2, 1)[ 1 ].to_edge(UL, buff=1)
+        usd = create_entity("A", 0.5, WHITE, "USD", GREEN, 2, 1)[ 1 ].to_edge(DL, buff=1)
+        usg = LabeledDot(Tex(r'\emph{US\\Gov}', color=BLACK), radius=1)[ 0 ].to_edge(D, buff=0.5)
+        us_people = LabeledDot(Tex(r'\emph{US\\People}', color=BLACK), radius=1)[ 0 ].to_edge(D, buff=0.5).to_edge(R, buff=1)
+
+        usd_copy = usd.copy().move_to(ORIGIN).to_edge(U, buff=1)
+
+        usg_copy = usg.copy().move_to(ORIGIN).to_edge(U, buff=0.5).to_edge(R, buff=1)
+
+        backed_by_1 = Tex('Backed by').move_to(np.array([ usdt.get_x(), 0, 0 ]))
+        backed_by_2 = Tex('Backed by')
+        backed_by_3 = Tex('Backed by').move_to(np.array([ us_people.get_x(), 0, 0 ]))
+
+        self.play(Create(usdt))
+        self.play(Create(backed_by_1))
+        self.play(Create(usd))
+        self.play(TransformFromCopy(usd, usd_copy))
+        self.play(Create(backed_by_2))
+        self.play(Create(usg))
+        self.play(TransformFromCopy(usg, usg_copy))
+        self.play(Create(backed_by_3))
+        self.play(Create(us_people))
+
+        self.play(FadeOut(VGroup(usd, backed_by_1)))
+        self.play(Uncreate(usdt))
+
+        self.play(FadeOut(VGroup(usg, backed_by_2)))
+        self.play(Uncreate(usd_copy))
+
+        self.play(FadeOut(VGroup(us_people, backed_by_3)))
+        self.play(Uncreate(usg_copy))
+
+        self.wait(q)
 
 
 class pair(Scene):
@@ -1618,7 +1662,7 @@ class A_and_B_withdrawal(Scene):
         self.wait(1)
 
 
-class lec2_s1(Scene):
+class eliptical(Scene):
     def construct(self):
         var = Variable(-2, Tex("x value"), num_decimal_places=3)
         my_tracker = var.tracker
