@@ -1,16 +1,11 @@
-import math
-
 from manim import *
-import itertools as it
 import random as rd
 import numpy as np
+from math import *
+from colour import Color
 
 config.frame_width = 16
 config.frame_height = 9
-from hashlib import sha256
-import binascii
-
-from colour import Color
 
 q = 0.3
 qq = 2 * q
@@ -20,6 +15,7 @@ L = LEFT
 R = RIGHT
 U = UP
 D = DOWN
+
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -80,8 +76,12 @@ class final(Scene):
         # lec1_s4.construct(self)
         # working.construct(self)
 
-class dex_and_smart_contract(Scene):
+class dex_pros_and_cons(Scene):
     def construct(self):
+        # self.play(Create(NumberPlane()))
+
+        swap_text = Tex('Swap').scale(2)
+        tex_1 = Tex('Why dex?').scale(2)
         dex_text = MathTex('DEX').scale(2).shift(L * 4)
         cex_text = MathTex('CEX').scale(2).shift(R * 4)
         self.play(Create(dex_text), Create(cex_text))
@@ -92,6 +92,163 @@ class dex_and_smart_contract(Scene):
 
         self.play(Uncreate(q_mark))
         self.wait(q)
+
+        #####     그렇다면 덱스가 존재하는 이유는 무엇일까요
+        # 중앙화 노드 왼쪽 탈중앙화 노드 오른쪽
+
+        center_line = Line(UP * 10, D * 10)
+
+        centralized_net = VGroup()
+
+        cent_server = Dot(radius=0.3)
+        cent_net_nodes_dist = [ 2.59, 2.72, 2.43, 3.06, 2.16, 2.2, 3.03, 2.2, 2.77, 2.8, 2.45, 1.76, 2.73, 1.57, 3.04, 3.1, 2.93, 1.69,
+                                2.63, 2.83, 3.03, 2.24, 2.59, 1.76, 1.54, 2.65, 1.98, 2.87, 1.75, 2.1 ]
+
+        dir = 0
+
+        for i in range(len(cent_net_nodes_dist)):
+            dir += 2 * PI / len(cent_net_nodes_dist)
+            dist = cent_net_nodes_dist[ i ]
+            node = Dot(radius=0.1).move_to(np.array([ cos(dir) * dist, sin(dir) * dist, 0 ]))
+            centralized_net.add(node)
+
+        centralized_net.add(cent_server)
+
+        for i in range(len(cent_net_nodes_dist)):
+            node = centralized_net[ i ]
+            line = Line(node.get_center(), cent_server.get_center())
+            line.set_z_index(-1)
+            centralized_net.add(line)
+
+        centralized_net.shift(L * 4 + U * 0.5)
+        centralized_net_text = Tex('Centralized Network').move_to(L * 4 + D * 3.5)
+
+        self.play(Create(center_line))
+
+        self.play(Create(centralized_net),
+                  Create(centralized_net_text))
+
+        # # ####################################################################################
+        #
+        decentralized_net = VGroup()
+        decentralized_nets = VGroup()
+
+        decent_net_nodes_dist_1 = [ 1.07, 1.57, 1.3, 1.4, 1.47, 1.1, 1.21, 1.28, 1.02, 1.14 ]
+        decent_net_nodes_dist_2 = [ 1.57, 1.2, 1.41, 1.23, 1.46, 1.16, 1.29, 1.5, 1.29, 1.4 ]
+        decent_net_nodes_dist_3 = [ 1.36, 1.4, 1.3, 1.15, 1.45, 1.11, 1.55, 1.22, 1.35, 1.37 ]
+        decent_net_nodes_dist_4 = [ 1.07, 1.04, 1.18, 1.49, 1.58, 1.17, 1.18, 1.29, 1.31, 1.05 ]
+        decent_net_nodes_dist_5 = [ 1.36, 1.29, 1.14, 1.56, 1.39, 1.19, 1.11, 1.07, 1.59, 1.11 ]
+        decent_net_nodes_dist_list = [ decent_net_nodes_dist_1,
+                                       decent_net_nodes_dist_2,
+                                       decent_net_nodes_dist_3,
+                                       decent_net_nodes_dist_4,
+                                       decent_net_nodes_dist_5 ]
+
+        for j in range(len(decent_net_nodes_dist_list)):
+            for i in range(len(decent_net_nodes_dist_list[ j ])):
+                dir += 2 * PI / len(decent_net_nodes_dist_list[ j ])
+                dist = decent_net_nodes_dist_list[ j ][ i ]
+                node = Dot(radius=0.1).move_to(np.array([ cos(dir) * dist, sin(dir) * dist, 0 ]))
+                decentralized_net.add(node)
+
+            decent_server = Dot(radius=0.2, color=WHITE)
+            decentralized_net.add(decent_server)
+
+            for k in range(len(decent_net_nodes_dist_list[ j ])):
+                node = decentralized_net[ k ]
+                line = Line(node.get_center(), decent_server.get_center())
+                decentralized_net.add(line)
+
+            decentralized_nets.add(decentralized_net.scale(0.8))
+            decentralized_net = VGroup()
+
+        decentralized_nets[ 0 ].shift(R * 2 + U * 2)
+        decentralized_nets[ 1 ].shift(R * 2 + D * 2)
+        decentralized_nets[ 2 ].shift(L * 2 + U * 2)
+        decentralized_nets[ 3 ].shift(L * 2 + D * 2)
+        decentralized_nets.shift(R * 4 + U * 0.5)
+
+        line_btwn_servers = VGroup()
+
+        for i in range(len(decentralized_nets) - 1):
+            line = Line(decentralized_nets[ i ][ 10 ].get_center(), decentralized_nets[ 4 ][ 10 ].get_center(), stroke_width=5)
+            line.set_z_index(-1)
+            line_btwn_servers.add(line)
+
+        decentralized_nets.add(line_btwn_servers)
+        decentralized_net_text = Tex('Decentralized Network').move_to(R * 4 + D * 3.5)
+
+        self.play(Create(decentralized_nets),
+                  Create(decentralized_net_text))
+
+        #####     일단 중앙화 주체 없이 운영되는 거래소이기 때문에 오는 장점이 잇습니다
+        #####  덱스는 중앙화 서버가 없고 블록체인에 의존하기 때문에 서버가 죽는 위험에 노출되지 않습니다
+
+
+        # 중앙화 노드로 공격 애니메이션
+        # 중앙 노드가 없어지면서 라인도 네트워크 라인도 같이 제거
+        # 탈중앙화는 살아있음
+
+        arrow_scaler = 0.6
+        rect = Rectangle(width=2, height=1, fill_color=RED, fill_opacity=1, color=RED)
+        triangle = Triangle(fill_color=RED, fill_opacity=1, color=RED).rotate(-PI / 2).next_to(rect, RIGHT, buff=0)
+        text = Tex(r'\textbf{Attack} ', color=BLACK, font_size=65).shift(R * 0.4)
+        attack_arrow_UL = VGroup(rect.copy(), triangle.copy(), text.copy()).rotate(-PI / 4).scale(arrow_scaler).shift(U * 1 + L * 2)
+        attack_arrow_DL = VGroup(rect.copy(), triangle.copy(), text.copy()).rotate(PI / 4).scale(arrow_scaler).shift(D * 1 + L * 2)
+        rect = Rectangle(width=2, height=1, fill_color=RED, fill_opacity=1, color=RED)
+        triangle = Triangle(fill_color=RED, fill_opacity=1, color=RED).rotate(PI / 2).next_to(rect, LEFT, buff=0)
+        text = Tex(r'\textbf{Attack} ', color=BLACK, font_size=65).shift(L * 0.4)
+        attack_arrow_UR = VGroup(rect.copy(), triangle.copy(), text.copy()).rotate(PI / 4).scale(arrow_scaler).shift(U * 1 + R * 2)
+        attack_arrow_DR = VGroup(rect.copy(), triangle.copy(), text.copy()).rotate(-PI / 4).scale(arrow_scaler).shift(D * 1 + R * 2)
+
+        cent_attack_arrows = VGroup(attack_arrow_UR, attack_arrow_DR, attack_arrow_DL, attack_arrow_UL).scale(0.8)
+        cent_attack_arrows.set_z_index(1)
+
+
+        cent_server_cross = Cross(stroke_width=15).scale(0.3).move_to(centralized_net[ 30 ])
+        cent_server_cross.set_z_index(1)
+
+        self.play(Create(cent_attack_arrows.move_to(centralized_net[ 30 ])))
+        self.play(Create(cent_server_cross))
+        self.play(Uncreate(centralized_net[ 31: ]))
+
+        #################################################################
+
+        decent_attack_arrows_1 = cent_attack_arrows.copy().scale(0.6).move_to(decentralized_nets[ 3 ][ 10 ])
+        decent_attack_arrows_1.set_z_index(1)
+        decent_attack_arrows_2 = cent_attack_arrows.copy().scale(0.6).move_to(decentralized_nets[ 0 ][ 10 ])
+        decent_attack_arrows_2.set_z_index(1)
+
+
+        decent_server_cross_1 = Cross(stroke_width=15).scale(0.2).move_to(decentralized_nets[ 3 ][ 10 ])
+        decent_server_cross_1.set_z_index(1)
+        decent_server_cross_2 = Cross(stroke_width=15).scale(0.2).move_to(decentralized_nets[ 0 ][ 10 ])
+        decent_server_cross_2.set_z_index(1)
+
+        self.play(Create(decent_attack_arrows_1))
+        self.play(Create(decent_attack_arrows_2))
+        self.play(Create(decent_server_cross_1),
+                  (Create(decent_server_cross_2)))
+        self.play(Uncreate(decentralized_nets[ 3 ][ 11: ]),
+                  Uncreate(decentralized_nets[ 0 ][ 11: ]))
+
+        self.play(Uncreate(VGroup(centralized_net,
+                                 decentralized_nets,
+                                 center_line,
+                                 decent_server_cross_1,
+                                 decent_server_cross_2,
+                                 decent_attack_arrows_1,
+                                 decent_attack_arrows_2,
+                                 cent_attack_arrows,
+                                 cent_server_cross,
+                                 centralized_net_text,
+                                 decentralized_net_text)))
+
+        ##### 그러나 블록체인 네트워크도 트래픽이 많으면 느려지고 심지어 최근 솔라나나 클레이튼 대형체인도
+        ##### 정지하는 일도 심심치 않게 발생합니다. 그래서 무작정 중앙서버보다 좋다고만은 할 수도 없습니다
+        # 블록생성하다가 속도 존나 줄이기
+        # 블록생성하다가 멈추고 뒤에 빨ㄹ간스톱사인
+
         chain1 = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
         chain2 = Line(ORIGIN, L * 0.4).move_to(chain1).shift(L * 0.2)
         chain = VGroup()
@@ -101,9 +258,9 @@ class dex_and_smart_contract(Scene):
         chain.add(chain2.copy())
         chain.arrange(R, buff=-0.12)
 
-        blocks = VGroup(*[ Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE) for i in range(5) ]).arrange(R,
+        blocks = VGroup(*[ Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE) for i in range(4) ]).arrange(R,
                                                                                                                           buff=chain.width)
-        scripts = VGroup(*[ Tex(f"{format(i, '04b')}", stroke_color=WHITE).move_to(blocks[ i ]).scale(0.5) for i in range(5) ])
+        scripts = VGroup(*[ Tex(f"{format(i, '04b')}", stroke_color=WHITE).move_to(blocks[ i ]).scale(0.5) for i in range(4) ])
 
         blockchain = VGroup()
         for i in range(len(blocks)):
@@ -113,9 +270,156 @@ class dex_and_smart_contract(Scene):
 
         blockchain.to_edge(L)
 
-        self.play(Create(blockchain), run_time=10)
+        sign = RegularPolygon(n=6, fill_color=RED, fill_opacity=1, stroke_color=WHITE, stroke_width=10).scale(1.4)
+        stop = Text('STOP', font='Unispace')
+        stop_sign = VGroup(sign, stop).scale_to_fit_width(1.2).next_to(blockchain, R, buff=0)
 
-        self.play(Uncreate(blockchain))
+        self.play(Create(blockchain[ 0:-4 ]), run_time=1)
+        self.play(Create(blockchain[ -4: ]), run_time=5)
+        self.play(Create(stop_sign))
+        self.play(Uncreate(blockchain),
+                  Uncreate(stop_sign))
+
+        ##### 또 정부의 검열으로부터 자유로울 수 있고 프라이버시를 보호할 수 있습니다
+        # 덱스중앙에 텍스트
+        # 눈 아이콘생성
+        # 방어막
+
+        dex_text = Tex('DEX', font_size=100)
+
+        eyelid_1 = ArcBetweenPoints(start=3 * L, end=3 * R, stroke_width=15)
+        eyelid_2 = eyelid_1.copy().flip(axis=np.array([ 1, 0, 0 ])).next_to(eyelid_1, UP, buff=-0.1)
+        iris = Annulus(inner_radius=0.5, outer_radius=1)
+        eye = VGroup(eyelid_1, eyelid_2, iris).scale(0.7)
+
+        eye_UL = eye.copy().to_edge(UL)
+        eye_DL = eye.copy().to_edge(DL)
+        eye_UR = eye.copy().to_edge(UR)
+        eye_DR = eye.copy().to_edge(DR)
+
+        eyes = VGroup(eye_UL, eye_DL, eye_UR, eye_DR)
+
+        shield = Circle(radius=2.5, color=BLUE)
+
+        self.play(Create(dex_text))
+        self.play(Create(eyes))
+        self.play(eye_UL[ 2 ].animate.shift(DR * 0.2),
+                  eye_DL[ 2 ].animate.shift(UR * 0.18),
+                  eye_UR[ 2 ].animate.shift(DL * 0.2),
+                  eye_DR[ 2 ].animate.shift(UL * 0.18),
+                  )
+
+        self.play(Create(shield))
+        self.play(Flash(shield, line_length=1, num_lines=50, color=BLUE, flash_radius=2.5 + SMALL_BUFF, time_width=0.3, run_time=2,
+                        rate_func=rush_from))
+
+        self.play(Uncreate(dex_text),
+                  Uncreate(eyes),
+                  Uncreate(shield)
+                  )
+
+        ##### 모든 기록이 블록체인에 남지만 그 주소가 누군지 매칭이 안 되기 때문에 익명성이 보장됩니다
+        # 블록하나 왼쪽상단 옆에는 프럼 주소 아래 화살표와 내용 그리고 투 주소
+        # 그리고 물음표 아이콘
+        block_1_box = Square(2)
+        block_1_text = Tex(f"{format(214, '08b')}", f"{format(245, '08b')}").arrange(D).scale(0.8)
+        block_1 = VGroup(block_1_box, block_1_text).to_edge(L, buff=1)
+
+        arrow = Arrow(UP, DOWN).next_to(block_1, buff=3.5)
+        send_btc_text = Tex('Send 5 BTC').next_to(arrow, R, buff=1)
+        from_text = Tex('From', color=RED)
+        to_text = Tex('To', color=BLUE)
+        addr_1 = Tex('miESMSkUgvFeJFqjzApV7c2bf3ynBobmEz', font_size=45).next_to(arrow, U, buff=1, aligned_edge=L)
+        addr_2 = Tex('mnn3aq624RfThTTJaLg4XfrsxHXiNwLxrk', font_size=45).next_to(arrow, D, buff=1, aligned_edge=L)
+        from_to_text = VGroup(from_text, to_text).arrange(D, buff=4, center=False, aligned_edge=L)
+        addrs_text = VGroup(addr_1, addr_2).arrange(D, buff=4)
+        tx_content = VGroup(VGroup(from_to_text, addrs_text).arrange(R, buff=0.5).next_to(block_1, buff=1), arrow, send_btc_text)
+
+        mag_circle = LabeledDot(Tex('01', color=WHITE), radius=0.5, stroke_color=WHITE, stroke_width=10, fill_color=BLACK,
+                                fill_opacity=1).move_to(block_1)
+        mag_rect = Rectangle(width=12, height=6).align_to(np.array([ -4.5, 3, 0 ]), UL)
+        mag_line_1 = Line(mag_circle.get_top(), mag_rect.get_corner(UL))
+        mag_line_2 = Line(mag_circle.get_bottom(), mag_rect.get_corner(DL))
+        mag_line = VGroup(mag_line_1, mag_line_2)
+        mag = VGroup(mag_circle, mag_line, mag_rect)
+
+        who_text = Tex('Who?').scale(2).shift(R * 5)
+
+        self.play(Create(block_1))
+
+        self.play(Create(mag),
+                  Create(tx_content))
+        self.play(Create(who_text))
+
+        self.play(Uncreate(mag),
+                  Uncreate(tx_content),
+                  Uncreate(who_text),
+                  Uncreate(block_1))
+
+        ##### 그리고 거래소의 심사 없이 코인을 자유롭게 상장할 수 있ㅅ브니다
+        ##### 크립토 프로젝트들은 거래소에서 심사를 거쳐 상장이 되야하는데 이 기준이 엄격하다보닏
+        ##### 거래소에는 한정된 코인들만 있ㅅ브니다.
+        ##### 그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다
+        # 중앙화 거래소 오른쪽에 생성 그리고 중앙에 Eval and audit 으로 필터 막대 설정
+        # 잡코인들 존나 부닥치고 튕겨나감
+        # 덱스똑같이 생성시키고 유동성제공자 만든 다음에 지폐 두장 보내면 덱스에서 페어 아이콘으로 형성
+        # 할 때 코인 이름 구린걸로
+
+        cex_text = Tex('CEX').scale(2).shift(R * 4 + U * 2)
+        eval_audit_text = Tex(r'Evaluation \& Audit').to_edge(U)
+        center_line = Line(UP * 10, D * 10, stroke_width=30).next_to(eval_audit_text, D)
+
+        shit_coin = LabeledDot(Tex('SHIT', color=BLACK), radius=1, color=GREEN).shift(U * 2.5).to_edge(L)
+        sulsa_coin = LabeledDot(Tex('SULSA', color=BLACK), radius=1, color=YELLOW).shift(D * 2.5).to_edge(L)
+        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=ORANGE).to_edge(L)
+
+        limited_pairs = Tex('Limited pairs available...', 'BTC-USDT', 'ETH-BTC', r'\vdots').arrange(D).next_to(cex_text, D, buff=1)
+
+        btc_arc = Arc(angle=PI).flip(axis=np.array([ 0, 1, 0 ]))
+
+        self.play(Create(cex_text),
+                  Create(eval_audit_text),
+                  Create(center_line))
+        self.play(Create(limited_pairs))
+        self.play(Create(VGroup(shit_coin, sulsa_coin, btc_coin)))
+
+        self.play(shit_coin.animate.align_to(center_line, R),
+                  sulsa_coin.animate.align_to(center_line, R),
+                  btc_coin.animate.align_to(center_line, R))
+
+        self.play(MoveAlongPath(btc_coin, btc_arc))
+        self.play(FadeOut(btc_coin, target_position=cex_text))
+
+        self.play(FadeOut(shit_coin),
+                  FadeOut(sulsa_coin))
+
+        ##############################################################
+        dex_text = Tex('DEX').scale(2).shift(R * 4 + U * 2)
+        shit_coin = LabeledDot(Tex('SHIT', color=BLACK).scale(0.5), radius=0.5, color=GREEN).shift(U * 1.5).to_edge(L)
+        sulsa_coin = LabeledDot(Tex('SULSA', color=BLACK).scale(0.3), radius=0.3, color=YELLOW).shift(D * 1.5).to_edge(L)
+
+        any_pairs = Tex('Anyone can make pairs', 'SULSA-USDT', 'SHIT-BTC', 'SHIT-SULSA', r'\vdots').arrange(D).next_to(dex_text, D, buff=1)
+
+        random_coin_1 = LabeledDot(Tex('BLAH', color=BLACK).scale(0.5), radius=0.5, color=RED).shift(U * 3).to_edge(L)
+        random_coin_2 = LabeledDot(Tex('BLUH', color=BLACK).scale(0.7), radius=0.7, color=BLUE).shift(D * 3).to_edge(L)
+
+        coins = VGroup(shit_coin, sulsa_coin, random_coin_1, random_coin_2)
+
+        self.play(ReplacementTransform(cex_text, dex_text),
+                  Uncreate(eval_audit_text),
+                  Uncreate(center_line),
+                  ReplacementTransform(limited_pairs, any_pairs)
+                  , run_time=1)
+        self.play(*[ FadeOut(coin, target_position=dex_text) for coin in coins ], run_time=3)
+        self.play(Uncreate(dex_text),
+                  Uncreate(any_pairs))
+
+        self.wait(5)
+
+
+
+class smart_contract(Scene):
+    def construct(self):
 
         smart_c_text = Tex('Smart Contract').scale(2)
 
