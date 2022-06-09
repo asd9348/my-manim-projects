@@ -618,7 +618,7 @@ class cons_of_smart_c(Scene):
                   Uncreate(VGroup(fees, fees_arrow, speed, speed_arrow)))
 
 
-class amm_xyk_basics(Scene):
+class amm_xyk_basics_1(Scene):
     def construct(self):
         # self.play(Create(NumberPlane()))
         ##### 그리하여 오늘은 에이엠엠ㅇ과 엑스와잉는 케이 공식에 대해 알아보겠습니다
@@ -999,295 +999,253 @@ class amm_xyk_basics(Scene):
         self.play(ReplacementTransform(final_price_per_btc, all_thanks_to))
 
 
-def amm_xyk_base_sturucture(self):
-    amm_text = Tex('Automatic Market Maker').scale(2)
+class amm_xyk_basics_with_math(Scene):
+    def construct(self):
+        ##### 간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데
+        ##### 이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다
+        amm_text = Tex('AMM').scale(2)
+        with_math_text = Tex('with Math').next_to(amm_text, D)
+
+        self.play(Create(amm_text))
+        self.play(Create(with_math_text))
+        self.play(Uncreate(VGroup(amm_text, with_math_text)))
+        #####
+        ##### 엑스와이는 케이에서 엑스를 이항시키면
+        ##### 와이는 엑스부느이 케이 형태입니다
+        # 좌측 상단
+        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2)
+        self.play(Write(xyk))
+
+        xyk_fraction = MathTex('y', '=', r'\frac{k}{x}').scale(2)
+        self.play(TransformMatchingShapes(xyk, xyk_fraction))
+        self.play(xyk_fraction.animate.scale(0.5).to_edge(U).shift(L * 6))
+
+        ##### 여러분 모두 중학교 때 함수를 배웠을 것이고
+        ##### 기본적인  와이는 2엑스도 배웠고 와이는 엑스분의 1을 빼운기억이 날겁니다
+        ##### 그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다
+        # 함수여러개 팝업 그중에 엑스부느이 일 강조
+        func_1 = MathTex(r'y = 5x').move_to(np.array([ -5, -2, 0 ]))
+        func_2 = MathTex(r'y = 2x-1').move_to(np.array([ 3.5, 3, 0 ]))
+        func_3 = MathTex(r'y = \frac{1}{x}')
+        func_4 = MathTex(r'y = \frac{x}{15}').move_to(np.array([ 0, -3, 0 ]))
+        func_5 = MathTex(r'y = -6x+\frac{17}{31}').move_to(np.array([ 5, -2, 0 ]))
+
+        self.play(AnimationGroup(Create(func_1),
+                                 Create(func_2),
+                                 Create(func_3),
+                                 Create(func_4),
+                                 Create(func_5),
+                                 lag_ratio=0.5))
+
+        self.play(Circumscribe(func_3))
+
+        self.play(AnimationGroup(Uncreate(func_1),
+                                 Uncreate(func_2),
+                                 Uncreate(func_3),
+                                 Uncreate(func_4),
+                                 Uncreate(func_5),
+                                 lag_ratio=0.5))
+
+        ##### 그리고 이 반비레함수는 케이값에 따라서
+        ##### 보이는 것과 같이 원점에서 점점 멀어지는 함수입니다
+        ##### 일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다
+        ##### 도대체 어떻게 가격을 결정하는지 알아보겠습니다
+        # 케이 바리어블 생성해서 옆에둠
+        # 좌표게생성
+        # 케이값 변경하면서 그래프 움직임
+        # 좌표계 삭제
+
+        k_var = Variable(1, MathTex("k"), var_type=Integer).next_to(xyk_fraction, R, buff=2)
+        k_tracker = k_var.tracker
+        k_tracker.set_value(1)
+        graph_range = 50
+
+        ax = Axes(x_range=[ 0, graph_range, int(graph_range / 10) ],
+                  y_range=[ 0, graph_range, int(graph_range / 10) ],
+                  x_length=5,
+                  y_length=5,
+
+                  tips=True,
+                  axis_config={"include_numbers": True, 'color': WHITE, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
+                  ).to_edge(L, buff=1.2)
+
+        xyk_graph = ax.plot(lambda x: k_tracker.get_value() / x,
+                            x_range=[ 0.00001, 20 ],
+                            use_smoothing=False, color=BLUE)
+
+        xyk_graph.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: k_tracker.get_value() / x,
+                    x_range=[ k_tracker.get_value() / graph_range, graph_range ],
+                    use_smoothing=False, color=BLUE)))
+
+        self.play(Create(k_var))
+        self.play(Create(ax))
+        self.play(Create(xyk_graph))
+        self.play(k_tracker.animate.set_value(300), run_time=4)
+        self.play(Uncreate(k_var))
+        self.play(Uncreate(ax))
+        self.play(Uncreate(xyk_graph))
+
+        ##### 여기서 엑스는 a코인의 양 와이는 비코인의 양입니다
+        ##### 페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나
+        ##### 앞으로 이해하기 쉽게 풀내부의 베이스에셋의 양이 풀내부의 엑스 쿼트에셋의 양이 와이라고
+        ##### 우리가 살펴볼 비티씨테더 페어에서는
+        ##### 엑스는 풀내부 비티씨의 양
+        ##### 왕이는 풀내부 테더의 양입니다
+        # 엑스 와이 화살표와 설명
+        # 화살표 밑에 설명 추가
+        # 화살표 밑에 설명 추가
+        A_coin_amt = Tex('A coin amount').shift(L * 4.5)
+        B_coin_amt = Tex('B coin amount')
+        A_coin_base = Tex('Base asset').next_to(A_coin_amt, D)
+        B_coin_quote = Tex('Quote asset').next_to(B_coin_amt, D)
+        A_coin_BTC = Tex('BTC').next_to(A_coin_base, D)
+        B_coin_USDT = Tex('USDT').next_to(B_coin_quote, D)
+        A_coin_texts = VGroup(A_coin_amt, A_coin_base, A_coin_BTC)
+        B_coin_texts = VGroup(B_coin_amt, B_coin_quote, B_coin_USDT)
+
+        x_arrow = Arrow(end=A_coin_amt.get_top(), start=xyk_fraction[ 0 ].get_bottom())
+        y_arrow = Arrow(end=B_coin_amt.get_top(), start=xyk_fraction[ 2 ].get_bottom())
+
+        self.play(Create(x_arrow),
+                  Create(y_arrow)
+                  )
+
+        self.play(Create(A_coin_texts),
+                  Create(B_coin_texts))
+        self.play(Uncreate(A_coin_texts),
+                  Uncreate(B_coin_texts),
+                  Uncreate(x_arrow),
+                  Uncreate(y_arrow)
+                  )
+
+        ##### 복잡하게 생각할 건 없고 와이는 엑스분의케이 그래프에서 케이는 그냥 어떤 값입니다.
+        ##### 그런데 아까 우리는 케이가 엑스 곱하기 와이인 걸 봤습니다.
+        # 기존에 있는 함수식 있고 다시 엑스와이는 케이 방정식 등장
+        # 함수식 밑에 등장
+        k_var = Variable(1, MathTex("k"), var_type=Integer).next_to(xyk_fraction, R, buff=2)
+        k_tracker = k_var.tracker
+        k_tracker.set_value(1)
+
+        xyk_form = MathTex('x*y=k')
+
+        ax = Axes(x_range=[ 0, 18, 4 ],
+                  y_range=[ 0, 6500, 1000 ],
+                  x_length=5,
+                  y_length=5,
+
+                  tips=True,
+                  axis_config={"include_numbers": False, 'color': WHITE, 'include_ticks': False, 'font_size': 20, 'tip_width': 0.1,
+                               'tip_height': 0.1},
+                  y_axis_config={"include_numbers": False, 'font_size': 20}
+                  ).to_edge(L, buff=1.2)
+
+        xyk_graph_btc = ax.plot(lambda x: k_tracker.get_value() / x,
+                                x_range=[ 0.00001, 6000 ],
+                                use_smoothing=False, color=WHITE)
+
+        xyk_graph_btc.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: k_tracker.get_value() / x,
+                    x_range=[ k_tracker.get_value() / 6000, 16 ],
+                    use_smoothing=False, color=WHITE)))
+
+        y_axis_label = ax.get_y_axis_label(MathTex('Amount of USDT in Pool', color=WHITE).rotate(PI / 2).scale(0.4), edge=LEFT,
+                                           direction=LEFT, buff=0.37)
+        x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.5)
+
+        axis_labels = VGroup(x_axis_label, y_axis_label)
+
+        coor_sys = VGroup(ax, axis_labels, xyk_graph_btc)
+
+        self.play(Create(k_var))
+        self.play(Create(coor_sys))
+        # self.play(Create(axis_labels))
+        # self.play(Create(xyk_graph_btc))
+
+        ##### 자 그렇다면 현재 비티씨테더 풀의 함수식은 10곱하기 3000인 30000입니다다
+        # 케이값은 30000으로 변경
+        self.play(k_tracker.animate.set_value(30000), run_time=4)
+
+        ##### 아까 말한 것처럼 가격은 풀에 각 코인이 얼마나 있는지로 결정되기 때문에
+        ##### 우리는 풀의 상태, 정확히 얘기하면 풀 내부의 베이스 에셋과 쿼트 에셋의 비율로 가격을 계산할 수 있습니다
+        ##### 엑스와이는 케이가 풀을 나타내는 방정식이고
+        ##### 풀의 상태는 아까 본 와이는 엑스분의 케이라는 함수의 그래프 위의
+        ##### 한 점으로 나타낼 수 있습니다. 여기에는 가격정보도 들어있는 것입니다.
+        # 그래프 스케일링 맞게 다시 생성하고 점 하나 만들기
+        # 비티씨 바리어블 테더 바리어블 생성
+
+        # 점 옆에 (엑스, 와이) 그리고 프라이스 레이블 붙이기
+        btc_var = Variable(10, MathTex("BTC"), var_type=Integer)
+        btc_tracker = btc_var.tracker
+        usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
+        usdt_tracker = usdt_var.tracker
+
+        curr_dot = Dot(radius=0.1, color=GREY).move_to(ax.c2p(btc_tracker.get_value(),
+                                                              xyk_graph_btc.underlying_function(btc_tracker.get_value())))
+        curr_dot.set_z_index(2)
+
+        curr_dot.add_updater(lambda dot: dot.move_to(ax.c2p(btc_tracker.get_value(),
+                                                            xyk_graph_btc.underlying_function(btc_tracker.get_value()))))
+
+        dot_label = MathTex(r'(x,y)\  Price', font_size=35).next_to(curr_dot, UR)
+
+        self.play(Create(curr_dot))
+        self.play(Create(dot_label))
+        self.wait(2)
+        dot_label.add_updater(lambda dot: dot.become(MathTex(
+            rf'({btc_tracker.get_value():.0f},{usdt_tracker.get_value():.0f})\  {usdt_tracker.get_value() / btc_tracker.get_value():.0f}USDT', font_size=35).next_to(
+            curr_dot, UR)))
+
+        ##### 거래자가 풀을 대상으로 비티씨를 매수하거나 매도한다는 것은
+        ##### 풀의 상태를 변화 시키는 것이기에 현재 있는 지점에서 그래프 상의 다른 지점으로 이동한다는 것이고 풀상태예 따라 가격이 변하는데
+        # 그래프에서 점 움직이면 레이블도 같이 움직이고 값도 변화
+
+        buy_btc = Tex(r'BUY','BTC').arrange(D).scale(2).shift(R*4)
+        buy_btc.set_color_by_tex("BUY", GREEN)
+        # buy_btc.set_color_by_tex("T", RED)
+        # buy_btc.set_color_by_tex("B", BLUE)
+        sell_btc = Tex(r'SELL','BTC').arrange(D).scale(2).shift(R*4)
+        sell_btc.set_color_by_tex("SELL", RED)
+
+        self.play(Create(buy_btc))
+        self.play(btc_tracker.animate.set_value(7),
+                  usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
+                  run_time=1)
+        self.play(Uncreate(buy_btc))
+
+        self.play(Create(sell_btc))
+        self.play(btc_tracker.animate.set_value(13),
+                  usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
+                  run_time=1)
+        self.play(Uncreate(sell_btc))
+
+
+        ##### 유동성 제공자가 유동성을 공급하거나 제거한다는 것은 케이값을 움직이는 것입니다.
+
+        ##### 유동성을 공급하는 것은 비티씨와 테더를 같이 넣어주는 것이고
+        ##### 그건 엑스와 와이가 둘다 늘어나기 때문에 케이값이 커지는 것입니다
+        ##### 유동성을 제거하면 비티씨와 테더가 같이 빠져나가는 것이고
+        ##### 엑스와 와이가 둘다 줄면 당연히 케이값도 줄어듭니다
+        # 케이값 움직이면서 그래프도 움직임
+        add_liq = Tex(r'ADD','Liquidity').arrange(D).scale(2).shift(R*4)
+        add_liq.set_color_by_tex("ADD", GREEN)
+
+        rmv_liq = Tex(r'REMOVE','Liquidity').arrange(D).scale(2).shift(R*4)
+        rmv_liq.set_color_by_tex("REMOVE", RED)
+
+        self.play(Create(add_liq))
+        self.play(k_tracker.animate.set_value(50000),
+                  run_time=1)
+        self.play(Uncreate(add_liq))
+
+        self.play(Create(rmv_liq))
+        self.play(k_tracker.animate.set_value(10000),
+                  run_time=1)
+        self.play(Uncreate(rmv_liq))
+
+
+        self.play(Uncreate(VGroup(xyk_fraction, k_var,curr_dot,dot_label, coor_sys)))
 
-    #
-    # 유동성 풀과 엑스와이는 케이 공식 텍스트로 보여주고
-    xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2).next_to(amm_text, D)
-    self.play(Create(amm_text))
-    self.play(Write(xyk))
-
-    #
-    # 엑스는 거래쌍 중에 코인 A의 양 와이는 코인 비의 양 화살표로 보여주고 없애기
-    A_coin_amt = Tex('A coin amount').shift(LEFT * 2 + DOWN * 2)
-    B_coin_amt = Tex('B coin amount').shift(RIGHT * 2 + DOWN * 2)
-    x_arrow = Arrow(end=A_coin_amt.get_top(), start=xyk[ 0 ].get_bottom())
-    y_arrow = Arrow(end=B_coin_amt.get_top(), start=xyk[ 2 ].get_bottom())
-
-    self.play(Create(x_arrow),
-              Create(y_arrow)
-              )
-
-    self.play(Create(A_coin_amt),
-              Create(B_coin_amt))
-    self.play(Uncreate(A_coin_amt),
-              Uncreate(B_coin_amt),
-              Uncreate(x_arrow),
-              Uncreate(y_arrow)
-              )
-
-    #
-    # 와이는 엑스부느이 케이로 변형
-    xyk_fraction = MathTex('y', '=', r'\frac{k}{x}').scale(2)
-
-    self.play(TransformMatchingShapes(xyk, xyk_fraction))
-    self.play(xyk_fraction.animate.to_edge(UP).scale(0.6))
-
-    self.wait(1)
-    #
-
-    # 풀도 만들기
-
-    xyk_and_liq = VGroup(xyk_fraction)
-
-    self.play(xyk_and_liq.animate.to_edge(LEFT).shift(RIGHT))
-    #
-    # 엑스는 와이분의 일 그래프 예시로 보여주기
-    graph_range = 50
-
-    ax = Axes(x_range=[ 0, graph_range, int(graph_range / 10) ],
-              y_range=[ 0, graph_range, int(graph_range / 10) ],
-              x_length=6,
-              y_length=6,
-
-              tips=True,
-              axis_config={"include_numbers": True, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
-              )
-
-    self.play(Create(ax))
-
-    k_var = Variable(1, MathTex("k"), var_type=Integer)
-    k_tracker = k_var.tracker
-    k_tracker.set_value(1)
-    # var = 10.5
-    self.wait()
-
-    xyk_graph = ax.plot(lambda x: k_tracker.get_value() / x,
-                        x_range=[ 0.00001, 20 ],
-                        use_smoothing=False, color=BLUE)
-
-    xyk_graph.add_updater(lambda graph: graph.become(
-        ax.plot(lambda x: k_tracker.get_value() / x,
-                x_range=[ k_tracker.get_value() / graph_range, graph_range ],
-                use_smoothing=False, color=BLUE)))
-
-    self.play(Create(xyk_graph))
-    k_var.next_to(ax, UR)
-    self.play(Create(k_var))
-
-    self.play(k_tracker.animate.set_value(300), run_time=4)
-
-    xyk_fraction.save_state()
-
-    self.play(Uncreate(ax),
-              Uncreate(xyk_graph),
-              Uncreate(xyk_fraction),
-              Uncreate(k_var))
-
-    liq_pool_rect = RoundedRectangle(height=6.3, width=4, corner_radius=0.5)
-    liq_pool_text = Tex('Liquidity Pool').next_to(liq_pool_rect, UP)
-
-    liq_pool = VGroup(liq_pool_rect, liq_pool_text).to_edge(UL)
-
-    liq_pool.set_z_index(3)
-
-    # self.add(index_labels(liq_pool[ 0 ]))
-    self.play(Create(liq_pool))
-
-    liq_provider = create_entity(Tex(r' \emph{Initial Liq\\provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
-                                 0.3).next_to(
-        liq_pool_rect, RIGHT, buff=1.5)
-    btc_asset = liq_provider[ 1 ]
-    usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", BLUE, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
-
-    liq_provider_asset = VGroup(btc_asset, usdt_asset)
-
-    liq_provider.add(usdt_asset)
-    self.play(Create(liq_provider))
-
-    # self.play(liq_provider_asset.animate.arrange(RIGHT,buff=0.5))
-
-    graph_range = 50
-    ax = Axes(x_range=[ 0, 18, 4 ],
-              y_range=[ 0, 6500, 1000 ],
-              x_length=5,
-              y_length=5,
-
-              tips=True,
-              axis_config={"include_numbers": False, 'include_ticks': False, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
-              y_axis_config={"include_numbers": False, 'font_size': 20}
-              ).to_edge(DR, buff=0.8)
-
-    y_axis_label = ax.get_y_axis_label(MathTex('Amount of USDT in Pool').rotate(PI / 2).scale(0.4), edge=LEFT, direction=LEFT, buff=0.5)
-    # self.add(y_axis_label)
-
-    x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool').scale(0.4), edge=DOWN, direction=DOWN, buff=0.5)
-    # self.add(x_axis_label)
-
-    axis_labels = VGroup(x_axis_label, y_axis_label)
-
-    usdt_bar = Rectangle(height=3, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE)
-    btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
-
-    bars = VGroup(btc_bar, usdt_bar)
-    bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
-
-    usdt_bar_pos = usdt_bar.get_bottom()
-    btc_bar_pos = btc_bar.get_bottom()
-
-    k_tracker.set_value(30000)
-
-    btc_var = Variable(10, MathTex("BTC"), var_type=Integer)
-    btc_tracker = btc_var.tracker
-
-    usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
-    usdt_tracker = usdt_var.tracker
-
-    usdt_var[ 0 ][ 0 ].set_color(BLUE)
-    btc_var[ 0 ][ 0 ].set_color(ORANGE)
-
-    # usdt_var_bar=usdt_var[ 1 ].copy()
-    # btc_var_bar=usdt_var[ 1 ].copy()
-    # usdt_var_bar.set_color(BLACK)
-    # btc_var_bar.set_color(BLACK)
-
-    vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT)
-
-    vars.next_to(liq_pool_rect, DOWN, buff=0.25)
-
-    self.play(ReplacementTransform(usdt_asset, usdt_bar),
-              ReplacementTransform(btc_asset, btc_bar))
-
-    # self.play(Write(usdt_var_bar),
-    #           Write(btc_var_bar))
-    #
-    self.play(Write(usdt_var),
-              Write(btc_var))
-
-    usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-        Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
-            usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-    btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-            btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-
-    # usdt_bar.add_updater(lambda usdt_bar : usdt_bar.become(Rectangle(height=usdt_tracker.get_value()/10, width=1.2, color=BLUE).align_to(usdt_bar_pos, DOWN)))
-
-    # self.play(usdt_tracker.animate.set_value(4000))
-    # self.play(btc_tracker.animate.set_value(30))
-
-    # self.play(k_var.animate.set_value(30000))
-    k_var = Variable(30000, MathTex("k"), var_type=Integer).to_edge(UR, buff=0.5)
-    k_tracker = k_var.tracker
-
-    # self.add(index_labels(btc_var))
-    pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
-        liq_pool_rect, RIGHT, buff=1.5).to_edge(UP)
-    pool_price_tracker = pool_price.tracker
-    pool_price.add_updater(lambda v: pool_price_tracker.set_value(usdt_tracker.get_value() / btc_tracker.get_value()))
-
-    xyk_fraction.restore()
-    self.play(Write(k_var[ 0 ]))
-    self.play(Create(ax),
-              Create(axis_labels),
-              Create(pool_price),
-              TransformMatchingShapes(Group(btc_var[ 1 ].copy(), usdt_var[ 1 ].copy()), k_var[ 1 ].copy()),
-              Create(xyk_fraction.next_to(k_var, LEFT, buff=1))
-              )
-    self.play(FadeOut(liq_provider))
-    xyk_graph_btc = ax.plot(lambda x: k_tracker.get_value() / x,
-                            x_range=[ 0.00001, 6000 ],
-                            use_smoothing=False, color=PURPLE)
-
-    xyk_graph_btc.add_updater(lambda graph: graph.become(
-        ax.plot(lambda x: k_tracker.get_value() / x,
-                x_range=[ k_tracker.get_value() / 6000, 20 ],
-                use_smoothing=False, color=GREY)))
-
-    curr_dot = Dot(radius=0.1, color=GREY).move_to(ax.c2p(btc_tracker.get_value(),
-                                                          xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-    curr_dot.set_z_index(2)
-
-    curr_dot.add_updater(lambda dot: dot.move_to(ax.c2p(btc_tracker.get_value(),
-                                                        xyk_graph_btc.underlying_function(btc_tracker.get_value()))))
-
-    lines_to_point = ax.get_lines_to_point(ax.c2p(1, 1), color=GREEN_B)
-
-    vertical_line = ax.get_vertical_line(ax.c2p(btc_tracker.get_value(),
-                                                xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-    horizontal_line = ax.get_horizontal_line(ax.c2p(btc_tracker.get_value(),
-                                                    xyk_graph_btc.underlying_function(btc_tracker.get_value())))
-
-    new_horzontal_line = VGroup()
-    for i in range(1, len(horizontal_line) + 1):
-        new_horzontal_line.add(horizontal_line[ -i ])
-
-    horizontal_line = new_horzontal_line
-
-    x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
-    x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
-    x_marker_val = Integer(btc_tracker.get_value())
-    x_marker_val.add_updater(
-        lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
-
-    y_marker = Triangle(color=BLUE, fill_color=BLUE, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
-    y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
-    y_marker_val = Integer(usdt_tracker.get_value())
-    y_marker_val.add_updater(lambda integer: integer.become(
-        Integer(usdt_tracker.get_value()).scale(0.4).rotate(PI / 2).next_to(horizontal_line, LEFT, buff=0.3)))
-
-    lines = VGroup(vertical_line, horizontal_line)
-    markers = VGroup(x_marker, x_marker_val, y_marker, y_marker_val)
-
-    # lines_to_point.add_updater(lambda lines: lines.become(ax.get_lines_to_point(
-    #     ax.c2p(btc_tracker.get_value(),
-    #            xyk_graph_btc.underlying_function(btc_tracker.get_value())),color=BLUE)))
-    #
-    self.play(Create(xyk_graph_btc))
-    self.play(Create(curr_dot))
-
-    self.play(Create(lines), run_time=2)
-    self.play(Create(markers), run_time=2)
-
-    vertical_line.add_updater(lambda line: line.become(ax.get_vertical_line(ax.c2p(btc_tracker.get_value(),
-                                                                                   xyk_graph_btc.underlying_function(
-                                                                                       btc_tracker.get_value())))))
-    horizontal_line.add_updater(lambda line: line.become(ax.get_horizontal_line(ax.c2p(btc_tracker.get_value(),
-                                                                                       xyk_graph_btc.underlying_function(
-                                                                                           btc_tracker.get_value())))))
-
-    # 사각형을 만들고 그 넓이와 길이는 점선 그리고 정렬을 원점에 nexxt to DR buff 0
-    area = Rectangle(width=curr_dot.get_x() - ax.get_origin()[ 0 ], height=curr_dot.get_y() - ax.get_origin()[ 1 ], fill_color=GREEN,
-                     fill_opacity=0.5, stroke_width=0).align_to(curr_dot.get_center(), UR)
-    area.add_updater(lambda area: area.become(
-        Rectangle(width=curr_dot.get_x() - ax.get_origin()[ 0 ], height=curr_dot.get_y() - ax.get_origin()[ 1 ], fill_color=GREEN,
-                  fill_opacity=0.5, stroke_width=0).align_to(curr_dot.get_center(), UR)))
-
-    area_text = MathTex(r'BTC \times  USDT').scale(0.5).arrange(DOWN, buff=0.1)
-    area_text.add_updater(
-        lambda text: text.become(MathTex(r'BTC \times USDT', 'in \  Pool').scale(0.4).arrange(DOWN, buff=0.1).move_to(area)))
-
-    # area.add_updater(lambda)
-    # print(ax.get_origin()-curr_dot.get_x())
-    # print(ax.get_origin().get-curr_dot.get_y())
-
-    self.play(Create(area))
-    self.play(Create(area_text))
-
-    # self.play(btc_tracker.animate.set_value(13),
-    #           usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)))
-    #
-    # self.wait(1)
-    #
-    # self.play(btc_tracker.animate.set_value(7),
-    #           usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)))
-    #
-    # self.play(FadeOut(liq_provider[ 0 ]))
-
-    ####scnee 1 user will get btc from the pool in exchange of usdt
-
-    self.wait(2)
 
 
 class amm_xyk_px_up_1(Scene):
@@ -1651,7 +1609,7 @@ class amm_xyk_px_up_1(Scene):
         origin_dot.set_z_index(1.5)
         self.play(Create(origin_dot))
         self.play(btc_tracker.animate.set_value(7),
-                  #         usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
+                          usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
                   Transform(scene1_7btc_fill_box, user_asset_btc),
                   Transform(user_asset_usdt, scene1_13btc_fill_box))
 
