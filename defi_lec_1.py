@@ -1141,7 +1141,7 @@ class slippage(Scene):
         # self.add(index_labels(separated_long_table))
         self.play(*[ FadeOut(mobject) for mobject in
                      [ pair, curr_px_rect, separated_long_table, separated_shrt_table, separated_long_table_org, curr_px_number_100 ] ])
-        slippage_form = MathTex('Slippage', '=', 'CurrentPrice', r'\times', 'Quantity', '-', 'AveragePurchasePrice', r'\times',
+        slippage_form = MathTex('SlippageCost', '=', 'CurrentPrice', r'\times', 'Quantity', '-', 'AveragePurchasePrice', r'\times',
                                 'Quantity').scale(0.9)
         # 'Slippage']).scale(0.8)
 
