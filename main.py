@@ -11,6 +11,10 @@ q = 0.3
 qq = 2 * q
 qqq = 3 * q
 
+t = 3
+tt = 5
+ttt = 7
+
 L = LEFT
 R = RIGHT
 U = UP
@@ -84,122 +88,24 @@ class final(Scene):
 class working2(Scene):
     def construct(self):
         dot = LabeledDot('Fuck')
-        ##### 다음으로 넘어가기 전에 수수료예 대해 알아보겠스빈다.
-        # fee 제목 만들기
-        fees = Tex('Fees').scale(2)
+        # 씬 1에써 디센트럴 네트워크 메인 선 2개 더 끊어져야됨
+        # 씬1에서 이밸앤 오딧 바 짧게
+        # 씬1에서 설사 코인 좀 더 크게
 
-        self.play(Create(fees))
-        self.play(Uncreate(fees))
+        # 씬3에서 체인이 생기기 전까지만 재생하고 그 다음 체인은 롯츠오브피 슬로우스피드와 같이 재생하면서 존나 느리게
+        # 씬4에서 테더 자산 색 변경
 
-        ##### 덱스에서 수수료는 독특한 방식으로 작동합니다.
-        ##### 거래를 하기 위해 코인을 풀로 보내면 코인이 풀에 도착하기 전에 수수료를 떼고
-        ##### 남은 금액만 풀에 들어가서 그거에 맞게 거래가 일어납니다. 그리고 거래가 종료되면 풀에 그냥 수수료를 추가합니다.
-        ##### 수수료는 거래가 발생할 때마다 풀에 쌓이기 때문에 매번 거래가 종료되면 케이값은 증가합니다
-        # 풀박스 만들고 코인덩어리까지 세팅 이전 거 활용
-        # 코인이들어가다 멈추고 분리됨
-        # 수수료는 따로 빠져서 가만히 있고 거래완료 그리고 풀로 수수료가 들어감
+        # 씬5부터 전부 해당 엑스춛 레이블 간격
+        # 안 맞음
+        # 씬5에서 케이값 변경에 따라서 좌표값 안 움직임
+        # 씬6에서 쉐어에 178분의 87이라고 값 한 번 주기
+        # 씬6에서 오리지널 그래프느 녹색으로 가자
+        # 씬7에서는 이닛 제공자 없애지 말고 그냥 냅두기
+        # 씬8에 색 안 맞음
+        # 씬10 유저 돈트 오타
 
-        pool_rect = RoundedRectangle(width=7, height=4, corner_radius=0.5)
-        pool_rect_text = Tex('BTC/USDT Pool').next_to(pool_rect, U)
-        self.play(Create(pool_rect_text),
-                  Create(pool_rect))
-
-        btc_lump = LabeledDot('BTC', radius=1, color=ORANGE).shift(L * 1.5)
-        usdt_lump = LabeledDot('USDT', radius=1, color=GREEN_C).shift(R * 1.5)
-        # btc_lump.save_state()
-        # usdt_lump.save_state()
-        # btc_lump_arc = Arc(radius=2, angle=PI).flip(axis=np.array([ 0, 1, 0 ])).shift(L * 3.5)
-        # usdt_lump_arc = Arc(radius=2, angle=PI).shift(R * 3.5)
-
-        self.play(Create(btc_lump),
-                  Create(usdt_lump))
-
-        btc_lump_inflow = LabeledDot('BTC', radius=1, color=ORANGE).shift(R * 5.5)
-
-        self.play(Create(btc_lump_inflow))
-        self.play(btc_lump_inflow.animate.next_to(pool_rect, buff=1))
-
-        btc_lump_fee = LabeledDot(MathTex('Fee', font_size=20, color=BLACK), radius=0.3, color=ORANGE).move_to(btc_lump_inflow)
-        btc_lump_fee.set_z_index(-1)
-
-        self.play(btc_lump_inflow.animate.scale(0.8),
-                  btc_lump_fee.animate.shift(D * 2))
-
-        self.play(FadeOut(btc_lump_inflow, target_position=btc_lump),
-                  btc_lump.animate.scale(1.1))
-        # self.play(btc_lump.animate.scale(1.1))
-
-        usdt_lump_outflow = LabeledDot('USDT', radius=1, color=GREEN).shift(R * 5.5)
-        self.play(FadeIn(usdt_lump_outflow, target_position=usdt_lump),
-                  usdt_lump.animate.scale(1 / 1.1))
-
-        self.play(FadeOut(btc_lump_fee, target_position=btc_lump),
-                  btc_lump.animate.scale(1.05))
-        self.play(FadeOut(usdt_lump_outflow, shift=R))
-
-        k_increase = Tex('K increased a bit', 'after every trade').arrange(D).next_to(pool_rect, D)
-
-        self.play(Create(k_increase))
-
-        self.play(VGroup(pool_rect, pool_rect_text, btc_lump, usdt_lump, k_increase).animate.to_edge(L))
-
-        ##### 중앙화 거래소에서는 거래소가 가져가니 우리의 수수료가 가격에 영향을 줄 일은 없었습니다
-        ##### 그러나 덱스에서는 수수료가 풀 내부의 비트 테더 비율을 조금씩 바꾸기 때문에 우리가 생각한 것과 미세하게 가격이 차이가 납니다
-        ##### 수수료가 1퍼인 상황을 생각해 보겠ㅅ빈다
-        ##### 비트 10개 3000테더가 있는 풀에 1비트를 보내면 수수료를 뗀 0.99비트가 전송됩니다
-        ##### 그리고 0.99에 대한 교환이 일어나고 풀에서 3000-30000분에 10.99테더가 빠져나가고 30000나누기 10.99인 2729테더가 남습니다
-        ##### 지금까지는 케이는 여전히 30000입니다
-        ##### 그뒤에 풀에 빼놨던 수수료인 0.01비트를 넣습니다. 풀에는 이제 11비트와 2729테더가 남아있습니다
-        ##### 케이는 30027.297로 약간 증가했습니다 현재 비트의 가격은 248.159테더입니다
-        # 오른쪽은 수수료 있는 경우 위에 타이틀 달아주고
-        # 케이 바리어블 비티씨바리어블 테더 바리어블 가격 바리어블 다 만들어줌
-        fee_situation = Tex(r'1\% Fee').shift(R * 4 + U * 3)
-
-        k_var_fee = Variable(30000, 'k', var_type=Integer)
-        btc_var_fee = Variable(10.00, 'BTC')
-        usdt_var_fee = Variable(3000.00, 'USDT')
-        price_var_fee = Variable(300.00, 'Price')
-
-        k_tracker_fee = k_var_fee.tracker
-        btc_tracker_fee = btc_var_fee.tracker
-        usdt_tracker_fee = usdt_var_fee.tracker
-        price_tracker_fee = price_var_fee.tracker
-        price_unit = Tex(r'USDT', color=WHITE).next_to(price_var_fee, buff=0.1)
-        price_unit.add_updater(lambda unit: unit.next_to(price_var_fee, R, buff=0.1))
-        # price_var_fee.add(price_unit)
-        price_var_fee.add_updater(lambda v: price_tracker_fee.set_value(usdt_tracker_fee.get_value() / btc_tracker_fee.get_value()))
-
-        VGroup(k_var_fee, btc_var_fee, usdt_var_fee, price_var_fee).arrange(D, aligned_edge=L).shift(R * 3.5, U * 1)
-
-        self.play(Create(fee_situation))
-        self.play(Create(VGroup(k_var_fee, btc_var_fee, usdt_var_fee, price_var_fee, price_unit)))
-
-        self.play(btc_tracker_fee.animate.set_value(10.99),
-                  usdt_tracker_fee.animate.set_value(30000 / 10.99), run_time=5)
-
-        self.wait(2)
-        self.play(btc_tracker_fee.animate.set_value(11),
-                  k_tracker_fee.animate.set_value(11 * (30000 / 10.99)), run_time=5)
-
-        # self.play(btc_tracker_fee.animate.set_value(10.99))
-
-        ##### 원래 1비트를 매도했다고 생각하면 가격은 30000나누기 11나누기 11인 247.933테더가 되어야합니다
-        ##### 그러나 수수료가 있었다면 30000나누기 10.99 나누기 11인 248.159 테더가 됩니다.
-        ##### 즉 이전 거래자의 행동에 따라서 미세하게 이익이 바뀝니다.
-        # 윈쪽에 수수료가 없는 겨웅 타이틀 달고
-        # 케이 바리어블 비티씨바리어블 테더 바리어블 가격 바리어블 다 만들어줌
-        if_fee = Tex(r'If it were 11 BTC', 'It would be 247.93 USDT').arrange(D).next_to(price_var_fee, D, buff=1).align_to(price_var_fee,
-                                                                                                                            L)
-        self.play(Create(if_fee))
-
-        ##### 비트를 매도하는 행위에서 수수료가 있던 경우가 가격이 덜 떨어졌으므로
-        ##### 같은 방향 즉 이후에 매도할 사람은 원래 앞사람이 거래하고 247테더를 생각하고 있었으나
-        ##### 예상보다 돈을 좀 더 건질 수 있게 됐습니다
-        ##### 반대로 앞사람과 반대방향 즉 매수를 하려던 사람은 자신이 앞사람을 보고 생각하던 247달러보다
-        ##### 높은 248테더에 매수를 해야해서 예상보다 지출이 늘었습니다
-        #
-
-        self.wait(5)
+        mtex_1 = MathTex('for', 'dkjfkd').arrange(D)
+        self.play(Create(mtex_1))
 
 
 class working1(Scene):
@@ -208,13 +114,21 @@ class working1(Scene):
 
         ##### ###############################################################################################################
 
-        ##### 이번에는 비티씨를 파는 경우입니다
-        ##### 아까와 같은 원리로 비티씨를 팔면 가격이 내려가고
-        ##### 여기서도 프라이스 임팩트를 막을 수는 없습니다.
         #####
-        ##### 가격은 예상대로 내려가고 매도자는 여전히 기분이 좋지 않습니다
-        ##### 300달러를 보고 3개를 판매했지만 900달러가 아닌 692달러 밖에 못 받았기 때문입니다.
-        ##### 이 거대한 괴리는 유동성즉 풀의 크기가 작기 때문입니다.
+        ##### 잠시 복습해보고 좀 더 복잡한 상황을 다뤄보겠습니다
+        #####
+        ##### 케이가 증가하는 상황은 색을 좀 더 진하게 감소하는 상황은 연하게
+        ##### 가격이 내려가는 것은 빨간샊 올라가는 것은 초록색으로 표시했습니다.
+        ##### 원점은 회색입니다
+        #####
+        ##### 가격상승
+        ##### 가격하락
+        #####
+        ##### 케이상승
+        ##### 케이하락
+        ##### 다시한번명심할 것은 유동성 공급 제거는 가격과 관계가 없습니다
+        ##### 그냥 지금 가격에 맞게 풀전체 비중에서 나의 지분을 없애는 것이므로 가격을 움직이는 행위가 아닙니다.
+        ##### 프라이스 임팩트와 관계가 없습니다
         #####
 
         # 케이 바리어블, 초기 엘피, 좌표계
@@ -222,14 +136,15 @@ class working1(Scene):
 
         liq_pool_rect = RoundedRectangle(height=6.3, width=4, corner_radius=0.5)
         liq_pool_text = Tex('Liquidity Pool').next_to(liq_pool_rect, UP)
-        liq_pool = VGroup(liq_pool_rect, liq_pool_text).to_edge(UL).shift(R * 0.5)
+        liq_pool = VGroup(liq_pool_rect, liq_pool_text).to_edge(UL).shift(R*0.5)
         liq_pool.set_z_index(3)
 
         k_var = Variable(30000, MathTex("k"), var_type=Integer).to_edge(UR)
         k_tracker = k_var.tracker
         k_tracker.set_value(30000)
 
-        self.play(Create(liq_pool))
+        self.play(Create(liq_pool),run_time=t)
+        self.wait(t)
 
         liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
@@ -237,17 +152,17 @@ class working1(Scene):
         usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
-        self.play(Create(liq_provider))
+        self.play(Create(liq_provider),run_time=t)
+        self.wait(t)
 
         ax = Axes(x_range=[ 0, 18, 4 ], y_range=[ 0, 6500, 1000 ], x_length=5, y_length=5, tips=True,
-                  axis_config={"include_numbers": False, 'color': WHITE, 'include_ticks': False, 'font_size': 20}, ).to_edge(DR, buff=0.8)
+                  axis_config={"include_numbers": False, 'color': WHITE, 'include_ticks': False, 'font_size': 20}, ).to_edge(DR,buff = 0.8)
 
-        ax.shift(U * (liq_pool_rect.get_bottom()[ 1 ] - ax[ 0 ].get_y()))
+        ax.shift(U*(liq_pool_rect.get_bottom()[1]-ax[0].get_y()))
 
-        # ax[0].move_to(np.array([ax[0].g() ,liq_pool_rect.get_bottom()[1],0]))
         y_axis_label = ax.get_y_axis_label(MathTex('Amount of USDT in Pool', color=WHITE).rotate(PI / 2).scale(0.4), edge=LEFT,
                                            direction=LEFT, buff=0.37)
-        x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.5)
+        x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
         usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
@@ -268,9 +183,11 @@ class working1(Scene):
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
         self.play(ReplacementTransform(usdt_asset, usdt_bar),
-                  ReplacementTransform(btc_asset, btc_bar))
+                  ReplacementTransform(btc_asset, btc_bar),run_time=t)
+        self.wait(t)
         self.play(Write(usdt_var),
-                  Write(btc_var))
+                  Write(btc_var),run_time=t)
+        self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
             Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
@@ -284,34 +201,42 @@ class working1(Scene):
         pool_price.add_updater(lambda v: pool_price_tracker.set_value(usdt_tracker.get_value() / btc_tracker.get_value()))
         pool_price_unit = Tex(r'\$').next_to(pool_price, buff=0.1)
         self.play(Write(k_var[ 0 ]))
+        self.wait(t)
         self.play(Create(ax),
                   Create(axis_labels),
                   Create(pool_price_unit),
                   Create(pool_price),
                   TransformMatchingShapes(Group(btc_var[ 1 ].copy(), usdt_var[ 1 ].copy()), k_var[ 1 ].copy()),
-                  Create(xyk_fraction.next_to(k_var, LEFT, buff=1))
+                  Create(xyk_fraction.next_to(k_var, LEFT, buff=1)),run_time=tt
                   )
+        self.wait(t)
 
         lp_amt_form_1 = MathTex(r'Init\  l =\sqrt{x \times y}').next_to(liq_provider[ 0 ], UP).scale(0.7)
         lp_amt_form_2 = MathTex(r'Init\  l =\sqrt{10 \times 3000}').next_to(liq_provider[ 0 ], UP).scale(0.7)
         lp_amt_form_3 = MathTex(r'Init\  l =\sqrt{30000}').next_to(liq_provider[ 0 ], UP).scale(0.7)
         lp_amt_int = Tex(rf'{int(30000 ** (1 / 2))} LP token').move_to(lp_amt_form_1).scale(0.7)
 
-        self.play(Create(lp_amt_form_1))
-        self.play(TransformMatchingShapes(lp_amt_form_1, lp_amt_form_2))
-        self.play(TransformMatchingShapes(lp_amt_form_2, lp_amt_form_3))
-        self.play(TransformMatchingShapes(lp_amt_form_3, lp_amt_int))
+        self.play(Create(lp_amt_form_1),run_time=t)
+        self.wait(t)
+        self.play(TransformMatchingShapes(lp_amt_form_1, lp_amt_form_2),run_time=t)
+        self.wait(t)
+        self.play(TransformMatchingShapes(lp_amt_form_2, lp_amt_form_3),run_time=t)
+        self.wait(t)
+        self.play(TransformMatchingShapes(lp_amt_form_3, lp_amt_int),run_time=t)
+        self.wait(t)
 
         box = Rectangle(width=1.6, height=1, fill_color=WHITE, stroke_color=WHITE, fill_opacity=1)
         text = Tex(r"173\\BTC-USDT\\LP", color=BLACK).scale(0.5)
         lp_asset = VGroup(box, text).next_to(liq_provider[ 0 ], DOWN, buff=0.1)
 
         self.play(Create(lp_asset),
-                  Uncreate(lp_amt_int))
+                  Uncreate(lp_amt_int),run_time=t)
+        self.wait(t)
 
         self.play(FadeOut(liq_provider),
                   FadeOut(lp_amt_int),
-                  FadeOut(lp_asset))
+                  FadeOut(lp_asset),run_time=t)
+        self.wait(t)
 
         xyk_graph_btc = ax.plot(lambda x: k_tracker.get_value() / x,
                                 x_range=[ 0.00001, 6000 ],
@@ -353,11 +278,15 @@ class working1(Scene):
         lines = VGroup(vertical_line, horizontal_line)
         markers = VGroup(x_marker, x_marker_val, y_marker, y_marker_val)
 
-        self.play(Create(xyk_graph_btc))
-        self.play(Create(curr_dot))
+        self.play(Create(xyk_graph_btc),run_time=t)
+        self.wait(t)
 
-        self.play(Create(lines), run_time=2)
-        self.play(Create(markers), run_time=2)
+        self.play(Create(curr_dot),run_time=t)
+        self.wait(t)
+
+        self.play(Create(lines),run_time=t)
+        self.play(Create(markers),run_time=t)
+        self.wait(t)
 
         vertical_line.add_updater(lambda line: line.become(ax.get_vertical_line(ax.c2p(btc_tracker.get_value(),
                                                                                        xyk_graph_btc.underlying_function(
@@ -376,157 +305,150 @@ class working1(Scene):
         area_text.add_updater(
             lambda text: text.become(MathTex(r'BTC \times USDT', 'in \  Pool').scale(0.4).arrange(DOWN, buff=0.1).move_to(area)))
 
-        self.play(Create(area))
-        self.play(Create(area_text))
+        self.play(Create(area),run_time=t)
+        self.play(Create(area_text),run_time=t)
+        self.wait(t)
 
-        ##### DIVERGE
-        #####
-        user = create_entity(Tex(r' \emph{User}', color=BLACK), 1, WHITE, "3BTC", ORANGE, 1.4, 0.3).next_to(liq_pool_rect,
-                                                                                                            RIGHT, buff=1.5)
-        user_asset_btc = user[ 1 ]
-        user_asset_pos = user_asset_btc.get_center()
-        user_asset_usdt = create_entity("A", 0.5, WHITE, "692USDT", GREEN, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
 
-        user_line = Tex(r'I want to sell 3 BTC\\I dont have some USDT').scale(0.5).next_to(user, DOWN)
+        ##### DIVERGE############################################################################################################
 
-        self.play(Create(user))
-        self.play(Create(user_line))
-        self.play(Uncreate(user_line))
+        k_org_px_org_dot = curr_dot.copy().clear_updaters().set_color(GREY).set_z_index(1.5).scale(1.2)
+        self.play(Create(k_org_px_org_dot))
 
-        # self.add(index_labels(btc_bar))###
+        # 가격 상승#####################################################################################
+        px_up = MathTex(r'Price \  \Uparrow').move_to(liq_provider[0])
+        self.play(Write(px_up))
 
-        # scene2_btc_dashed_box = Rectangle(color=RED).align_to(btc_bar[0],UL,alignment_vect=btc_bar[0].get_edge_center(UP))
-        scene2_2308usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.2307, stroke_width=3,
-                                        stroke_color=RED_E).align_to(
-            usdt_bar, UL)
-        scene2_13btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.3, stroke_width=3,
-                                     stroke_color=GREEN_E).next_to(btc_bar, UP, buff=0)
+        self.play(
+            btc_tracker.animate.set_value(7),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
 
-        scene2_2308usdt_fill_box = scene2_2308usdt_box.copy().set_fill(GREEN, opacity=1)
-        scene2_13btc_fill_box = scene2_13btc_box.copy().set_fill(ORANGE, opacity=1)
 
-        scene2_2308usdt_fill_box.set_stroke(width=0, opacity=0)
-        scene2_13btc_fill_box.set_stroke(width=0, opacity=0)
-
-        scene2_2308usdt_fill_box.set_z_index(3)
-        scene2_13btc_fill_box.set_z_index(3)
-
-        self.play(Create(scene2_2308usdt_box))
-        self.play(Create(scene2_13btc_box))
-        scene2_2308usdt_brace = BraceBetweenPoints(scene2_2308usdt_box.get_corner(UR), scene2_2308usdt_box.get_corner(DR), color=RED_E,
-                                                   stroke_color=RED_E,
-                                                   stroke_width=3,
-                                                   ).flip(axis=np.array([ 0., 1., 0. ])).next_to(scene2_2308usdt_fill_box,
-                                                                                                 RIGHT)
-        scene2_13btc_brace = BraceBetweenPoints(scene2_13btc_box.get_corner(UL), scene2_13btc_box.get_corner(DL), color=GREEN_E,
-                                                stroke_color=GREEN_E, stroke_width=3
-                                                ).next_to(scene2_13btc_fill_box,
-                                                          LEFT)
-
-        scene2_2308usdt_brace_label = Integer(btc_tracker.get_value())
-        scene2_2308usdt_brace_label.add_updater(lambda label: label.become(
-            Integer(692).scale(0.4).rotate(-PI / 2).next_to(scene2_2308usdt_brace, RIGHT, buff=0.3)))
-        scene2_13btc_brace_label = Integer(usdt_tracker.get_value())
-        scene2_13btc_brace_label.add_updater(lambda label: label.become(
-            Integer(3).scale(0.4).rotate(PI / 2).next_to(scene2_13btc_brace, LEFT, buff=0.3)))
-
-        scene2_braces = VGroup(scene2_2308usdt_brace, scene2_13btc_brace)
-        scene2_brace_labels = VGroup(scene2_2308usdt_brace_label, scene2_13btc_brace_label)
-
-        self.play(Create(scene2_braces),
-                  Create(scene2_brace_labels))
-
-        usdt_bar.clear_updaters()
-        btc_bar.clear_updaters()
-
-        self.add(scene2_2308usdt_fill_box)
-        usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=2307 / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
-                usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
-        # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        #     Rectangle(height=13 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
-        #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
-
-        origin_dot = curr_dot.copy()
-        origin_dot.clear_updaters()
-        origin_dot.set_color(RED)
-        origin_dot.set_z_index(1.5)
-
-        self.play(Create(origin_dot))
-        self.play(btc_tracker.animate.set_value(13),
-                  usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
-                  Transform(scene2_2308usdt_fill_box, user_asset_usdt),
-                  Transform(user_asset_btc, scene2_13btc_fill_box))
-
-        scene2_arrow = CurvedArrow(origin_dot.get_center(), curr_dot.get_center(), radius=4, tip_length=0.25).shift(
-            RIGHT * 0.3 + UP * 0.3)
-        scene2_arrow_label = Tex('Buy BTC in exchange of USDT').scale(0.3).next_to(scene2_arrow, UR)
-
-        self.play(Create(scene2_arrow))
-
-        scene2_slippage_text = Tex(r'I sold 3 BTC \\and got 692 USDT').scale(0.7).next_to(user_asset_pos, DOWN)
-        scene2_slippage_form = MathTex(r'692 \divisionsymbol 3').next_to(scene2_slippage_text, DOWN)
-        scene2_slippage_result = MathTex(rf'{int(-(k_tracker.get_value() / btc_tracker.get_value() - 3000) / 3)}\$ \  per\ BTC ').move_to(
-            scene2_slippage_form.get_center())
-
-        self.play(Create(scene2_slippage_form),
-                  Create(scene2_slippage_text))
-
-        self.play(ReplacementTransform(scene2_slippage_form, scene2_slippage_result))
+        # 가격이 올라간다는 건 btc가 usdt보다 상대적으로 인기가 많아진다는 것입니다.
 
         self.wait(2)
-        ##### ###############################################################################################################
-        #####
+        self.play(Unwrite(px_up))
+        self.wait(2)
 
-        #####
-        ###################################################################################################################
-        #####
-        ##### 다음으로 넘어가기 전에 수수료예 대해 알아보겠스빈다.
-        #####
-        ##### 수수료는 거래가 발생할 때마다 풀에 쌓이기 때문에 매번 거래가 종료되면 케이값은 증가합니다
-        ##### 덱스에서 수수료는 독특한 방식으로 작동합니다.
-        ##### 거래를 하기 위해 코인을 풀로 보내면 코인이 풀에 도착하기 전에 수수료를 떼고
-        ##### 남은 금액만 풀에 들어가서 그거에 맞게 거래가 일어납니다. 그리고 거래가 종료되면 풀에
-        ##### 그냥 수수료를 추가합니다.
-        ##### 중앙화 거래소에서는 거래소가 가져가니 우리의 수수료가 가격에 영향을 줄 일은 없었습니다
-        ##### 그러나 덱스에서는 수수료가 풀 내부의 비트 테더 비율을 조금씩 바꾸기 때문에 우리가 생각한 것과 미세하게 가격이 차이가 납니다
-        #####
-        ##### 수수료가 1퍼인 상황을 생각해 보겠ㅅ빈다
-        ##### 비트 10개 3000테더가 있는 풀에 1비트를 보내면 수수료를 뗀 0.99비트가 전송됩니다
-        ##### 그리고 0.99에 대한 교환이 일어나고 풀에서 3000-30000분에 10.99테더가 빠져나가고 30000나누기 10.99인 2729테더가 남습니다
-        ##### 지금까지는 케이는 여전히 30000입니다
-        ##### 그뒤에 풀에 빼놨던 수수료인 0.01비트를 넣습니다. 풀에는 이제 11비트와 2729테더가 남아있습니다
-        ##### 케이는 30027.297로 약간 증가했습니다 현재 비트의 가격은 248.159테더입니다
-        #####
-        ##### 원래 1비트를 매도했다고 생각하면 가격은 30000나누기 11나누기 11인 247.933테더가 되어야합니다
-        ##### 그러나 수수료가 있었다면 30000나누기 10.99 나누기 11인 248.159 테더가 됩니다.
-        #####
-        ##### 즉 이전 거래자의 행동에 따라서 미세하게 이익이 바뀝니다.
-        #####
-        ##### 비트를 매도하는 행위에서 수수료가 있던 경우가 가격이 덜 떨어졌으므로
-        ##### 같은 방향 즉 이후에 매도할 사람은 원래 앞사람이 거래하고 247테더를 생각하고 있었으나
-        ##### 예상보다 돈을 좀 더 건질 수 있게 됐습니다
-        ##### 반대로 앞사람과 반대방향 즉 매수를 하려던 사람은 자신이 앞사람을 보고 생각하던 247달러보다
-        ##### 높은 248테더에 매수를 해야해서 예상보다 지출이 늘었습니다
-        #####
-        #####
-        ##### ###############################################################################################################
-        #####
-        ##### 잠시 복습해보고 좀 더 복잡한 상황을 다뤄보겠습니다
-        #####
-        ##### 케이가 증가하는 상황은 색을 좀 더 진하게 감소하는 상황은 연하게
-        ##### 가격이 내려가는 것은 빨간샊 올라가는 것은 초록색으로 표시했습니다.
-        ##### 원점은 회색입니다
-        #####
-        ##### 가격상승
-        ##### 가격하락
-        #####
-        ##### 케이상승
-        ##### 케이하락
-        ##### 다시한번명심할 것은 유동성 공급 제거는 가격과 관계가 없습니다
-        ##### 그냥 지금 가격에 맞게 풀전체 비중에서 나의 지분을 없애는 것이므로 가격을 움직이는 행위가 아닙니다.
-        ##### 프라이스 임팩트와 관계가 없습니다
-        #####
+        k_org_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_C).set_z_index(1.5)
+        self.add(k_org_px_up_dot)
+
+        # 가격 하락#####################################################################################
+        px_dn = MathTex(r'Price \  \Downarrow').move_to(liq_provider[0])
+        self.play(Write(px_dn))
+
+        self.play(
+            btc_tracker.animate.set_value(13),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 가격이 내려간다는 건 btc가 usdt보다 상대적으로 인기가 없어진다는 것
+
+        self.wait(2)
+        self.play(Unwrite(px_dn))
+        self.wait(2)
+
+        k_org_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_C).set_z_index(1.5)
+        self.add(k_org_px_dn_dot)
+
+        # 원점#####################################################################################
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(k_origin_px_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(k_origin_px_origin))
+        self.wait(2)
+
+        # K 하락#####################################################################################
+        k_dn = MathTex(r'K \  \Downarrow').move_to(liq_provider[0])
+        self.play(Write(k_dn))
+
+        self.play(k_tracker.animate.set_value(14700),
+                  btc_tracker.animate.set_value(7),
+                  usdt_tracker.animate.set_value(14700 / 7),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+        # 케이가 하락한다는 건 풀에서 누군가 유동성을 빼간 것입니다.
+        # 명심할 것은 케이의 변동은 가격과 관계가 없음
+        # 내가 유동성 풀에 제거하고 싶으면
+        # 그냥 지금 가격에 맞게 빼가면 됨
+        # 스왑처럼 내가 가격을 움직이며 하는 행위가 아님
+        # 왜냐하면 가격이란 풀 내부의 비율인데
+        # 지금 비율(1개에 300달러) 그대로 빼기 때문에
+        # 가격은 움직이지 않고 그로인해 슬리피지등이 발생하지 않는다
+        # 착각 금지
+
+        self.wait(2)
+        self.play(Unwrite(k_dn))
+        self.wait(2)
+
+        k_dn_px_org_dot = curr_dot.copy().clear_updaters().set_color(WHITE).set_z_index(1.5)
+        self.add(k_dn_px_org_dot)
+
+        # K 상승#####################################################################################
+        k_up = MathTex(r'K \  \Uparrow').move_to(liq_provider[0])
+        self.play(Write(k_up))
+
+        self.play(k_tracker.animate.set_value(50700),
+                  btc_tracker.animate.set_value(13),
+                  usdt_tracker.animate.set_value(50700 / 13),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+        # 케이가 상승한다는 건 풀에 누군가 추가 유동성을 공급하는 것입니다.
+        # 마찬가지로 가격은 전혀 움직이지 않음
+        # 현재 가격에 맞게 비티씨와 유에스디티를 그대로 추가함
+        # 풀사이즈는 커짐
+
+        self.wait(2)
+        self.play(Unwrite(k_up))
+        self.wait(2)
+
+        k_up_px_org_dot = curr_dot.copy().clear_updaters().set_color(DARK_GREY).set_z_index(1.5)
+        self.add(k_up_px_org_dot)
+
+        # K 원점#####################################################################################
+        k_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(k_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(k_origin))
+        self.wait(2)
+
+        # K 상승#####################################################################################
+        ##### 케이상승 후 가격상승 및 하락
+        ##### 케이가 상승했다는 것은 유동성이 풍부해졌다는 것이고 이전과 같은 양의 비티씨를 거래하더라도 프라이스 임팩트가 적어집니다
+        ##### 아까 300달러에서 3개를 매도할 때는 프라이스 임팩트가 얼마 발생
+        ##### 지금은 유동성으 풍부하고 3개 매도할 때 프라이스 임팩트가 얼마 발생
+        ##### 같은 3비티씨지만 풀에서 차지하는 비율이 적어졌다
+        ##### 아까는 10분에 3 지금은 13분에 3
+        ##### 퍼센트로 따지면 33퍼와 23퍼센트
+        k_up_px_dn = MathTex(r'K \  \Uparrow', r'Price\  \Downarrow').arrange(D).move_to(liq_provider[0])
+        k_up_px_up = MathTex(r'K \  \Uparrow', r'Price\  \Uparrow').arrange(D).move_to(liq_provider[0])
+        self.play(Write(k_up_px_dn[ 0 ]))
+
+        self.play(k_tracker.animate.set_value(50700),
+                  btc_tracker.animate.set_value(13),
+                  usdt_tracker.animate.set_value(50700 / 13),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+
+        # K 상승 가격 하락#####################################################################################
         ##### 케이상승 후 가격상승 및 하락
         ##### 케이가 상승했다는 것은 유동성이 풍부해졌다는 것이고 이전과 같은 양의 비티씨를 거래하더라도 프라이스 임팩트가 적어집니다
         ##### 아까 300달러에서 3개를 매도할 때는 프라이스 임팩트가 얼마 발생
@@ -535,6 +457,103 @@ class working1(Scene):
         ##### 아까는 10분에 3 지금은 13분에 3
         ##### 퍼센트로 따지면 33퍼와 23퍼센트
         #####
+        self.play(Write(k_up_px_dn[ 1 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(16),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(16)),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 케이가 상승한 상황에서 가격이 하락
+        # 가격이 하락한다는 건 누군가 풀에서 비티씨를 넣고 테더를 빼가는 것
+        # 즉 풀에다 비티씨를 매도하는 것
+        # 여기서 명심할 건
+        # 케이가 상승했다는 건 풀 사이즈가 커진거곡
+        # 그만큼 리퀴디티가 충분하다는 것입니다
+        # 그러니까 같은 금액의 비티씨를 매도하더라도
+        # 이전보다 더 슬리피지가 적습니다
+        # 아까 봤을 때 300달러에서 3개 매도할 때는 슬리피지가 얼마 발생
+        # 근데 지금은 유동성이 더 충분한 상태고 300달러에서 3개 매도했는데
+        # 슬리피지 얼마 발생
+        # 유동성이 크면 좋은 것이다
+        # 같은 개수를 메도해도 내가 넣는 비티씨의 양이 풀내부에 차지하는 비율이
+        # 더 적어졌기 때문입니다
+        # 아까는 10개에서 3개 매도
+        # 지금은 15개에서 3개 매도
+        # 비율로 따지면 30퍼와 20퍼기 땨문에 풀에주는 영향력이 크다
+
+        self.wait(2)
+        self.play(Unwrite(k_up_px_dn[ 1 ]))
+        self.wait(2)
+
+        k_up_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_E).set_z_index(1.5)
+        self.add(k_up_px_dn_dot)
+
+        # K 상승 가격 상승#####################################################################################
+        self.play(Write(k_up_px_up[ 1 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(10),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(10)),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 케이가 상승한 상황에서 가격이 올라가는 경우도 마찬가지
+        # 가격이 오른다는 건 누군가 풀에서 비티씨를 빼고 테더를 넣는 것
+        # 즉 풀에서 비티씨를 매수하는 것
+        # 명심할 건
+        # 케이가 상승한 건 풀사이즈가 커졌고
+        # 마찬가지로 아까 비티씨를 살 때 슬리피지를 겪었던 것보다
+        # 슬리피지를 적게 겪음
+        # 아까 300달러에서 3개매수는 슬리피지 얼마
+        # 근데 지금은 얼마
+        # 같은 개수를 매수해도 내가 빼는 비티씨의 양이 풀내부에 차지하는 비율이
+        # 더 적어졌기 때문입니다
+        # 아까는 10개에서 3개 매수
+        # 지금은 15개에서 3개 매ㅑ수
+        # 비율로 따지면 30퍼와 20퍼기 땨문에 풀에주는 영향력이 크다
+
+        self.wait(2)
+        self.play(Unwrite(k_up_px_up[ 1 ]), Unwrite(k_up_px_dn[ 0 ]))
+        self.wait(2)
+
+        k_up_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_E).set_z_index(1.5)
+        self.add(k_up_px_up_dot)
+
+        # K 원점#####################################################################################
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(k_origin_px_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(k_origin_px_origin))
+        self.wait(2)
+
+        # K 하락#####################################################################################
+        k_dn_px_dn = MathTex( r'K\  \Downarrow',r'Price \  \Downarrow').arrange(D).move_to(liq_provider[0])
+        k_dn_px_up = MathTex(r'K\  \Downarrow',r'Price \  \Uparrow').arrange(D).move_to(liq_provider[0])
+        self.play(Write(k_dn_px_dn[ 0 ]))
+
+        self.play(k_tracker.animate.set_value(14700),
+                  btc_tracker.animate.set_value(7),
+                  usdt_tracker.animate.set_value(14700 / 7),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+        # 그말은 유동성이 줄었다는 거하고
+        # 아까 유동성이 늘었서 슬리피지가 덜 발행하던 것과 달리
+        # 지금부터는 슬리피지가 더 발생합니다
+        #
+
+        self.wait(2)
+        # 역으로 케이가 하락했는데
+
+        # K 하락 가격 하락#####################################################################################
         #####
         ##### 케이하락 후 가격상승 및 하락
         ##### 케이가 하락했다는 것은 유동성이 줄었다는 것이고 이전과 같은 양의 비티씨를 거래하더라도 프라이스 임팩트가 커집니다
@@ -544,19 +563,263 @@ class working1(Scene):
         ##### 아까는 10분에 3 지금은 7 분에 3
         ##### 퍼센트로 따지면 33퍼와 42퍼센트
         #####
+        self.play(Write(k_dn_px_dn[ 1 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(10),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(10)),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 케이가 하락한 상태에서 누군가 풀에다 비티씨를 매도해서
+        # 가격도 하락합니다
+        # 비티씨를 매도하는데 아까와 같이 300달러에서 매도하지만
+        # 아까는 슬리피지 얼마
+        # 지금은 얼마입니다
+        # 당연히 아까는 10개에서 3개를 넣는 거였고
+        # 지금은 5개에서 3개를 넣는거니까
+        # 비율은 30퍼와 60퍼로
+        # 완전 차이나게 된다
+
+        self.wait(2)
+        self.play(Unwrite(k_dn_px_dn[ 1 ]))
+        self.wait(2)
+
+        k_dn_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_A).set_z_index(1.5)
+        self.add(k_dn_px_dn_dot)
+
+        # K 하락 가격 상승#####################################################################################
+        self.play(Write(k_dn_px_up[ 1 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(4),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(4)),
+            # area_text.animate.rotate(PI / 2),
+            run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 케이가 하락한 상태에서 누군가 풀에서 비티씨를 빼가면서 즉 매수하면서
+        # 가격도 상승합니다
+        # 비티씨를 매수하는데 아까와 같이 300달러ㅓ에서 매수하지만
+        # 아까는 슬리피지 얼마
+        # 지금은 얼마
+        # 당연히 아까는 10개에서 3개를 빼는 거였고
+        # 지금은 5개에서 3개를 빼는 것
+        # 비율은 30퍼와 60퍼로 상당히 차이난다
+
+        self.wait(2)
+        self.play(Unwrite(k_dn_px_up[ 1 ]),
+                  Unwrite(k_dn_px_dn[ 0 ]))
+        self.wait(2)
+
+        k_dn_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_A).set_z_index(1.5)
+        self.add(k_dn_px_up_dot)
+
+        # 원점#####################################################################################
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(k_origin_px_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(k_origin_px_origin))
+        self.wait(2)
+
+        # 가격 상승#####################################################################################
+        px_up_k_up = MathTex(r'Price \  \Uparrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[0])
+        px_up_k_dn = MathTex(r'Price \  \Uparrow', r'K\  \Downarrow').arrange(D).move_to(liq_provider[0])
+        self.play(Write(px_up_k_up[ 0 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(7),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(7)),
+            run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        # 이제는 가격이 상승한 상태에서 k를 움직여보겟습니다
+
+        # 가격 상승에서 K상승#####################################################################################
         ##### 가격상승 후 케이상승 및 하락
         ##### 아까와 달리 현재 가격은 이미 움직인 상태고 이 가격에 맞게 같은 가치를 넣어줘야합니다
         ##### 아까와 같이 2비티씨만큼 유동성을 공급하려고 하면 올라버린 가격에 맞게 테더를 넣어줘야합니다
         ##### 그래서 풀에서 같은 비중을 차지하기 위해서 더 많은 자금이 필요하게 됏ㅅ브니다
         ##### 만약 아까 넣은 2비티씨를 유동성을 빼려고 하면 현재 가격대로 돌려받게 됩니다
+        self.play(Write(px_up_k_up[ 1 ]))
+
+        self.play(k_tracker.animate.set_value(3000000 / 49),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000000 / 49 / 10),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 아까와는 상황이 다릅니다
+        # 현재 가격은 이미 움직여버렸습니다
+        # 현재가격은 이미 300에서 올라왔고 여기서
+        # 유동성을 넣기 때문에
+        # 같은 2비티씨를 유동성을 추가한다고 하면
+        # 1비티씨마다 상응하는 올라간 가격의 테더를 같이 넣어줘야합니다
+        #
+
+        self.wait(2)
+        self.play(Unwrite(px_up_k_up[ 1 ]))
+        self.wait(2)
+
+        px_up_k_up_dot = curr_dot.copy().clear_updaters().set_color(TEAL_E).set_z_index(1.5)
+        self.add(px_up_k_up_dot)
+
+        # 가격 상승에서 K하락#####################################################################################
+        self.play(Write(px_up_k_dn[ 1 ]))
+
+        self.play(k_tracker.animate.set_value(480000 / 49),
+                  btc_tracker.animate.set_value(4),
+                  usdt_tracker.animate.set_value(480000 / 49 / 4),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 가격이 올랐을 때 케이가 떨어진다는 건
+        # 즉 유동성을 공급했던 사람이 유동성을 회수한다는 것은
+        # 풀 사이즈가 작아진다는 것입니다
+        # 그 말은 공급자가 1비티씨를 뺄 때 오른 가격만큼의 테더를 회수한다는 애기입니다
+        # 2비티씨를 빼면 얼마가 빠집니다
+
+        self.wait(2)
+        self.play(Unwrite(px_up_k_dn[ 1 ]),
+                  Uncreate(px_up_k_up[ 0 ]))
+        self.wait(2)
+
+        px_up_k_dn_dot = curr_dot.copy().clear_updaters().set_color(TEAL_A).set_z_index(1.5)
+        self.add(px_up_k_dn_dot)
+
+        # 원점점#####################################################################################
+
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(k_origin_px_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(k_origin_px_origin))
+        self.wait(2)
+
+        # 가격 하락#####################################################################################
+        px_dn_k_up = MathTex(r'Price \  \Downarrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[0])
+        px_dn_k_dn = MathTex(r'Price \  \Downarrow', r'K\  \Downarrow').arrange(D).move_to(liq_provider[0])
+
+        # 가격이 하락한 상태에서 케이를 움직여보겟습니다
+        self.play(Write(px_dn_k_up[ 0 ]))
+
+        self.play(
+            btc_tracker.animate.set_value(13),
+            usdt_tracker.animate.set_value(xyk_graph_btc.underlying_function(13)),
+            run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(px_dn))
+        self.wait(2)
+
+        # 가격 하락에서 K상승#####################################################################################
+
         #####
         ##### 가격하락 후 케이상승 및 하락
         ##### 아까와 달리 현재 가격은 이미 움직인 상태고 이 가격에 맞게 같은 가치를 넣어줘야합니다
         ##### 아까와 같이 2비티씨만큼 유동성을 공급하려고 하면 떨어진 가격에 맞게 테더를 넣어줘야합니다
         ##### 그래서 풀에서 같은 비중을 차지하기 위해서 더 적은 자금이 필요하게 됏습니다
         ##### 만약 아까 넣은 2비티씨를 유동성을 빼려고 하면 현재 가격대로 돌려받게 됩니다
-        #####
+        px_dn_k_up = MathTex(r'Price \  \Downarrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[0])
+        self.play(Write(px_dn_k_up[ 1 ]))
+
+        self.play(k_tracker.animate.set_value(7680000 / 169),
+                  btc_tracker.animate.set_value(16),
+                  usdt_tracker.animate.set_value(7680000 / 169 / 16),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 가격이 하락한 상태에서 케이를 넣으렴녀 원래보다 돈이 적게 듭니다
+        # 왜냐하면 비티씨 1개를 넣을 때 하락한 각겨만큼의 테더를 넣으면 됩니다
+
+        self.wait(2)
+        self.play(Unwrite(px_dn_k_up[ 1 ]))
+        self.wait(2)
+
+        px_dn_k_up_dot = curr_dot.copy().clear_updaters().set_color(MAROON_E).set_z_index(1.5)
+        self.add(px_dn_k_up_dot)
+
+        # 가격 하락에서 K하락#####################################################################################
+        px_dn_k_dn = MathTex(r'Price \  \Downarrow', r'K\  \Downarrow').arrange(D).move_to(liq_provider[0])
+        self.play(Write(px_dn_k_dn[ 1 ]))
+
+        self.play(k_tracker.animate.set_value(3000000 / 169),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000000 / 169 / 11),
+                  run_time=5, rate_func=rate_functions.ease_in_out_quint)
+
+
+        # 마찬가지로 하락한 상태에서 유동성을 제거하면
+        # 비티씨 한 개를 뺄 때 떨어진 가격만큼의 테더만 되찾을 수 있습니다
+
+        self.wait(2)
+        self.play(Unwrite(px_dn_k_dn[ 1 ]),
+                  Uncreate(px_dn_k_up[ 0 ]))
+        self.wait(2)
+
+        px_dn_k_dn_dot = curr_dot.copy().clear_updaters().set_color(MAROON_A).set_z_index(1.5)
+        self.add(px_dn_k_dn_dot)
+
+        # 가격 원점#####################################################################################
+        px_origin = MathTex(r'ORIGIN').move_to(liq_provider[0])
+        self.play(Write(px_origin))
+
+        self.play(k_tracker.animate.set_value(30000),
+                  btc_tracker.animate.set_value(10),
+                  usdt_tracker.animate.set_value(3000),
+                  run_time=2, rate_func=rate_functions.ease_in_out_quint)
+
+
+        self.wait(2)
+        self.play(Unwrite(px_origin))
+        self.wait(2)
+
+        # 라인 생성#####################################################################################
+
         ##### 각 케이스마다 눈에 잘 보이게 선으로 연결해봤습니다
         ##### 동영상을 다시 보면서 천천히 곱씹어보시면 더 이해가 잘 될겁니다
 
-        self.wait(5)
+        def making_a_line_3points(p1, p2, p3, color):
+            l1 = Line(p1.get_center(), p2.get_center(), color=color)
+            l2 = Line(p2.get_center(), p3.get_center(), color=color)
+            l1.set_z_index(-2)
+            l2.set_z_index(-2)
+            line = VGroup(l1, l2)
+
+            return line
+
+        self.play(Uncreate(area),
+                  Uncreate(area_text))
+        k_px_org_line = making_a_line_3points(k_dn_px_org_dot, k_org_px_org_dot, k_up_px_org_dot, DARK_GREY)
+        self.wait(2)
+
+        self.play(Create(k_px_org_line))
+        k_px_up_line = making_a_line_3points(k_dn_px_up_dot, k_org_px_up_dot, k_up_px_up_dot, GREEN_E)
+        self.wait(2)
+        self.play(Create(k_px_up_line))
+        k_px_dn_line = making_a_line_3points(k_dn_px_dn_dot, k_org_px_dn_dot, k_up_px_dn_dot, RED_E)
+        self.wait(2)
+        self.play(Create(k_px_dn_line))
+        px_up_k_line = making_a_line_3points(px_up_k_dn_dot, k_org_px_up_dot, px_up_k_up_dot, TEAL_E)
+        self.wait(2)
+        self.play(Create(px_up_k_line))
+        px_dn_k_line = making_a_line_3points(px_dn_k_dn_dot, k_org_px_dn_dot, px_dn_k_up_dot, MAROON_E)
+        self.wait(2)
+        self.play(Create(px_dn_k_line))
+
+        self.wait(2)

@@ -147,7 +147,7 @@ p = Path("4k.mp4")
 #
 
 # print(p.stat()[9])
-main_dir = Path(r'C:\Users\asd93\PycharmProjects\Manim\media\videos\main\2160p60\partial_movie_files\lec1_s2')
+main_dir = Path(r'C:\Users\asd93\PycharmProjects\Manim\media\videos\defi_lec_2\2160p60\partial_movie_files\s_02_smart_contract')
 all_files = main_dir.rglob('*.*')
 # print(Q)
 file_list = [x for x in all_files if x.is_file() or x.is_dir()]
@@ -187,7 +187,7 @@ for file_with_time in file_list_with_ctime:
     i += 1
     # file_copy(file_with_time[1],new_work_folder)
     # file_copy_with_new_name(file_with_time[1],str(i),new_work_folder,False)
-    shutil.copy(file_with_time[1],new_work_folder.joinpath(str(i)+file_with_time[1].suffix))
+    shutil.copy(file_with_time[1],new_work_folder.joinpath(file_with_time[1].parent.stem[:8]+'C_'+str(i)+file_with_time[1].suffix))
     # time.sleep(2)
     # shutil.copy(file_with_time[1],new_work_folder.joinpath(str(i)+'_copy'+file_with_time[1].suffix))
     # time.sleep(2)
