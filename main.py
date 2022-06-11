@@ -3,9 +3,11 @@ import random as rd
 import numpy as np
 from math import *
 from colour import Color
+from custom_manim_utils.custom_colors import *
 
 config.frame_width = 16
 config.frame_height = 9
+# config.background_color=WHITE
 
 q = 0.3
 qq = 2 * q
@@ -104,8 +106,47 @@ class working2(Scene):
         # 씬8에 색 안 맞음
         # 씬10 유저 돈트 오타
 
+        circles = VGroup()
+
+        for i in range(0, 360, 10):
+
+
+            circle = Circle(radius=0.5,stroke_width=0, fill_color=Color(hsl=(i/360,1,0.5)),fill_opacity=1)
+            text = Tex(f'{int((i+10)/10)}',color=BLACK).move_to(circle)
+            circle.add(text)
+
+            circles.add(circle)
+
+
+        sat = 0
+        for i in range(9):
+            sat+=0.1
+            circle = Circle(radius=0.5,stroke_width=0, fill_color=Color(hsl=(10/360,sat,0.5)),fill_opacity=1)
+            text = Tex(f'{i+1}', color=BLACK).move_to(circle)
+            circle.add(text)
+            circles.add(circle)
+
+        lum = 0
+        for i in range(9):
+            lum+=0.1
+            circle = Circle(radius=0.5,stroke_width=0, fill_color=Color(hsl=(10/360,1,lum)),fill_opacity=1)
+            text = Tex(f'{i+1}', color=BLACK).move_to(circle)
+            circle.add(text)
+            circles.add(circle)
+
+
+
+
+
+
+        circles.arrange_in_grid(6,9).scale(1.1)
+
+        test_circle = Circle(fill_color=cosmos_text, fill_opacity=1)
+
         mtex_1 = MathTex('for', 'dkjfkd').arrange(D)
-        self.play(Create(mtex_1))
+        self.add(test_circle)
+
+        # self.wait(5)
 
 
 class working1(Scene):
