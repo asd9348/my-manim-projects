@@ -1,5 +1,23 @@
+from manim import *
 from colour import Color
+import numpy as np
+from manim.constants import *
 
+q: float = 0.3
+qq: float = 2 * q
+qqq: float = 3 * q
+t: float = 3
+tt: float = 5
+ttt: float = 7
+
+L: np.ndarray = np.array((-1.0, 0.0, 0.0))
+R: np.ndarray = np.array((1.0, 0.0, 0.0))
+U: np.ndarray = np.array((0.0, 1.0, 0.0))
+D: np.ndarray = np.array((0.0, -1.0, 0.0))
+
+X: np.ndarray = np.array((1.0, 0.0, 0.0))
+Y: np.ndarray = np.array((0.0, 1.0, 0.0))
+Z: np.ndarray = np.array((0.0, 0.0, 1.0))
 
 BTC: str = '#F7941D'
 ETH: str = '#5D78DE'
@@ -22,6 +40,17 @@ ATOM1: str = '#2F3148'
 ATOM2: str = '#B1B0BD'
 FTX: str = '#61CFE5'
 
+W00: str = (Color(hsl=(0, 0, 0)))
+W01: str = (Color(hsl=(0, 0, 0.1)))
+W02: str = (Color(hsl=(0, 0, 0.2)))
+W03: str = (Color(hsl=(0, 0, 0.3)))
+W04: str = (Color(hsl=(0, 0, 0.4)))
+W05: str = (Color(hsl=(0, 0, 0.5)))
+W06: str = (Color(hsl=(0, 0, 0.6)))
+W07: str = (Color(hsl=(0, 0, 0.7)))
+W08: str = (Color(hsl=(0, 0, 0.8)))
+W09: str = (Color(hsl=(0, 0, 0.9)))
+W10: str = (Color(hsl=(0, 0, 1)))
 
 C0111: str = (Color(hsl=(0.1 / 3.6, 0.1, 0.1)))
 C0121: str = (Color(hsl=(0.1 / 3.6, 0.2, 0.1)))
@@ -671,7 +700,6 @@ C0869: str = (Color(hsl=(0.8 / 3.6, 0.6, 0.9)))
 C0879: str = (Color(hsl=(0.8 / 3.6, 0.7, 0.9)))
 C0889: str = (Color(hsl=(0.8 / 3.6, 0.8, 0.9)))
 C0899: str = (Color(hsl=(0.8 / 3.6, 0.9, 0.9)))
-
 C0911: str = (Color(hsl=(0.9 / 3.6, 0.1, 0.1)))
 C0921: str = (Color(hsl=(0.9 / 3.6, 0.2, 0.1)))
 C0931: str = (Color(hsl=(0.9 / 3.6, 0.3, 0.1)))

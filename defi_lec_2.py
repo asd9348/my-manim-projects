@@ -3,22 +3,10 @@ import random as rd
 import numpy as np
 from math import *
 from colour import Color
-from custom_manim_utils.custom_colors import *
+from custom_manim_utils.custom_consts import *
 
 config.frame_width = 16
 config.frame_height = 9
-
-q = 0.3
-qq = 2 * q
-qqq = 3 * q
-t = 3
-tt = 5
-ttt = 7
-
-L = LEFT
-R = RIGHT
-U = UP
-D = DOWN
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -423,7 +411,7 @@ class L_02_S_01_dex_pros_and_cons(Scene):
 
         shit_coin = LabeledDot(Tex('SHIT', color=BLACK), radius=1, color=GREEN).shift(U * 2).to_edge(L)
         poop_coin = LabeledDot(Tex('POOP', color=BLACK), radius=1, color=YELLOW).shift(D * 3).to_edge(L)
-        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=ORANGE).to_edge(L).shift(0.5 * D)
+        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=BTC).to_edge(L).shift(0.5 * D)
 
         limited_pairs = Tex('Limited pairs available...', 'BTC-USDT', 'ETH-BTC', r'\vdots').arrange(D).next_to(cex_text, D, buff=1)
 
@@ -519,8 +507,8 @@ class L_02_S_02_smart_contract(Scene):
         self.play(Rotate(rev_door, angle=10 * PI), rate_func=rate_functions.exponential_decay, run_time=t)
         self.wait(t)
 
-        A = create_entity("A", 0.7, WHITE, "BTC", ORANGE, 0.8, 0.3).scale(1.2).to_edge(L)
-        B = create_entity("B", 0.7, WHITE, "ETH", BLUE, 0.8, 0.3).scale(1.2).to_edge(R)
+        A = create_entity("A", 0.7, WHITE, "BTC", BTC, 0.8, 0.3).scale(1.2).to_edge(L)
+        B = create_entity("B", 0.7, WHITE, "ETH", ETH, 0.8, 0.3).scale(1.2).to_edge(R)
 
         A_asset = A[ 1 ]
         B_asset = B[ 1 ]
@@ -863,8 +851,8 @@ class L_02_S_04_amm_xyk_basics(Scene):
         self.play(ReplacementTransform(VGroup(pool_rect_text, btc_usdt_text), btc_usdt_text_final), run_time=t)
         self.wait(t)
 
-        btc_lump = LabeledDot('BTC', radius=1, color=ORANGE).shift(L * 5.5)
-        usdt_lump = LabeledDot('USDT', radius=1, color=GREEN_C).shift(R * 5.5)
+        btc_lump = LabeledDot('BTC', radius=1, color=BTC).shift(L * 5.5)
+        usdt_lump = LabeledDot('USDT', radius=1, color=USDT).shift(R * 5.5)
         btc_lump.save_state()
         usdt_lump.save_state()
         btc_lump_arc = Arc(radius=2, angle=PI).flip(axis=np.array([ 0, 1, 0 ])).shift(L * 3.5)
@@ -882,9 +870,9 @@ class L_02_S_04_amm_xyk_basics(Scene):
         ##### 비티씨와 테더를 들고 모인것 처럼 말입니다
         # 옆에 이더리움 솔라나 생기고 엑스자 후 페이드 아웃
 
-        sol_lump = LabeledDot('SOL', radius=1, color=PURPLE_E).shift(L * 5.5 + U * 1)
-        eth_lump = LabeledDot('ETH', radius=1, color=DARK_BLUE).shift(R * 5.5 + U * 2)
-        dot_lump = LabeledDot('DOT', radius=1, color=MAROON_C).shift(R * 5.5 + D * 3)
+        sol_lump = LabeledDot('SOL', radius=1, color=SOL2).shift(L * 5.5 + U * 1)
+        eth_lump = LabeledDot('ETH', radius=1, color=ETH).shift(R * 5.5 + U * 2)
+        dot_lump = LabeledDot('DOT', radius=1, color=DOT).shift(R * 5.5 + D * 3)
         sol_lump_cross = Cross(stroke_width=15).scale(1.5).move_to(sol_lump)
         eth_lump_cross = Cross(stroke_width=15).scale(1.5).move_to(eth_lump)
         dot_lump_cross = Cross(stroke_width=15).scale(1.5).move_to(dot_lump)
@@ -1000,10 +988,10 @@ class L_02_S_04_amm_xyk_basics(Scene):
         ##### 케이값을 움직이는 것입니다. 곧 보게 될테니 걱정 안 하셔도 됩니다
         # 유동성 제공자 텍스트 밑에 엔터티 만들고 엔터티가 비티씨와 테더를 함께 풀에 넣는 모션
         # 그리고 밑에 텍스트로 체인징 케이 옆에 조그맣게 그래프 케이값 왔다 갔다
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "BTC", BTC, 1.4,
                                      0.3).next_to(liq_prov_text, D)
         liq_prov_btc_asset = liq_provider[ 1 ]
-        liq_prov_usdt_asset = create_entity("A", 0.5, WHITE, "USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        liq_prov_usdt_asset = create_entity("A", 0.5, WHITE, "USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(liq_prov_usdt_asset)
         self.play(Create(liq_provider), run_time=tt)
         self.wait(t)
@@ -1064,11 +1052,11 @@ class L_02_S_04_amm_xyk_basics(Scene):
         # 테더 넣고 비티씨 돌렵받는 모션
         # 그리고 무빙 닷 텍스트 밑에ㅔ 띄우거 옆에는 작은 그래프에서 점왔다갔다
         # 트리 구조 전부 사라짐
-        trader = create_entity(Tex(r' \emph{Trader}', color=BLACK).scale(0.9), 1, WHITE, "BTC", ORANGE, 1.4,
+        trader = create_entity(Tex(r' \emph{Trader}', color=BLACK).scale(0.9), 1, WHITE, "BTC", BTC, 1.4,
                                0.3).next_to(trader_text, D)
         trader_btc_asset = trader[ 1 ]
-        trader_usdt_asset = create_entity("A", 0.5, WHITE, "USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(trader, DOWN, buff=0.1)
-        trader_usdt_asset_copy = create_entity("A", 0.5, WHITE, "USDT", GREEN, 1.4, 0.3)[ 1 ].move_to(trader_btc_asset)
+        trader_usdt_asset = create_entity("A", 0.5, WHITE, "USDT", USDT, 1.4, 0.3)[ 1 ].next_to(trader, DOWN, buff=0.1)
+        trader_usdt_asset_copy = create_entity("A", 0.5, WHITE, "USDT", USDT, 1.4, 0.3)[ 1 ].move_to(trader_btc_asset)
         trader.add(trader_usdt_asset)
         self.play(Create(trader), run_time=tt)
         self.wait(t)
@@ -1482,10 +1470,10 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
         self.play(Create(liq_pool), run_time=t)
         self.wait(t)
 
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
@@ -1501,8 +1489,8 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
         x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
+        usdt_bar = Rectangle(height=3, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT)
+        btc_bar = Rectangle(height=1, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC)
         bars = VGroup(btc_bar, usdt_bar)
         bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
 
@@ -1513,8 +1501,8 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
         usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
         btc_tracker = btc_var.tracker
         usdt_tracker = usdt_var.tracker
-        usdt_var[ 0 ][ 0 ].set_color(GREEN)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
+        usdt_var[ 0 ][ 0 ].set_color(USDT)
+        btc_var[ 0 ][ 0 ].set_color(BTC)
 
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
@@ -1525,10 +1513,10 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
                   Write(btc_var), run_time=t)
         self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
@@ -1599,13 +1587,13 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
             new_horzontal_line.add(horizontal_line[ -i ])
 
         horizontal_line = new_horzontal_line
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
+        x_marker = Triangle(color=BTC, fill_color=BTC, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
         x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
         x_marker_val = Integer(btc_tracker.get_value())
         x_marker_val.add_updater(
             lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
 
-        y_marker = Triangle(color=GREEN, fill_color=GREEN, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
+        y_marker = Triangle(color=USDT, fill_color=USDT, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
         y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
         y_marker_val = Integer(usdt_tracker.get_value())
         y_marker_val.add_updater(lambda integer: integer.become(
@@ -1668,8 +1656,8 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
         lp_asset_51 = create_lp_token(r"52\\BTC-USDT\\LP").next_to(lp_asset_121, DOWN, buff=0.1)
         lp_asset_divided = VGroup(lp_asset_121, lp_asset_51)
 
-        btc_asset = create_entity("A", 0.5, WHITE, "3 BTC", ORANGE, 1.4, 0.3)[ 1 ].next_to(lp_asset_121, D, buff=0.1)
-        usdt_asset = create_entity("A", 0.5, WHITE, "900 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(btc_asset, DOWN, buff=0.1)
+        btc_asset = create_entity("A", 0.5, WHITE, "3 BTC", BTC, 1.4, 0.3)[ 1 ].next_to(lp_asset_121, D, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "900 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(btc_asset, DOWN, buff=0.1)
         # text = Tex(r"173\\BTC-USDT\\LP", color=BLACK).scale(0.5)
         #
         # self.play(Create(liq_provider[ 0 ]),
@@ -1688,8 +1676,8 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
         scene4_1500usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.3, stroke_width=3,
                                         stroke_color=RED_E).align_to(usdt_bar, UL)
 
-        scene4_1500usdt_fill_box = scene4_1500usdt_box.copy().set_fill(GREEN, opacity=1)
-        scene4_5btc_fill_box = scene4_5btc_box.copy().set_fill(ORANGE, opacity=1)
+        scene4_1500usdt_fill_box = scene4_1500usdt_box.copy().set_fill(USDT, opacity=1)
+        scene4_5btc_fill_box = scene4_5btc_box.copy().set_fill(BTC, opacity=1)
 
         scene4_5btc_fill_box.set_stroke(width=0, opacity=0)
         scene4_1500usdt_fill_box.set_stroke(width=0, opacity=0)
@@ -1711,10 +1699,10 @@ class L_02_S_06_amm_xyk_adv_k_dn_1(Scene):
                                                ).next_to(scene4_5btc_fill_box,
                                                          LEFT)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=2100 / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=2100 / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=7 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=7 / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         scene4_1500usdt_brace_label = Integer(btc_tracker.get_value())
@@ -1784,10 +1772,10 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         self.play(Create(liq_pool), run_time=t)
         self.wait(t)
 
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
@@ -1803,8 +1791,8 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
+        usdt_bar = Rectangle(height=3, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT)
+        btc_bar = Rectangle(height=1, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC)
         bars = VGroup(btc_bar, usdt_bar)
         bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
 
@@ -1815,8 +1803,8 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
         btc_tracker = btc_var.tracker
         usdt_tracker = usdt_var.tracker
-        usdt_var[ 0 ][ 0 ].set_color(GREEN)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
+        usdt_var[ 0 ][ 0 ].set_color(USDT)
+        btc_var[ 0 ][ 0 ].set_color(BTC)
 
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
@@ -1827,10 +1815,10 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
                   Write(btc_var), run_time=t)
         self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
@@ -1901,13 +1889,13 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
             new_horzontal_line.add(horizontal_line[ -i ])
 
         horizontal_line = new_horzontal_line
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
+        x_marker = Triangle(color=BTC, fill_color=BTC, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
         x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
         x_marker_val = Integer(btc_tracker.get_value())
         x_marker_val.add_updater(
             lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
 
-        y_marker = Triangle(color=GREEN, fill_color=GREEN, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
+        y_marker = Triangle(color=USDT, fill_color=USDT, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
         y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
         y_marker_val = Integer(usdt_tracker.get_value())
         y_marker_val.add_updater(lambda integer: integer.become(
@@ -1955,11 +1943,11 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         btc_bar.clear_updaters()
         usdt_bar.clear_updaters()
 
-        liq_provider = create_entity(Tex(r' \emph{New Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "3 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{New Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "3 BTC", BTC, 1.4,
                                      0.3).next_to(
             liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "900 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "900 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
 
         self.play(Create(VGroup(liq_provider, usdt_asset)), run_time=t)
         self.wait(t)
@@ -1972,8 +1960,8 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         self.play(Create(VGroup(scene3_13btc_box, scene3_3900usdt_box)), run_time=t)
         self.wait(t)
 
-        scene3_3900usdt_fill_box = scene3_3900usdt_box.copy().set_fill(GREEN, opacity=1)
-        scene3_13btc_fill_box = scene3_13btc_box.copy().set_fill(ORANGE, opacity=1)
+        scene3_3900usdt_fill_box = scene3_3900usdt_box.copy().set_fill(USDT, opacity=1)
+        scene3_13btc_fill_box = scene3_13btc_box.copy().set_fill(BTC, opacity=1)
         scene3_13btc_fill_box.set_stroke(width=0, opacity=0)
         scene3_3900usdt_fill_box.set_stroke(width=0, opacity=0)
 
@@ -2151,10 +2139,10 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         self.play(Create(liq_pool), run_time=t)
         self.wait(t)
 
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
@@ -2170,8 +2158,8 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
+        usdt_bar = Rectangle(height=3, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT)
+        btc_bar = Rectangle(height=1, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC)
         bars = VGroup(btc_bar, usdt_bar)
         bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
 
@@ -2182,8 +2170,8 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
         btc_tracker = btc_var.tracker
         usdt_tracker = usdt_var.tracker
-        usdt_var[ 0 ][ 0 ].set_color(GREEN)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
+        usdt_var[ 0 ][ 0 ].set_color(USDT)
+        btc_var[ 0 ][ 0 ].set_color(BTC)
 
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
@@ -2194,10 +2182,10 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
                   Write(btc_var), run_time=t)
         self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
@@ -2268,13 +2256,13 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
             new_horzontal_line.add(horizontal_line[ -i ])
 
         horizontal_line = new_horzontal_line
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
+        x_marker = Triangle(color=BTC, fill_color=BTC, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
         x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
         x_marker_val = Integer(btc_tracker.get_value())
         x_marker_val.add_updater(
             lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
 
-        y_marker = Triangle(color=GREEN, fill_color=GREEN, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
+        y_marker = Triangle(color=USDT, fill_color=USDT, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
         y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
         y_marker_val = Integer(usdt_tracker.get_value())
         y_marker_val.add_updater(lambda integer: integer.become(
@@ -2316,11 +2304,11 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
 
         ##### DIVERGE
         #####
-        user = create_entity(Tex(r' \emph{Trader}', color=BLACK), 1, WHITE, "1286 USDT", GREEN, 1.4, 0.3).next_to(liq_pool_rect, RIGHT,
+        user = create_entity(Tex(r' \emph{Trader}', color=BLACK), 1, WHITE, "1286 USDT", USDT, 1.4, 0.3).next_to(liq_pool_rect, RIGHT,
                                                                                                                   buff=1.5)
         user_asset_usdt = user[ 1 ]
         user_asset_pos = user_asset_usdt.get_center()
-        user_asset_btc = create_entity("A", 0.5, WHITE, "3 BTC", ORANGE, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
+        user_asset_btc = create_entity("A", 0.5, WHITE, "3 BTC", BTC, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
 
         user_line = Tex(r'I want 3 BTC\\I have some USDT').scale(0.5).next_to(user, DOWN)
 
@@ -2339,8 +2327,8 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         scene1_1286usdt_box = Rectangle(width=usdt_bar.width, height=usdt_bar.height * 0.4286, stroke_width=3,
                                         stroke_color=GREEN_E).next_to(usdt_bar, UP, buff=0)
 
-        scene1_7btc_fill_box = scene1_7btc_box.copy().set_fill(ORANGE, opacity=1)
-        scene1_1286usdt_fill_box = scene1_1286usdt_box.copy().set_fill(GREEN, opacity=1)
+        scene1_7btc_fill_box = scene1_7btc_box.copy().set_fill(BTC, opacity=1)
+        scene1_1286usdt_fill_box = scene1_1286usdt_box.copy().set_fill(USDT, opacity=1)
         scene1_7btc_fill_box.set_stroke(width=0, opacity=0)
         scene1_1286usdt_fill_box.set_stroke(width=0, opacity=0)
         scene1_7btc_fill_box.set_z_index(3)
@@ -2381,7 +2369,7 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         #     Rectangle(height=4283 / 1000, width=1.2, fill_color=BLUE, fill_opacity=1, color=BLUE).move_to(
         #         usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=7 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=7 / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         origin_dot = curr_dot.copy()
@@ -2622,10 +2610,10 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
         self.play(Create(liq_pool), run_time=t)
         self.wait(t)
 
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
@@ -2641,8 +2629,8 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
         x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
+        usdt_bar = Rectangle(height=3, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT)
+        btc_bar = Rectangle(height=1, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC)
         bars = VGroup(btc_bar, usdt_bar)
         bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
 
@@ -2653,8 +2641,8 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
         usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
         btc_tracker = btc_var.tracker
         usdt_tracker = usdt_var.tracker
-        usdt_var[ 0 ][ 0 ].set_color(GREEN)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
+        usdt_var[ 0 ][ 0 ].set_color(USDT)
+        btc_var[ 0 ][ 0 ].set_color(BTC)
 
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
@@ -2665,10 +2653,10 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
                   Write(btc_var), run_time=t)
         self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
@@ -2739,13 +2727,13 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
             new_horzontal_line.add(horizontal_line[ -i ])
 
         horizontal_line = new_horzontal_line
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
+        x_marker = Triangle(color=BTC, fill_color=BTC, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
         x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
         x_marker_val = Integer(btc_tracker.get_value())
         x_marker_val.add_updater(
             lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
 
-        y_marker = Triangle(color=GREEN, fill_color=GREEN, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
+        y_marker = Triangle(color=USDT, fill_color=USDT, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
         y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
         y_marker_val = Integer(usdt_tracker.get_value())
         y_marker_val.add_updater(lambda integer: integer.become(
@@ -2787,11 +2775,11 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
 
         ##### DIVERGE
         #####
-        user = create_entity(Tex(r' \emph{Trader}', color=BLACK), 1, WHITE, "3BTC", ORANGE, 1.4, 0.3).next_to(liq_pool_rect,
+        user = create_entity(Tex(r' \emph{Trader}', color=BLACK), 1, WHITE, "3BTC", BTC, 1.4, 0.3).next_to(liq_pool_rect,
                                                                                                               RIGHT, buff=1.5)
         user_asset_btc = user[ 1 ]
         user_asset_pos = user_asset_btc.get_center()
-        user_asset_usdt = create_entity("A", 0.5, WHITE, "692USDT", GREEN, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
+        user_asset_usdt = create_entity("A", 0.5, WHITE, "692USDT", USDT, 1.4, 0.3)[ 1 ].move_to(user_asset_pos)
 
         user_line = Tex(r"I want to sell 3 BTC\\I don't have some USDT").scale(0.5).next_to(user, DOWN)
 
@@ -2811,8 +2799,8 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
         scene2_13btc_box = Rectangle(width=btc_bar.width, height=btc_bar.height * 0.3, stroke_width=3,
                                      stroke_color=GREEN_E).next_to(btc_bar, UP, buff=0)
 
-        scene2_2308usdt_fill_box = scene2_2308usdt_box.copy().set_fill(GREEN, opacity=1)
-        scene2_13btc_fill_box = scene2_13btc_box.copy().set_fill(ORANGE, opacity=1)
+        scene2_2308usdt_fill_box = scene2_2308usdt_box.copy().set_fill(USDT, opacity=1)
+        scene2_13btc_fill_box = scene2_13btc_box.copy().set_fill(BTC, opacity=1)
 
         scene2_2308usdt_fill_box.set_stroke(width=0, opacity=0)
         scene2_13btc_fill_box.set_stroke(width=0, opacity=0)
@@ -2855,10 +2843,10 @@ class L_02_S_10_amm_xyk_adv_px_dn_4(Scene):
 
         self.add(scene2_2308usdt_fill_box)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=2307 / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=2307 / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         # btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-        #     Rectangle(height=13 / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+        #     Rectangle(height=13 / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
         #         btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         origin_dot = curr_dot.copy()
@@ -2922,8 +2910,8 @@ class L_02_S_11_fees(Scene):
                   Create(pool_rect), run_time=t)
         self.wait(t)
 
-        btc_lump = LabeledDot('BTC', radius=1, color=ORANGE).shift(L * 1.5)
-        usdt_lump = LabeledDot('USDT', radius=1, color=GREEN_C).shift(R * 1.5)
+        btc_lump = LabeledDot('BTC', radius=1, color=BTC).shift(L * 1.5)
+        usdt_lump = LabeledDot('USDT', radius=1, color=USDT).shift(R * 1.5)
         # btc_lump.save_state()
         # usdt_lump.save_state()
         # btc_lump_arc = Arc(radius=2, angle=PI).flip(axis=np.array([ 0, 1, 0 ])).shift(L * 3.5)
@@ -2933,14 +2921,14 @@ class L_02_S_11_fees(Scene):
                   Create(usdt_lump), run_time=t)
         self.wait(t)
 
-        btc_lump_inflow = LabeledDot('BTC', radius=1, color=ORANGE).shift(R * 5.5)
+        btc_lump_inflow = LabeledDot('BTC', radius=1, color=BTC).shift(R * 5.5)
 
         self.play(Create(btc_lump_inflow), run_time=t)
         self.wait(t)
         self.play(btc_lump_inflow.animate.next_to(pool_rect, buff=1), run_time=t)
         self.wait(t)
 
-        btc_lump_fee = LabeledDot(MathTex('Fee', font_size=20, color=BLACK), radius=0.3, color=ORANGE).move_to(btc_lump_inflow)
+        btc_lump_fee = LabeledDot(MathTex('Fee', font_size=20, color=BLACK), radius=0.3, color=BTC).move_to(btc_lump_inflow)
         btc_lump_fee.set_z_index(-1)
 
         self.play(btc_lump_inflow.animate.scale(0.8),
@@ -2952,7 +2940,7 @@ class L_02_S_11_fees(Scene):
         self.wait(t)
         # self.play(btc_lump.animate.scale(1.1))
 
-        usdt_lump_outflow = LabeledDot('USDT', radius=1, color=GREEN).shift(R * 5.5)
+        usdt_lump_outflow = LabeledDot('USDT', radius=1, color=USDT).shift(R * 5.5)
         self.play(FadeIn(usdt_lump_outflow, target_position=usdt_lump),
                   usdt_lump.animate.scale(1 / 1.1), run_time=t)
         self.wait(t)
@@ -3069,10 +3057,10 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
         self.play(Create(liq_pool), run_time=t)
         self.wait(t)
 
-        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", ORANGE, 1.4,
+        liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
                                      0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", GREEN, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
@@ -3088,8 +3076,8 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
         x_axis_label = ax.get_x_axis_label(MathTex('Amount of BTC in Pool', color=WHITE).scale(0.4), edge=DOWN, direction=DOWN, buff=0.37)
         axis_labels = VGroup(x_axis_label, y_axis_label)
 
-        usdt_bar = Rectangle(height=3, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN)
-        btc_bar = Rectangle(height=1, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE)
+        usdt_bar = Rectangle(height=3, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT)
+        btc_bar = Rectangle(height=1, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC)
         bars = VGroup(btc_bar, usdt_bar)
         bars.arrange(RIGHT, aligned_edge=DOWN).move_to(liq_pool_rect).align_to(liq_pool_rect, DOWN)
 
@@ -3100,8 +3088,8 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
         usdt_var = Variable(3000, MathTex("USDT"), var_type=Integer).next_to(btc_var, DOWN, aligned_edge=LEFT)
         btc_tracker = btc_var.tracker
         usdt_tracker = usdt_var.tracker
-        usdt_var[ 0 ][ 0 ].set_color(GREEN)
-        btc_var[ 0 ][ 0 ].set_color(ORANGE)
+        usdt_var[ 0 ][ 0 ].set_color(USDT)
+        btc_var[ 0 ][ 0 ].set_color(BTC)
 
         vars = VGroup(btc_var, usdt_var).arrange(DOWN, aligned_edge=LEFT).next_to(liq_pool_rect, DOWN, buff=0.25)
 
@@ -3112,10 +3100,10 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
                   Write(btc_var), run_time=t)
         self.wait(t)
         usdt_bar.add_updater(lambda usdt_bar: usdt_bar.become(
-            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=GREEN, fill_opacity=1, color=GREEN).move_to(
+            Rectangle(height=usdt_tracker.get_value() / 1000, width=1.2, fill_color=USDT, fill_opacity=1, color=USDT).move_to(
                 usdt_bar_pos).align_to(liq_pool_rect, DOWN)))
         btc_bar.add_updater(lambda btc_bar: btc_bar.become(
-            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=ORANGE, fill_opacity=1, color=ORANGE).move_to(
+            Rectangle(height=btc_tracker.get_value() / 10, width=1.2, fill_color=BTC, fill_opacity=1, color=BTC).move_to(
                 btc_bar_pos).align_to(liq_pool_rect, DOWN)))
 
         pool_price = Variable(100, 'Price', var_type=DecimalNumber, num_decimal_places=2).next_to(
@@ -3186,13 +3174,13 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
             new_horzontal_line.add(horizontal_line[ -i ])
 
         horizontal_line = new_horzontal_line
-        x_marker = Triangle(color=ORANGE, fill_color=ORANGE, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
+        x_marker = Triangle(color=BTC, fill_color=BTC, fill_opacity=1).scale(0.1).next_to(vertical_line, DOWN, buff=0)
         x_marker.add_updater(lambda marker: marker.next_to(vertical_line, DOWN, buff=0))
         x_marker_val = Integer(btc_tracker.get_value())
         x_marker_val.add_updater(
             lambda integer: integer.become(Integer(btc_tracker.get_value()).scale(0.4).next_to(vertical_line, DOWN, buff=0.3)))
 
-        y_marker = Triangle(color=GREEN, fill_color=GREEN, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
+        y_marker = Triangle(color=USDT, fill_color=USDT, fill_opacity=1).scale(0.1).rotate(-PI / 2).next_to(horizontal_line, LEFT, buff=0)
         y_marker.add_updater(lambda marker: marker.next_to(horizontal_line, LEFT, buff=0))
         y_marker_val = Integer(usdt_tracker.get_value())
         y_marker_val.add_updater(lambda integer: integer.become(

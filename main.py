@@ -3,7 +3,7 @@ import random as rd
 import numpy as np
 from math import *
 from colour import Color
-from custom_manim_utils.custom_colors import *
+from custom_manim_utils.custom_consts import *
 
 config.frame_width = 16
 config.frame_height = 9
@@ -141,7 +141,7 @@ class working2(Scene):
 
         circles.arrange_in_grid(6,9).scale(1.1)
 
-        test_circle = Circle(fill_color=cosmos_text, fill_opacity=1)
+        test_circle = Circle(fill_color=W02, fill_opacity=1)
 
         mtex_1 = MathTex('for', 'dkjfkd').arrange(D)
         self.add(test_circle)
