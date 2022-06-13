@@ -8,7 +8,11 @@ from custom_manim_utils.custom_consts import *
 config.frame_width = 16
 config.frame_height = 9
 
-
+BTC = C_BTC
+ETH = C_ETH
+DOT = C_DOT
+SOL2 = C_SOL2
+USDT = C_USDT
 class LabeledRectangle(RoundedRectangle):
 
     def __init__(
@@ -2391,9 +2395,9 @@ class L_02_S_08_amm_xyk_adv_px_up_3(Scene):
         self.play(Create(scene1_arrow), run_time=t)
         self.wait(t)
 
-        scene1_slippage_text = Tex(r'I used 1283 USDT \\to buy 3 BTC').scale(0.7).next_to(user_asset_pos, DOWN)
-        scene1_slippage_form = MathTex(r'1283 \divisionsymbol 3').next_to(scene1_slippage_text, DOWN)
-        scene1_slippage_result = MathTex(rf'{int((k_tracker.get_value() / btc_tracker.get_value() - 3000) / 3)}USDT \  per\ BTC ').scale(0.85).move_to(
+        scene1_slippage_text = Tex(r'I used 1286 USDT \\to buy 3 BTC').scale(0.7).next_to(user_asset_pos, DOWN)
+        scene1_slippage_form = MathTex(r'1286 \divisionsymbol 3').next_to(scene1_slippage_text, DOWN)
+        scene1_slippage_result = MathTex(rf'{429}USDT \  per\ BTC ').scale(0.85).move_to(
             scene1_slippage_form.get_center())
 
         self.play(Create(scene1_slippage_form),
@@ -2496,7 +2500,8 @@ class L_02_S_09_px_impact_and_slippage(Scene):
         input_box_1_rect = RoundedRectangle(width=8, height=2)
         input_box_1_split = Line(UP * 0.4, D * 0.4).shift(R * 1.5)
         input_box_1_drop = Elbow().rotate(-3 * PI / 4).shift(R * 3.5)
-        input_box_1_text = Tex('USDT').next_to(input_box_1_split, R, buff=0.25)
+        input_box_1_text = Tex('USDT').next_to(input_box_1_split, R, buff=0.25).move_to(
+            np.array([input_box_1_drop.get_left()[0]-(input_box_1_drop.get_left()[0]-input_box_1_split.get_x())/2,input_box_1_split.get_y(),0]))
         input_box_1_amt = Tex('1286').scale(1.2).next_to(input_box_1_rect.get_left(), buff=0.75)
         input_box_1 = VGroup(input_box_1_rect, input_box_1_split, input_box_1_drop, input_box_1_text, input_box_1_amt)
         input_box_1_without_amd = VGroup(input_box_1_rect, input_box_1_split, input_box_1_drop, input_box_1_text)
@@ -2540,12 +2545,12 @@ class L_02_S_09_px_impact_and_slippage(Scene):
         ##### 슬리피지는 그렇게 내가 평균단가 468.75 달러에 구매할 것이라 예상하는데 거기서부터 갈라지는 것입니다
         ##### 3개를 받으려고 1283을 보냈는데 2.8개를 받았을 때 우리는 0.2비티씨의 슬리피지가 생겼다고 합니다다
         # 돌려받은게 3비티씨가 아니라 2.8비티씨임
-        returned_btc_2 = Tex('We just got 2.8 BTC', r'Slippage of 11\%', 'A slippage cost of 0.3 BTC').scale(0.8).arrange(D).shift(
+        returned_btc_2 = Tex('We just got 2.7 BTC', r'Slippage of 11\%', 'A slippage cost of 0.3 BTC').scale(0.8).arrange(D).shift(
             R * 4 + U * 2.5)
         self.play(Create(returned_btc_2), run_time=t)
         self.wait(t)
 
-        ##### 프라이스 임팩트는 428에 달러 빼기 300 즉 168.75 달러 혹은 보통은 퍼센트로 나타내기에
+        ##### 프라이스 임팩트는 428에 달러 빼기 300 즉 129 달러 혹은 보통은 퍼센트로 나타내기에
         ##### 428에 빼기 300 나누기 428에 곱하기 100 즉 36퍼센트가 됩니다
         ##### 그러나 슬리피지와 프라이스 임팩트를 엄밀하게 구분하지 않는 경우가 많기에 주의해야합니다
         # 여백에 프라이스 임팩트 이꼴 128빼기 300나누기 428 곱하기 100 적고 36퍼로 바뀜
@@ -3008,7 +3013,7 @@ class L_02_S_11_fees(Scene):
         ##### 즉 이전 거래자의 행동에 따라서 미세하게 이익이 바뀝니다.
         # 윈쪽에 수수료가 없는 겨웅 타이틀 달고
         # 케이 바리어블 비티씨바리어블 테더 바리어블 가격 바리어블 다 만들어줌
-        if_fee = Tex(r'If it were 11 BTC', 'It would be 247.93 USDT').arrange(D).next_to(price_var_fee, D, buff=1).align_to(price_var_fee,
+        if_fee = Tex(r'If it were 11 BTC,', 'it would be 247.93 USDT').arrange(D).next_to(price_var_fee, D, buff=1).align_to(price_var_fee,
                                                                                                                             L)
         self.play(Create(if_fee))
         self.wait(t)
@@ -3629,7 +3634,6 @@ class L_02_S_12_amm_xyk_various_cases_5(Scene):
         ##### 아까와 같이 2비티씨만큼 유동성을 공급하려고 하면 떨어진 가격에 맞게 테더를 넣어줘야합니다
         ##### 그래서 풀에서 같은 비중을 차지하기 위해서 더 적은 자금이 필요하게 됏습니다
         ##### 만약 아까 넣은 2비티씨를 유동성을 빼려고 하면 현재 가격대로 돌려받게 됩니다
-        px_dn_k_up = MathTex(r'Price \  \Downarrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[ 0 ])
         self.play(Write(px_dn_k_up[ 1 ]))
 
         self.play(k_tracker.animate.set_value(7680000 / 169),
@@ -3777,7 +3781,7 @@ class L_02_S_14_arbitrage(Scene):
         blist = BulletedList("Exposure to BTC fluctuation",
                              "Fees, time from DEX B",
                              r"In case of CEX, time, \\trade fees and high tx fees",
-                             r"In case of DEX, time, \\high trade fees, tx fees",
+                             r"In case of DEX, time, \\high trade fees and tx fees",
                              r"In case of another blockchain,\\time and bridging fees",
                              "Slippage risk from every trade", height=7, width=7)
 
