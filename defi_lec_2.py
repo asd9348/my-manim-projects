@@ -82,24 +82,43 @@ class final(Scene):
 
 class L_02_S_01_dex_pros_and_cons(Scene):
     def construct(self):
-        # self.play(Create(NumberPlane()))
+        script = speak(self, title='테스트입니다', txt=
+        '그렇다면 이 덱스라는 게 도대체 중앙화 거래소와 어떤 점이 다르기에 존재하는걸까요#1'
+        '덱스는 중앙화 서버가 없고 탈중앙화된 네트워크에 의존하기 때문에 전쟁과 같은 물리적인 위험에서도 중앙서버가 망가지면 네트워크가 마비되는 중앙화 거래소와 달리 훨씬 안전합니다#1'
+        '그러나 블록체인 네트워크도 트래픽이 많으면 느려지고, 심지어 최근 솔라나나 클레이튼 같은 대형체인도 정지하는 일이 심심치 않게 발생합니다#1'
+        '그래서 무작정 중앙서버보다 좋다고만은 할 수도 없습니다#1'
+        '또 덱스는 정부의 검열으로부터 자유로울 수 있고 프라이버시를 보호할 수 있습니다#1'
+        '모든 기록이 블록체인에 남지만 그 주소가 누군지 매칭이 안 되기 때문에 익명성이 보장됩니다#1'
+        '그리고 거래소의 심사 없이 코인을 자유롭게 상장할 수 있습니다#1'
+        '크립토 프로젝트들은 거래소에서 심사를 거쳐 상장이 되야하는데 이 기준이 엄격하다보니, 거래소에는 한정된 코인들만 있습니다.#1'
+        '그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다#1'
+              ,keep_pitch=True, update=True, speed=1.4)
 
-        swap_text = Tex('Swap').scale(2)
-        tex_1 = Tex('Why dex?').scale(2)
+        # TODO 5.014 secs그렇다면 이 덱스라는 게 도대체 중앙화 거래소와 어떤 점이 다르기에 존재하는걸까요
+        # TODO 1.0 secs1
+
+        why = Tex('Why dex?').scale(2)
+        self.play(Create(why))
+        self.wait(0.8)
+        # self.play(Uncreate(why))
+
         dex_text = MathTex('DEX').scale(2).shift(L * 4)
+        vs_text = MathTex('VS').scale(2)
         cex_text = MathTex('CEX').scale(2).shift(R * 4)
-        self.play(Create(dex_text), Create(cex_text))
-
         q_mark = Tex('?').scale(8)
+        self.play(ReplacementTransform(why,VGroup(dex_text,cex_text,vs_text)))
+        self.wait(0.8)
 
-        self.play(ReplacementTransform(VGroup(dex_text, cex_text), q_mark))
-        self.wait(2)
+
+        self.play(ReplacementTransform(VGroup(dex_text, cex_text,vs_text), q_mark))
+        self.wait(0.3)
 
         self.play(Uncreate(q_mark))
-        self.wait(q)
 
-        #####     그렇다면 덱스가 존재하는 이유는 무엇일까요
-        # 중앙화 노드 왼쪽 탈중앙화 노드 오른쪽
+        self.wait(0.2)
+
+        # TODO 11.102 secs덱스는 중앙화 서버가 없고 탈중앙화된 네트워크에 의존하기 때문에 전쟁과 같은 물리적인 위험에서도 중앙서버가 망가지면 네트워크가 마비되는 중앙화 거래소와 달리 훨씬 안전합니다
+        # TODO 1.0 secs1
 
         center_line = Line(UP * 10, D * 10)
 
@@ -128,15 +147,11 @@ class L_02_S_01_dex_pros_and_cons(Scene):
         centralized_net.shift(L * 4 + U * 0.5)
         centralized_net_text = Tex('Centralized Network').move_to(L * 4 + D * 3.5)
 
-        self.play(Create(center_line))
-        self.wait(2)
-
+        self.play(Create(center_line),run_time=0.3)
         self.play(Create(centralized_net),
-                  Create(centralized_net_text), run_time=5)
-        self.wait(2)
+                  Create(centralized_net_text), run_time=2)
+        self.wait(0.3)
 
-        # # ####################################################################################
-        #
         decentralized_net = VGroup()
         decentralized_nets = VGroup()
 
@@ -186,15 +201,8 @@ class L_02_S_01_dex_pros_and_cons(Scene):
         decentralized_net_text = Tex('Decentralized Network').move_to(R * 4 + D * 3.5)
 
         self.play(Create(decentralized_nets),
-                  Create(decentralized_net_text), run_time=5)
-        self.wait(2)
-
-        #####     일단 중앙화 주체 없이 운영되는 거래소이기 때문에 오는 장점이 잇습니다
-        #####  덱스는 중앙화 서버가 없고 블록체인에 의존하기 때문에 서버가 죽는 위험에 노출되지 않습니다
-
-        # 중앙화 노드로 공격 애니메이션
-        # 중앙 노드가 없어지면서 라인도 네트워크 라인도 같이 제거
-        # 탈중앙화는 살아있음
+                  Create(decentralized_net_text), run_time=2)
+        self.wait(0.5)
 
         arrow_scaler = 0.6
         rect = Rectangle(width=2, height=1, fill_color=RED, fill_opacity=1, color=RED)
@@ -214,15 +222,12 @@ class L_02_S_01_dex_pros_and_cons(Scene):
         cent_server_cross = Cross(stroke_width=15).scale(0.3).move_to(centralized_net[ 30 ])
         cent_server_cross.set_z_index(1)
 
-        self.play(Create(cent_attack_arrows.move_to(centralized_net[ 30 ])))
-        self.play(Create(cent_server_cross))
-        self.wait(2)
+        self.play(Create(cent_attack_arrows.move_to(centralized_net[ 30 ])),run_time=0.5)
+        self.play(Create(cent_server_cross),run_time=0.5)
+        self.wait(0.25)
 
-        self.play(Uncreate(centralized_net[ 31: ]), run_time=3)
-        self.wait(2)
-
-        #################################################################
-
+        self.play(Uncreate(centralized_net[ 31: ]), run_time=0.5)
+        self.wait(0.25)
         decent_attack_arrows_1 = cent_attack_arrows.copy().scale(0.6).move_to(decentralized_nets[ 3 ][ 10 ])
         decent_attack_arrows_1.set_z_index(1)
         decent_attack_arrows_2 = cent_attack_arrows.copy().scale(0.6).move_to(decentralized_nets[ 0 ][ 10 ])
@@ -233,21 +238,17 @@ class L_02_S_01_dex_pros_and_cons(Scene):
         decent_server_cross_2 = Cross(stroke_width=15).scale(0.2).move_to(decentralized_nets[ 0 ][ 10 ])
         decent_server_cross_2.set_z_index(1)
 
-        self.play(Create(decent_attack_arrows_1))
-        self.play(Create(decent_attack_arrows_2))
-        self.wait(2)
-
+        self.play(Create(decent_attack_arrows_1),
+                  Create(decent_attack_arrows_2),run_time=0.5)
         self.play(Create(decent_server_cross_1),
-                  (Create(decent_server_cross_2)))
-        self.wait(2)
+                  (Create(decent_server_cross_2)),run_time=0.5)
+        self.wait(0.25)
 
         self.play(Uncreate(decentralized_nets[ 3 ][ 11: ]),
-                  Uncreate(decentralized_nets[ 0 ][ 11: ]), run_time=3)
-        self.wait(2)
-
+                  Uncreate(decentralized_nets[ 0 ][ 11: ]), run_time=0.25)
         self.play(Uncreate(decentralized_nets[ -1 ][ 3 ]),
-                  Uncreate(decentralized_nets[ -1 ][ 0 ]), run_time=3)
-        self.wait(2)
+                  Uncreate(decentralized_nets[ -1 ][ 0 ]), run_time=0.25)
+        self.wait(1)
 
         self.play(Uncreate(VGroup(centralized_net,
                                   decentralized_nets,
@@ -259,13 +260,13 @@ class L_02_S_01_dex_pros_and_cons(Scene):
                                   cent_attack_arrows,
                                   cent_server_cross,
                                   centralized_net_text,
-                                  decentralized_net_text)), run_time=5)
-        self.wait(2)
+                                  decentralized_net_text)), run_time=1.5)
+        self.wait(0.5)
 
-        ##### 그러나 블록체인 네트워크도 트래픽이 많으면 느려지고 심지어 최근 솔라나나 클레이튼 대형체인도
-        ##### 정지하는 일도 심심치 않게 발생합니다. 그래서 무작정 중앙서버보다 좋다고만은 할 수도 없습니다
-        # 블록생성하다가 속도 존나 줄이기
-        # 블록생성하다가 멈추고 뒤에 빨ㄹ간스톱사인
+        # TODO 9.157 secs그러나 블록체인 네트워크도 트래픽이 많으면 느려지고, 심지어 최근 솔라나나 클레이튼 같은 대형체인도 정지하는 일이 심심치 않게 발생합니다
+        # TODO 1.0 secs1
+        # TODO 3.721 secs그래서 무작정 중앙서버보다 좋다고만은 할 수도 없습니다
+        # TODO 1.0 secs1
 
         chain1 = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
         chain2 = Line(ORIGIN, L * 0.4).move_to(chain1).shift(L * 0.2)
@@ -293,19 +294,18 @@ class L_02_S_01_dex_pros_and_cons(Scene):
         stop_sign = VGroup(sign, stop).scale_to_fit_width(1.2).next_to(blockchain, R, buff=0)
 
         self.play(Create(blockchain[ 0:-4 ]), run_time=1)
-        self.wait(2)
-        self.play(Create(blockchain[ -4: ]), run_time=5)
-        self.wait(2)
+        self.wait(1)
+        self.play(Create(blockchain[ -4: ]), run_time=4.5)
         self.play(Create(stop_sign))
 
-        self.wait(2)
+        self.wait(4)
         self.play(Uncreate(blockchain),
-                  Uncreate(stop_sign))
+                  Uncreate(stop_sign),run_time=2.5)
+        self.wait(0.5)
 
-        ##### 또 정부의 검열으로부터 자유로울 수 있고 프라이버시를 보호할 수 있습니다
-        # 덱스중앙에 텍스트
-        # 눈 아이콘생성
-        # 방어막
+
+        # 4.881 secs또 덱스는 정부의 검열으로부터 자유로울 수 있고 프라이버시를 보호할 수 있습니다
+        # 1.0 secs1
 
         dex_text = Tex('DEX', font_size=100)
 
@@ -323,34 +323,31 @@ class L_02_S_01_dex_pros_and_cons(Scene):
 
         shield = Circle(radius=2.5, color=BLUE)
 
-        self.play(Create(dex_text))
-        self.wait(2)
-
-        self.play(Create(eyes))
-        self.wait(2)
-
+        self.play(Create(dex_text,run_time=0.5))
+        self.play(Create(eyes),run_time=0.5)
         self.play(eye_UL[ 2 ].animate.shift(DR * 0.2),
                   eye_DL[ 2 ].animate.shift(UR * 0.18),
                   eye_UR[ 2 ].animate.shift(DL * 0.2),
                   eye_DR[ 2 ].animate.shift(UL * 0.18),
                   )
 
-        self.play(Create(shield))
-        self.wait(2)
+        self.play(Create(shield),run_time=0.5)
 
         self.play(Flash(shield, line_length=1, num_lines=50, color=BLUE, flash_radius=2.5 + SMALL_BUFF, time_width=0.3, run_time=1,
                         rate_func=rush_from))
-        self.wait(2)
+        self.play(Flash(shield, line_length=1, num_lines=50, color=BLUE, flash_radius=2.5 + SMALL_BUFF, time_width=0.3, run_time=1,
+                        rate_func=rush_from))
+        self.wait(0.5)
 
         self.play(Uncreate(dex_text),
                   Uncreate(eyes),
                   Uncreate(shield)
                   )
-        self.wait(2)
+        self.wait(0.5)
 
-        ##### 모든 기록이 블록체인에 남지만 그 주소가 누군지 매칭이 안 되기 때문에 익명성이 보장됩니다
-        # 블록하나 왼쪽상단 옆에는 프럼 주소 아래 화살표와 내용 그리고 투 주소
-        # 그리고 물음표 아이콘
+        # TODO 5.956 secs모든 기록이 블록체인에 남지만 그 주소가 누군지 매칭이 안 되기 때문에 익명성이 보장됩니다
+        # TODO 1.0 secs1
+
         block_1_box = Square(2)
         block_1_text = Tex(f"{format(214, '08b')}", f"{format(245, '08b')}").arrange(D).scale(0.8)
         block_1 = VGroup(block_1_box, block_1_text).to_edge(L, buff=1)
@@ -376,16 +373,17 @@ class L_02_S_01_dex_pros_and_cons(Scene):
 
         who_text = Tex('Who?').scale(2).shift(R * 5)
 
-        self.play(Create(block_1), run_time=2)
-        self.wait(2)
-
+        self.play(Create(block_1), run_time=0.3)
         self.play(AnimationGroup(Create(mag_circle),
                                  Create(mag_circle_text),
                                  Create(mag_line),
                                  Create(mag_rect),
                                  Create(tx_content),
-                                 Create(who_text), lag_ratio=0.5), run_time=7)
-        self.wait(2)
+                                 Create(who_text), lag_ratio=0.5), run_time=2)
+
+        self.play(Indicate(who_text),run_time=2)
+        self.wait(0.5)
+
 
         mag_circle_text.set_z_index(2)
         self.play(AnimationGroup(Uncreate(tx_content),
@@ -394,20 +392,14 @@ class L_02_S_01_dex_pros_and_cons(Scene):
                                  Uncreate(mag_line),
                                  Uncreate(mag_circle_text),
                                  Uncreate(mag_circle),
-                                 lag_ratio=0.5), run_time=5)
-        self.wait(2)
+                                 lag_ratio=0.5), run_time=1)
+        self.play(Uncreate(block_1), run_time=0.3)
+        self.wait(0.5)
 
-        self.play(Uncreate(block_1), run_time=1)
-        self.wait(2)
-
-        ##### 그리고 거래소의 심사 없이 코인을 자유롭게 상장할 수 있ㅅ브니다
-        ##### 크립토 프로젝트들은 거래소에서 심사를 거쳐 상장이 되야하는데 이 기준이 엄격하다보닏
-        ##### 거래소에는 한정된 코인들만 있ㅅ브니다.
-        ##### 그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다
-        # 중앙화 거래소 오른쪽에 생성 그리고 중앙에 Eval and audit 으로 필터 막대 설정
-        # 잡코인들 존나 부닥치고 튕겨나감
-        # 덱스똑같이 생성시키고 유동성제공자 만든 다음에 지폐 두장 보내면 덱스에서 페어 아이콘으로 형성
-        # 할 때 코인 이름 구린걸로
+        # TODO 3.926 secs그리고 거래소의 심사 없이 코인을 자유롭게 상장할 수 있습니다
+        # TODO 1.0 secs1
+        # TODO 8.263 secs크립토 프로젝트들은 거래소에서 심사를 거쳐 상장이 되야하는데 이 기준이 엄격하다보니, 거래소에는 한정된 코인들만 있습니다.
+        # TODO 1.0 secs1
 
         cex_text = Tex('CEX').scale(2).shift(R * 4 + U * 2)
         eval_audit_text = Tex(r'Evaluation \& Audit').to_edge(U)
@@ -415,7 +407,7 @@ class L_02_S_01_dex_pros_and_cons(Scene):
 
         shit_coin = LabeledDot(Tex('SHIT', color=BLACK), radius=1, color=GREEN).shift(U * 2).to_edge(L)
         poop_coin = LabeledDot(Tex('POOP', color=BLACK), radius=1, color=YELLOW).shift(D * 3).to_edge(L)
-        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=BTC).to_edge(L).shift(0.5 * D)
+        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=C_BTC).to_edge(L).shift(0.5 * D)
 
         limited_pairs = Tex('Limited pairs available...', 'BTC-USDT', 'ETH-BTC', r'\vdots').arrange(D).next_to(cex_text, D, buff=1)
 
@@ -423,31 +415,28 @@ class L_02_S_01_dex_pros_and_cons(Scene):
 
         self.play(Create(cex_text),
                   Create(eval_audit_text),
-                  Create(center_line), run_time=5)
-        self.wait(2)
+                  Create(center_line), run_time=1)
+        self.wait(1)
 
-        self.play(Create(limited_pairs), run_time=5)
-        self.wait(2)
+        self.play(Create(limited_pairs), run_time=1)
+        self.wait(1)
 
-        self.play(Create(VGroup(shit_coin, poop_coin, btc_coin)), run_time=5)
-        self.wait(2)
+        self.play(Create(VGroup(shit_coin, poop_coin, btc_coin)), run_time=1.5)
 
         self.play(shit_coin.animate.align_to(center_line, R),
                   poop_coin.animate.align_to(center_line, R),
-                  btc_coin.animate.align_to(center_line, R), run_time=5)
-        self.wait(2)
-
-        self.play(MoveAlongPath(btc_coin, btc_arc), run_time=3)
-        self.wait(2)
-
-        self.play(FadeOut(btc_coin, target_position=cex_text), run_time=3)
-        self.wait(2)
+                  btc_coin.animate.align_to(center_line, R), run_time=1)
+        self.play(MoveAlongPath(btc_coin, btc_arc), run_time=1)
+        self.play(FadeOut(btc_coin, target_position=cex_text), run_time=2)
+        self.wait(1)
 
         self.play(FadeOut(shit_coin),
-                  FadeOut(poop_coin), run_time=3)
+                  FadeOut(poop_coin), run_time=1)
         self.wait(2)
 
-        ##############################################################
+
+        # TODO 5.267 secs그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다
+        # TODO 1.0 secs1
         dex_text = Tex('DEX').scale(2).shift(R * 4 + U * 2)
         shit_coin = LabeledDot(Tex('SHIT', color=BLACK).scale(0.5), radius=0.5, color=GREEN).shift(U * 1).to_edge(L)
         poop_coin = LabeledDot(Tex('POOP', color=BLACK).scale(0.5), radius=0.5, color=YELLOW).shift(D * 1).to_edge(L)
@@ -463,15 +452,17 @@ class L_02_S_01_dex_pros_and_cons(Scene):
                   Uncreate(eval_audit_text),
                   Uncreate(center_line),
                   ReplacementTransform(limited_pairs, any_pairs)
-                  , run_time=ttt)
-        self.wait(2)
+                  , run_time=2)
+        self.wait(0.5)
 
-        self.play(*[ FadeOut(coin, target_position=dex_text) for coin in coins ], run_time=t)
-        self.wait(2)
+        self.play(*[ Create(coin, target_position=dex_text) for coin in coins ], run_time=1.5)
+        self.play(*[ FadeOut(coin, target_position=dex_text) for coin in coins ], run_time=2)
+        self.wait(0.5)
 
         self.play(Uncreate(dex_text),
-                  Uncreate(any_pairs), run_time=tt)
+                  Uncreate(any_pairs), run_time=1.5)
         self.wait(2)
+
 
 
 class L_02_S_02_smart_contract(Scene):

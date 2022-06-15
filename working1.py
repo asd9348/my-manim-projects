@@ -8,7 +8,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 
-p = subprocess.Popen(f"C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pql --fps 10 main.py working1",
+p = subprocess.Popen(f"C:/Users/asd93/PycharmProjects/Manim/venv/Scripts/activate.ps1yfile.ps1 & manim -pql --fps 24 main.py working1",
                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
 
 

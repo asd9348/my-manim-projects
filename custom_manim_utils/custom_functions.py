@@ -57,6 +57,41 @@ class LabeledRectangle(RoundedRectangle):
         rendered_label.next_to(self, direction)
         self.add(rendered_label)
 
+class BoxWithContent(RoundedRectangle):
+
+    def __init__(
+            self,
+            # label: str or SingleStringMathTex or Text or Tex,
+            width: float or None = None,
+            height: float or None = None,
+            corner_radius: float or None = None,
+            direction: np.ndarray = UP,
+            obj: Mobject = Mobject,
+            **kwargs, ) -> None:
+
+        # if isinstance(label, str):
+        #     from manim import Tex
+        #
+        #     rendered_label = Tex(label, color=WHITE)
+        # else:
+        #     rendered_label = label
+
+        print(obj.width)
+        print(type(obj.width))
+
+        if width is None:
+            width = 0.2 + float(obj.width)
+        if height is None:
+            height = 0.2 + float(obj.height)
+
+        if corner_radius is None:
+            corner_radius = 0.2
+
+        super().__init__(width=width, height=height, corner_radius=corner_radius, **kwargs)
+        self.move_to(obj)
+        obj.add(self)
+
+
 
 def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
     box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
@@ -65,11 +100,26 @@ def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color
     return VGroup(box, text)
 
 
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height):
+def create_box_asset(text,font_size, text_color=BLACK,width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN,stroke_width = 10,stroke_opacity = 0):
+    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_opacity=stroke_opacity)
+    text = Tex(text, color=text_color, font_size=font_size)
+
+    return VGroup(box, text)
+
+def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fill_color=GREEN, stroke_color=GREEN,stroke_width = 10,stroke_opacity = 0):
+    circle = Circle(radius=radius, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_opacity=stroke_opacity)
+    if type(input_text) is str:
+        text = Tex(input_text, color=text_color, font_size=font_size)
+    else:
+        text = input_text
+    return VGroup(circle, text)
+
+
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
     box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = Text(asset_name, color=BLACK).scale(asset_height)
+    text = Text(asset_name, color=asset_text_color).scale(asset_height)
 
     asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
 
@@ -84,6 +134,9 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
 
     # Path(rf'.\audio_cache\{title} ').mkdir(parents=True, exist_ok=True)
     Path(rf'.\audio_cache\{title}\uncut').mkdir(parents=True, exist_ok=True)
+    Path(rf'.\audio_cache\{title}\pause').mkdir(parents=True, exist_ok=True)
+
+    output = ''
 
     init_pause_sound = AudioSegment.from_file(rf'.\custom_manim_utils\dummy.mp3')
     muffled_pause_sound = init_pause_sound - 50
@@ -101,10 +154,14 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
     pprint(cut_text_list)
 
     file_list = [ ]
+
+    missing_file_counter = 0
     for i in range(len(cut_text_list)):
         clip = cut_text_list[ i ]
 
         if type(clip) is str:
+
+
 
             file_path_obj = Path(rf".\audio_cache\{title}\{title + 'L' + str(i) + ' ' + clip}.mp3")
             file_path_text = rf".\audio_cache\{title}\{title + 'L' + str(i) + ' ' + clip}.mp3"
@@ -115,13 +172,19 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
                 print("File exist. Using the existing one...")
 
                 gtts_file_path_text = file_path_text
-                sound = AudioSegment.from_file(gtts_file_path_text)
-                new_audio_seg.export(file_path_text)
+                new_audio_seg = AudioSegment.from_file(gtts_file_path_text)
+                new_audio_seg.export(file_path_text,bitrate='312k')
+                file_list.append(new_audio_seg)
+                output += f'# TODO {new_audio_seg.duration_seconds} secs ' + clip + '\n'
+
+
 
             else:
-                print("File dosent exist. Creating...")
 
                 if clip != '':
+                    print("File dosent exist. Creating...")
+                    missing_file_counter = 1
+
                     gTTS(text=clip, lang=lang).write_to_fp(
                         gtts_sound := NamedTemporaryFile(delete=False, dir=r"C:\Users\asd93\PycharmProjects\Manim\audio_cache\temp"))
                     gtts_file_path_text = gtts_sound.name
@@ -139,20 +202,33 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
                         new_audio_seg.export(file_path_text)
 
                     file_list.append(new_audio_seg)
+                    output += f'# TODO {new_audio_seg.duration_seconds} secs' + clip + '\n'
+
 
                 else:
                     print('it is empty text')
 
+
         else:
             # whene it is for pause
             cut_muffled_pause_sound = muffled_pause_sound[ :clip * 1000 ]
-            cut_muffled_pause_sound.export(rf".\audio_cache\{title}\{title + 'L' + str(i) + ' ' + str(clip) + 's pause'}.mp3")
+            cut_muffled_pause_sound.export(rf".\audio_cache\{title}\pause\{title + 'L' + str(i) + ' ' + str(clip) + 's pause'}.mp3")
             file_list.append(cut_muffled_pause_sound)
+            output += f'# TODO {cut_muffled_pause_sound.duration_seconds} secs' + ' pause' + '\n\n'
 
-    concated_audio = AudioSegment.from_file('tesst.mp3')[ :100 ] - 50
-    for file in file_list:
-        concated_audio = concated_audio + file
-        concated_audio.export(final_file_path_text)
+    if missing_file_counter==1:
+        print('Creating concated file')
+
+
+        concated_audio = AudioSegment.from_file(r'.\custom_manim_utils\dummy.mp3')[ :100 ] - 50
+        for file in file_list:
+            concated_audio = concated_audio + file
+            concated_audio.export(final_file_path_text)
+
+    else:
+        print('Using existing concated file')
+
+    print(output)
 
     self.add_sound(final_file_path_text)
 
