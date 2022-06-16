@@ -15,6 +15,7 @@ tt: float = 5
 ttt: float = 7
 
 O: np.ndarray = ORIGIN
+LEFT : np.ndarray = np.array((-1.0, 0.0, 0.0))
 L: np.ndarray = np.array((-1.0, 0.0, 0.0))
 R: np.ndarray = np.array((1.0, 0.0, 0.0))
 U: np.ndarray = np.array((0.0, 1.0, 0.0))

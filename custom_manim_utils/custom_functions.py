@@ -107,7 +107,7 @@ def create_box_asset(text,font_size, text_color=BLACK,width=0.5, height=0.3, fil
     return VGroup(box, text)
 
 def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fill_color=GREEN, stroke_color=GREEN,stroke_width = 10,stroke_opacity = 0):
-    circle = Circle(radius=radius, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_opacity=stroke_opacity)
+    circle = Circle(radius=radius, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_width=stroke_width,stroke_opacity=stroke_opacity)
     if type(input_text) is str:
         text = Tex(input_text, color=text_color, font_size=font_size)
     else:

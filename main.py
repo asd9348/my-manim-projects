@@ -1,4 +1,3 @@
-import manim
 from manim import *
 import random as rd
 import numpy as np
@@ -6,26 +5,14 @@ from math import *
 from colour import Color
 from custom_manim_utils.custom_consts import *
 from custom_manim_utils.custom_functions import *
-from gtts import gTTS
-from io import BytesIO
-from gtts import gTTS
-from tempfile import NamedTemporaryFile
-from pathlib import Path
-import shutil
-from pprint import pprint
 
 config.frame_width = 16
 config.frame_height = 9
-# config.background_color=WHITE
-
-BTC = C_BTC
-ETH = C_ETH
 
 
 class final(Scene):
     def construct(self):
         pass
-
         # lec1_s1.construct(self)
         # lec1_s2.construct(self)
         # lec1_s3.construct(self)
@@ -33,253 +20,207 @@ class final(Scene):
         # working.construct(self)
 
 
-class working3(Scene):
-    def construct(self):
-        template = TexTemplate()
-        template.add_to_preamble(r"\usepackage[RPvoltages]{circuitikz}")
-
-        salikop = MathTex(
-            r"""\draw (6,0) to[battery2] (0,0) ;""",
-            r"""\draw (0,0) to[short] (0,2) ;""",
-            r"""\draw (0,2) to[L] (6,2) ;""",
-            r"""\draw (6,2) to[short] (6,0) ;""",
-            stroke_width=2,
-            fill_opacity=0,
-            stroke_opacity=1,
-            tex_environment="circuitikz",
-            tex_template=template
-        ).scale(1)
-
-        template.get_texcode_for_expression_in_env(salikop, "circuitikz")
-
-        self.wait()
-        self.play(Create(salikop), run_time=4)
-        self.wait(2)
-
 class working2(Scene):
     def construct(self):
-        self.add(NumberPlane())
-        script = speak(self, title='Scene2', txt=
-        '그래서 덱스는 일반 거래소처럼 오더북을 사용하지 않습니다#1'
-                       , keep_pitch=True, update=True, speed=1.4)
+        self.add(NumberPlane().set_z_index(1))
+        speak(self, title='Scene2', txt=
+        '간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데, 이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다#1'
+        '엑스와이는 케이에서 엑스를 이항시키면 와이는 엑스분의 케이 형태입니다#1'
+        '여러분 모두 중학교 때 함수를 배웠을 것이고, 기본적인 와이는 이엑스도 배웠고 와이는 엑스분의 1을 배운 기억이 날겁니다#1'
+        '그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다. 그리고 이 반비레함수는 케이값에 따라서 보이는 것과 같이 원점에서 점점 멀어지는 함수입니다#1'
+        '일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다. 도대체 어떻게 가격을 결정하는지 알아보겠습니다#1'
+        '여기서 엑스는 에이코인의 양, 와이는 비코인의 양입니다#1 '
+        '페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나 앞으로 이해하기 쉽게 풀내부의 베이스에셋의 양이 엑스, 쿼트에셋의 양이 와이라고 하겠습니다#1'
 
-        mtex_1 = MathTex('dfjk')
-        tex_1 = Tex('dkfjkd')
-
-        amm_text = Tex('{{A}}utomatic {{M}}arket {{M}}aker').scale(2)
-        self.play(Create(amm_text))
-        amm_acronym_text = Tex('{{A}}{{M}}{{M}}').scale(2).move_to(amm_text)
-        self.play(TransformMatchingTex(amm_text, amm_acronym_text), run_time=t)
-
-
-        self.wait(5)
-
-
-
-class working1(Scene):
-    def construct(self):
-        dummy_for_order_book = Tex('djfk',color = WHITE).scale(4)
-        # self.play(Create())
-        self.play(Uncreate(dummy_for_order_book), run_time = 0.001)
-
-        self.add(NumberPlane())
-        speak(self, title='강의1', txt=
-        '그래서 덱스는 일반 거래소처럼 오더북을 사용하지 않습니다#1'
-        '대신 오토매틱 마켓 메이커라는 것을 사용합니다#1'
-        '에이엠엠은 오토매틱 마켓 메이커의 약자로 오더북없이 가격을 결정하는 방식 혹은 알고리즘이라고 생각하면 됩니다#1'
-        '일반적으로 엑스 와이는 케이라는 식을 사용하여 가격을 결정합니다#1'
-        '이 에이엠엠과 엑스 와이는 케이 공식에 대해 알아보겠습니다#1'
-        '원래 덱스는 이더리움 생태계에서 나왔고 비트코인이 랩드 비트코인같이 이더리움 체인에서 사용된 건 시간이 걸렸지만 이해를 위해 그냥 비티씨를 사용하겠습니다#1'
-        '최초의 뎩스가 탄생하고 사람들은 비트코인과 테더의 거래쌍을 만들고 싶었습니다.#1'
-        '그래서 중앙화 거래소에서 비트코인 가격이 300테더인 걸 보고#1'
-        '비트코인 10개와 3000테더를 함께 유동성 풀이라는 것에 넣었습니다#1'
-        '이것은 일종의 스마트 컨트랙트로 자신의 자산으로 유동성을 제공하곘다는 것입니다.#1'
-        '이제 이 유동성 제공자로 인하여 덱스참여자는 비트코인과 테더 거래쌍을 이용할 수 있습니다#1'
               , keep_pitch=True, update=True, speed=1.4)
 
+        # TODO 7.877 secs간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데, 이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다
 
-        # TODO 3.697 secs그래서 덱스는 일반 거래소처럼 오더북을 사용하지 않습니다
-        # TODO 1.0 secs pause
-        # TODO 3.141 secs대신 오토매틱 마켓 메이커라는 것을 사용합니다
         # TODO 1.0 secs pause
 
-        amm_text = Tex('{{A}}utomatic {{M}}arket {{M}}aker').scale(2)
-        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2).next_to(amm_text, D)
+        amm_text = Tex('AMM').scale(2)
+        with_math_text = Tex('with Math').next_to(amm_text, D)
 
-        pair_rect = RoundedRectangle(corner_radius=0.5, height=8, width=4)
-        pair_rect_text = Tex("BTCUSD").next_to(pair_rect, UP, buff=0.2).scale(0.8)
-
-        dummy = IntegerTable(
-            [
-                [ 1000000 ]
-            ],
-            row_labels=[ Tex(r"105\$") ],
-            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
-            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 0.5}).scale(0.5)
-
-        curr_px_height = dummy[ 1 ].get_y() - dummy[ 2 ].get_y()
-        curr_px_width = dummy[ 4 ].get_x() - dummy[ 3 ].get_x()
-        curr_px_rect = Rectangle(width=curr_px_width, height=curr_px_height, color=RED)
-
-        curr_px_number_100 = Integer(100, unit=r"\$", color=RED).move_to(curr_px_rect)
-
-        self.play(Create(curr_px_rect),run_time=0.25)
-
-        self.play(FadeIn(curr_px_number_100), run_time=0.25)
-
-        order_book_shrt_table = IntegerTable(
-            [ [ 100000 ],
-              [ 10000 ],
-              [ 1000 ],
-              [ 100 ],
-              [ 50 ]
-              ],
-            row_labels=[ Tex(r"105\$"),
-                         Tex(r"104\$"),
-                         Tex(r"103\$"),
-                         Tex(r"102\$"),
-                         Tex(r"101\$")
-                         ],
-            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
-            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 0.5}).scale(0.5).next_to(curr_px_rect, UP, buff=0)
-
-        for i in range(1, 6):
-            for j in range(1, 3):
-                order_book_shrt_table.add_highlighted_cell((i, j), fill_opacity=0.2, color=RED_A)
-
-        order_book_shrt_table.set_row_colors(RED, RED, RED, RED, RED)
-
-        order_book_long_table = IntegerTable(
-            [ [ 50 ],
-              [ 100 ],
-              [ 1000 ],
-              [ 10000 ],
-              [ 100000 ]
-              ],
-            row_labels=[ Tex(r"100\$"),
-                         Tex(r"99\$"),
-                         Tex(r"98\$"),
-                         Tex(r"97\$"),
-                         Tex(r"96\$")
-                         ],
-            include_outer_lines=True, arrange_in_grid_config={"cell_alignment": LEFT},
-            line_config={'stroke_color': GRAY, 'stroke_width': 2, 'stroke_opacity': 0.5}).scale(0.5).next_to(curr_px_rect, DOWN, buff=0)
-
-        for i in range(1, 6):
-            for j in range(1, 3):
-                order_book_long_table.add_highlighted_cell((i, j), fill_opacity=0.2, color=GREEN_A)
-
-        order_book_long_table.set_row_colors(GREEN, GREEN, GREEN, GREEN, GREEN)
-
-        self.play(Create(order_book_long_table), Create(order_book_shrt_table),run_time=0.5)
-
+        self.play(Create(amm_text), run_time=2)
+        self.wait(1.5)
+        self.play(Create(with_math_text), run_time=2)
         self.wait(1)
 
-
-        order_book_cross = Cross(stroke_width=25).scale(3)
-        order_book_stuff = VGroup(curr_px_rect, curr_px_number_100, order_book_long_table, order_book_shrt_table, order_book_cross)
-        self.play(Create(order_book_cross), run_time=1)
+        self.play(Uncreate(VGroup(amm_text, with_math_text)), run_time=1)
         self.wait(0.5)
 
-        self.play(AnimationGroup(ReplacementTransform(order_book_stuff,dummy_for_order_book),
-                                 GrowFromCenter(amm_text),lag_ratio=0.2), run_time=2.5)
+        # TODO 4.615 secs엑스와이는 케이에서 엑스를 이항시키면 와이는 엑스분의 케이 형태입니다
+
+        # TODO 1.0 secs pause
+
+        xyk = MathTex('x', r'\times', 'y', '=', 'k').scale(2)
+        self.play(Write(xyk), run_time=1)
+        self.wait(1)
+
+        xyk_fraction = MathTex('y', '=', r'\frac{k}{x}').scale(2)
+        self.play(TransformMatchingShapes(xyk, xyk_fraction), run_time=1.5)
+        self.wait(1)
+
+        # TODO 7.84 secs여러분 모두 중학교 때 함수를 배웠을 것이고, 기본적인 와이는 이엑스도 배웠고 와이는 엑스분의 1을 배운 기억이 날겁니다
+
+        # TODO 1.0 secs pause
+
+        self.play(xyk_fraction.animate.scale(0.5).to_edge(U).shift(L * 6), run_time=1)
+        self.wait(t)
+
+        ##### 여러분 모두 중학교 때 함수를 배웠을 것이고
+        ##### 기본적인  와이는 2엑스도 배웠고 와이는 엑스분의 1을 빼운기억이 날겁니다
+        ##### 그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다
+        # 함수여러개 팝업 그중에 엑스부느이 일 강조
+        func_1 = MathTex(r'y = 5x').move_to(np.array([ -5, -2, 0 ]))
+        func_2 = MathTex(r'y = 2x-1').move_to(np.array([ 3.5, 3, 0 ]))
+        func_3 = MathTex(r'y = \frac{1}{x}')
+        func_4 = MathTex(r'y = \frac{x}{15}').move_to(np.array([ 0, -3, 0 ]))
+        func_5 = MathTex(r'y = -6x+\frac{17}{31}').move_to(np.array([ 5, -2, 0 ]))
+
+        self.play(AnimationGroup(Create(func_1),
+                                 Create(func_2),
+                                 Create(func_3),
+                                 Create(func_4),
+                                 Create(func_5),
+                                 lag_ratio=0.5), run_time=3)
+        self.wait(2)
+
+        self.play(Circumscribe(func_3), run_time=1)
+        self.wait(1)
+
+        self.play(AnimationGroup(Uncreate(func_1),
+                                 Uncreate(func_2),
+                                 Uncreate(func_3),
+                                 Uncreate(func_4),
+                                 Uncreate(func_5),
+                                 lag_ratio=0.5), run_time=1)
+
         self.wait(0.5)
-
-        # TODO 7.007 secs에이엠엠은 오토매틱 마켓 메이커의 약자로 오더북없이 가격을 결정하는 방식 혹은 알고리즘이라고 생각하면 됩니다
-        # TODO 1.0 secs pause
-
-
-        amm_acronym_text = Tex('{{A}}{{M}}{{M}}').scale(2).move_to(amm_text)
-        self.play(TransformMatchingTex(amm_text, amm_acronym_text), run_time=t)
-        self.wait(t)
-
-        ##### 그냥 프로그램 혹은 가격을 정하는 방식같은 추상적 개념이라고 생각하시면 됩니다
-        # 에이엠엠 텍스트 밑에 프로그램 혹은 컨셉
-        program_or_concept_text = Tex('Program or Concept?').next_to(amm_text, D)
-        self.play(Create(program_or_concept_text), run_time=t)
-        self.wait(t)
-
-
-
-        # TODO 4.192 secs일반적으로 엑스 와이는 케이라는 식을 사용하여 가격을 결정합니다
-        # TODO 1.0 secs pause
-
-        # TODO 3.684 secs이 에이엠엠과 엑스 와이는 케이 공식에 대해 알아보겠습니다
+        # TODO 11.331 secs그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다. 그리고 이 반비레함수는 케이값에 따라서 보이는 것과 같이 원점에서 점점 멀어지는 함수입니다
 
         # TODO 1.0 secs pause
 
-        # TODO 9.894 secs원래 덱스는 이더리움 생태계에서 나왔고 비트코인이 랩드 비트코인같이 이더리움 체인에서 사용된 건 시간이 걸렸지만 이해를 위해 그냥 비티씨를 사용하겠습니다
+        k_var = Variable(1, MathTex("k"), var_type=Integer).next_to(xyk_fraction, R, buff=2)
+        k_tracker = k_var.tracker
+        k_tracker.set_value(1)
+        graph_range = 50
+
+        ax = Axes(x_range=[ 0, graph_range, int(graph_range / 10) ],
+                  y_range=[ 0, graph_range, int(graph_range / 10) ],
+                  x_length=5,
+                  y_length=5,
+
+                  tips=True,
+                  axis_config={"include_numbers": True, 'color': WHITE, 'font_size': 20, 'tip_width': 0.1, 'tip_height': 0.1},
+                  ).to_edge(L, buff=1.2)
+
+        xyk_graph = ax.plot(lambda x: k_tracker.get_value() / x,
+                            x_range=[ 0.00001, 20 ],
+                            use_smoothing=False, color=BLUE)
+
+        xyk_graph.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: k_tracker.get_value() / x,
+                    x_range=[ k_tracker.get_value() / graph_range, graph_range ],
+                    use_smoothing=False, color=BLUE)))
+
+        self.play(Create(k_var))
+        self.play(Create(ax))
+        self.play(Create(xyk_graph))
+        self.wait(1)
+
+        self.play(k_tracker.animate.set_value(300), run_time=7)
+        self.wait(1)
+
+        # TODO 7.502 secs일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다. 도대체 어떻게 가격을 결정하는지 알아보겠습니다
 
         # TODO 1.0 secs pause
-
-        # TODO 5.134 secs최초의 뎩스가 탄생하고 사람들은 비트코인과 테더의 거래쌍을 만들고 싶었습니다.
-
-        # TODO 1.0 secs pause
-
-        # TODO 3.987 secs그래서 중앙화 거래소에서 비트코인 가격이 300테더인 걸 보고
-
-        # TODO 1.0 secs pause
-
-        # TODO 4.506 secs비트코인 10개와 3000테더를 함께 유동성 풀이라는 것에 넣었습니다
-
-        # TODO 1.0 secs pause
-
-        # TODO 5.182 secs이것은 일종의 스마트 컨트랙트로 자신의 자산으로 유동성을 제공하곘다는 것입니다.
-
-        # TODO 1.0 secs pause
-
-        # TODO 5.823 secs이제 이 유동성 제공자로 인하여 덱스참여자는 비트코인과 테더 거래쌍을 이용할 수 있습니다
-
-        # TODO 1.0 secs pause
-
-
-        self.play(Create(xyk), run_time=tt)
-        self.wait(t)
-
-        # TODO 3.684 secs이 에이엠엠과 엑스 와이는 케이 공식에 대해 알아보겠습니다
-        # TODO 1.0 secs pause
-
-        # TODO 9.894 secs원래 덱스는 이더리움 생태계에서 나왔고 비트코인이 랩드 비트코인같이 이더리움 체인에서 사용된 건 시간이 걸렸지만 이해를 위해 그냥 비티씨를 사용하겠습니다
-        # TODO 1.0 secs pause
-
-
-
-        # TODO 5.919 secs최초의 뎩스가 탄생하고 사람들은 비트코인과 usdt의 거래쌍을 만들고 싶었습니다.
-        # TODO 1.0 secs pause
-
-        expl_plain_text = Text(
-            'DEX가 생기고 사람들은 BTC와 USDT의 거래쌍을 만들고 싶었습니다.\n그래서 중앙화 거래소에서 BTC 가격이 300 USDT인 걸 보고\n10 BTC와 3000USDT를 함께 유동성 풀이라는 것에 넣었습니다\n스마트 컨트랙트를 통해 자신의 자산을 유동성으로 제공한다는 것입니다.\n이제 거래자들은 비트코인과 테더 거래쌍을 이용할 수 있습니다.',
-            font='Batang', line_spacing=3, font_size=25)
-        self.play(Create(expl_plain_text), run_time=ttt)
-        self.wait(t)
-
-        self.play(Uncreate(expl_plain_text), run_time=t)
-        self.wait(t)
-
-
-
-        # TODO 4.011 secs그래서 중앙화 거래소에서 비트코인 가격이 300달러인 걸 보고
-        # TODO 1.0 secs pause
-
-        # TODO 4.506 secs비트코인 10개와 3000달러를 함께 유동성 풀이라는 것에 넣었습니다
-        # TODO 1.0 secs pause
-
-        # TODO 5.182 secs이것은 일종의 스마트 컨트랙트로 자신의 자산으로 유동성을 제공하곘다는 것입니다.
-        # TODO 1.0 secs pause
-
-        # TODO 5.823 secs이제 이 유동성 제공자로 인하여 덱스참여자는 비트코인과 테더 거래쌍을 이용할 수 있습니다
-        # TODO 1.0 secs pause
-
-
-        expl_plain_text = Text(
-            'DEX가 생기고 사람들은 BTC와 USDT의 거래쌍을 만들고 싶었습니다.\n그래서 중앙화 거래소에서 BTC 가격이 300 USDT인 걸 보고\n10 BTC와 3000USDT를 함께 유동성 풀이라는 것에 넣었습니다\n스마트 컨트랙트를 통해 자신의 자산을 유동성으로 제공한다는 것입니다.\n이제 거래자들은 비트코인과 테더 거래쌍을 이용할 수 있습니다.',
-            font='Batang', line_spacing=3, font_size=25)
-        self.play(Create(expl_plain_text), run_time=ttt)
-        self.wait(t)
-
-        self.play(Uncreate(expl_plain_text), run_time=t)
-        self.wait(t)
-        # TODO 3.854 secs몇 대 맞을래. 너희들 하는 거 보니 주먹에서 눈물이 흐른다
-        # TODO 1.0 secs pause
-
         self.wait(5)
+
+        self.play(Uncreate(k_var), run_time=0.5)
+        self.play(Uncreate(ax), run_time=0.5)
+        self.play(Uncreate(xyk_graph), run_time=0.5)
+        self.wait(0.5)
+
+        # TODO 3.54 secs여기서 엑스는 에이코인의 양 와이는 비코인의 양입니다
+
+        # TODO 1.0 secs pause
+
+        # TODO 9.351 secs 페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나 앞으로 이해하기 쉽게 베이스에셋의 양이 풀내부의 엑스코인의 양, 쿼트에셋의 양이 와이라고 하겠습니다
+
+        # TODO 1.0 secs pause
+
+        B_coin_amt = Tex('B coin amount').shift(L * 4.5)
+        A_coin_amt = Tex('A coin amount')
+        A_coin_base = Tex('Base asset').next_to(A_coin_amt, D)
+        B_coin_quote = Tex('Quote asset').next_to(B_coin_amt, D)
+        A_coin_BTC = Tex('BTC').next_to(A_coin_base, D)
+        B_coin_USDT = Tex('USDT').next_to(B_coin_quote, D)
+        A_coin_texts = VGroup(A_coin_amt, A_coin_base, A_coin_BTC)
+        B_coin_texts = VGroup(B_coin_amt, B_coin_quote, B_coin_USDT)
+
+        x_arrow = Arrow(end=A_coin_amt.get_top(), start=xyk_fraction[ 2 ].get_bottom())
+        y_arrow = Arrow(end=B_coin_amt.get_top(), start=xyk_fraction[ 0 ].get_bottom())
+
+        self.play(GrowArrow(x_arrow),
+                  GrowArrow(y_arrow)
+                  , run_time=1)
+        self.wait(1)
+
+        self.play(Create(A_coin_texts),
+                  Create(B_coin_texts), run_time=2)
+
+        self.wait(7)
+        self.play(ApplyWave(A_coin_texts))
+        self.play(ApplyWave(B_coin_texts))
+        self.wait(0.5)
+
+        self.play(Uncreate(A_coin_texts),
+                  Uncreate(B_coin_texts),
+                  Unwrite(x_arrow),
+                  Unwrite(y_arrow)
+                  , run_time=1.5)
+        self.wait(0.5)
+
+        self.add(Circle(radius=3, fill_color=RED, fill_opacity=1))
+        self.wait(5)
+
+
+# class working1(Scene):
+#     def construct(self):
+#         speak(self, title='L02S05', txt=
+#         '간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데, 이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다#1'
+#         '엑스와이는 케이에서 엑스를 이항시키면 와이는 엑스분의 케이 형태입니다#1'
+#         '여러분 모두 중학교 때 함수를 배웠을 것이고, 기본적인 와이는 이엑스도 배웠고 와이는 엑스분의 1을 배운 기억이 날겁니다#1'
+#         '그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다. 그리고 이 반비레함수는 케이값에 따라서 보이는 것과 같이 원점에서 점점 멀어지는 함수입니다#1'
+#         '일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다. 도대체 어떻게 가격을 결정하는지 알아보겠습니다#1'
+#         '여기서 엑스는 에이코인의 양 와이는 비코인의 양입니다#1 '
+#         '페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나 앞으로 이해하기 쉽게 풀내부의 베이스에셋의 양이 엑스, 쿼트에셋의 양이 와이라고 하겠습니다#1'
+#               , keep_pitch=True, update=True, speed=1.4)
+#
+#
+
+
+class coor(Scene):
+    def construct(self):
+        dot1 = Dot().shift(U*2)
+        dot2 = Dot().shift(U*1)
+        dot3 = Dot()
+
+        # self.add(dot1,dot2,dot3)
+
+        dots = VGroup(dot1,dot2,dot3)
+
+
+        square1= Square()
+        square2= Square().scale(1.2)
+        square3= Square().scale(1.4)
+
+        squares = VGroup(square1,square2,square3)
+
+        shapes = VGroup(dots,squares)
+
+        self.play(Create(shapes), run_time=15)
+
+        self.play(dots[2].animate.shift(R*1))
+        self.play(shapes[1][1].animate.shift(L*4))
