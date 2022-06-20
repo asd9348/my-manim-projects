@@ -30,159 +30,185 @@
 스파이노그래프
 
 
-'간단하게 오토매틱 마켓 메이커를 통해 덱스가 돌아가는 원리를 배웟는데#1'
-'이젠 약간의 수학과 함께 더욱 자세히 알아보겠습니다#1'
 
-'엑스와이는 케이에서 엑스를 이항시키면#1'
-'와이는 엑스부느이 케이 형태입니다#1'
-'여러분 모두 중학교 때 함수를 배웠을 것이고#1'
-'기본적인  와이는 2엑스도 배웠고 와이는 엑스분의 1을 빼운기억이 날겁니다#1'
-'그중에 엑스분의 1함수는 반비례함수라고 배웠고 쌍곡선의 형태를 띄는 함수입니다#1'
-'그리고 이 반비레함수는 케이값에 따라서#1'
-'보이는 것과 같이 원점에서 점점 멀어지는 함수입니다#1'
-'일반적인 오토매틱 마켓메이커는 이 함수를 사용해 가격을 결정합니다#1'
-'도대체 어떻게 가격을 결정하는지 알아보겠습니다#1'
+'아비트라지를 설명하고 마치겠습니다#1'
+'수익이라는 것은 기본적으로 시장의 비효율성이나 에러를 이용하는 것입니다#1'
+'그리고 시장이 많으면 많을수록 그런 기회가 많아지기에 덱스를 마다할 이유는 없습니다#1'
+'아비트라지란 한국어로 재정거래라고 불리고 두 개의 시장 사이이서 가격차가 발쌩하면#1'
+'그 차익을 노리고 거래하는 것입닏#1'
+'싼데서 사서 비싼데 팔기에 보따리장사라고도 부릅니다. #1'
+'지금 덱스 에이에서 비트코인이 500달러 덱스 비에서 470달러인 상황을 가정합니다#1'
+'덱스비에서 사서 바로 덱스 에이에 팔면 이득을 얻을 수 있습니다#1'
 
-'여기서 엑스는 a코인의 양 와이는 비코인의 양입니다#1'
-'페어라는 것이 원래 양방향이어서 서로 바꿔도 무방하나#1'
-'앞으로 이해하기 쉽게 풀내부의 베이스에셋의 양이 풀내부의 엑스 쿼트에셋의 양이 와이라고#1'
-'우리가 살펴볼 비티씨테더 페어에서는#1'
-'엑스는 풀내부 비티씨의 양#1'
-'왕이는 풀내부 테더의 양입니다#1'
+'그러나 고려할 것들이 있습니다#1'
+'1덱스 비에서 비트코인을 구매하면 수수료를 내고 비티씨 가격변동에 노출이 됩니다#1'
+'1혹시나 다른 중앙화 거래소로 옮긴다면 비싼 전송수수료도 들 것이고, #1'
+'블록체인 처리시간과 중앙화 거래소의 자체 서버 처리시간에 거래수수료도 지불합니다#1'
+'다른 덱스로 옮긴다면 전송수수료와 블록체인 상 처리시간 비싼 거래수수료도 지불합니다#1'
+'1다른 블록체인으로 브릿지를 해도 비싼 브릿지 수수료가 들것이고 시간도 더 걸립니다#1'
+'1각거래마다 슬리피지도 발생할 ㅜㅅ 있ㅇ습니다#1'
+'성공할지 안 할지 보장도 없구요 이 모든 것을 계산하고도 남는 장사라고 생각하면 아비트라지를 하는 것입니다#1'
+'보통은 미세한 차이를 보고 하기 때문에 규모가 커야지 수익이 좀 남는 편이고#1'
+'얼핏보면 하는 거 없이 돈 버는 것 같지만#1'
+'생각보다 리스크가 있고 인간의 손으로 하기에는 24시간 못 하고 너무 느려서#1'
+'보통 컴퓨터로 봇을 만ㄷ르어 돌리게 됩니다.#1'
 
-'복잡하게 생각할 건 없고 와이는 엑스분의케이 그래프에서 케이는 그냥 어떤 값입니다. #1'
-'그런데 아까 우리는 케이가 엑스 곱하기 와이인 걸 봤습니다.#1'
+'아비트라지가 매우 중요한 이유는 코인 가격을 맞춰주고 안정화 하기 때문입니다#1'
+'여러분이 사용하는 거래소의 가격이 싸면 좋겠지만 만약 이상하게 비싼 상태로 유지되고 있다면#1'
+'당연히 코인을 사는데 불리한 상황이겠지만 곧 아비트라저들의 와서 모든 시장의 가격의 평형을 이루게 합니다#1'
+'수많은 거래소 사이에서 이 아비트라지 봇들이 코인을 사고 팔며 가격을 전부 똑같이 맞춰주고#1'
+'그래서 우리는 어느 거래소든 다 비슷한 가격을 보게 됩니다.#1'
+'마찬가지로 덱스에서 내가 최초로 풀을 만들 때 말도안 되는 가격으로 만든다는 상상을 할 수도 있습니다#1'
+'내가 비트코인이 비싸지길 바라면서 10비트와 5000테더를 넣으면 그 순간 1비트의 가격은 500테더입니다#1'
+'곧 아비트라저들이 와서 시장가격으로 맞춰줍니다. #1'
+'덱스도 중앙화거래소에 영향을 주고 중앙화 거래소도 덱스에 영향을 줍니다#1'
+'모든 거래소가 아비트라지 봇으로 묶여있어 서로가 서로에게 영향을 줍니다.#1'
+'아비트라지도 금융 생태계를 이루는 중요한 요소 중 하나이므로 잘 이해하고 있어야합니다#1'
 
-'그렇다면 현재 비티씨테더 풀의 함수식은 10곱하기 3000인 30000입니다다#1'
 
-'아까 말한 것처럼 가격은 풀에 각 코인이 얼마나 있는지로 결정되기 때문에#1'
-'우리는 풀의 상태, 정확히 얘기하면 풀 내부의 베이스 에셋과 쿼트 에셋의 비율로 가격을 계산할 수 있습니다#1'
-'엑스와이는 케이가 풀을 나타내는 방정식이고#1'
-'풀의 상태는 아까 본 와이는 엑스분의 케이라는 함수의 그래프 위의#1'
-'한 점으로 나타낼 수 있습니다. 여기에는 가격정보도 들어있는 것입니다.#1'
 
-'거래자가 풀을 대상으로 비티씨를 매수하거나 매도한다는 것은#1'
-'풀의 상태를 변화 시키는 것이기에 현재 있는 지점에서 그래프 상의 다른 지점으로 이동한다는 것입니다#1'
 
-'유동성 제공자가 유동성을 공급하거나 제거한다는 것은 케이값을 움직이는 것입니다.#1'
-'유동성을 공급하는 것은 비티씨와 테더를 같이 넣어주는 것이고#1'
-'그건 엑스와 와이가 둘다 늘어나기 때문에 케이값이 커지는 것입니다#1'
-'유동성을 제거하면 비티씨와 테더가 같이 빠져나가는 것이고#1'
-'엑스와 와이가 둘다 줄면 당연히 케이값도 줄어듭니다#1'
 
-지환 박, [6/16/2022 9:41 PM]
-╭─────────────────────────────── Traceback (most recent call last) ────────────────────────────────╮
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\cli\render\commands. │
-│ py:118 in render                                                                                 │
-│                                                                                                  │
-│   115 │   │   for SceneClass in scene_classes_from_file(file):                                   │
-│   116 │   │   │   try:                                                                           │
-│   117 │   │   │   │   scene = SceneClass()                                                       │
-│ ❱ 118 │   │   │   │   scene.render()                                                             │
-│   119 │   │   │   except Exception:                                                              │
-│   120 │   │   │   │   error_console.print_exception()                                            │
-│   121 │   │   │   │   sys.exit(1)                                                                │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\scene\scene.py:222   │
-│ in render                                                                                        │
-│                                                                                                  │
-│    219 │   │   """                                                                               │
-│    220 │   │   self.setup()                                                                      │
-│    221 │   │   try:                                                                              │
-│ ❱  222 │   │   │   self.construct()                                                              │
-│    223 │   │   except EndSceneEarlyException:                                                    │
-│    224 │   │   │   pass                                                                          │
-│    225 │   │   except RerunSceneException as e:                                                  │
-│                                                                                                  │
-│ C:\Users\JB\PycharmProjects\pythonProject1\main.py:51 in construct                               │
-│                                                                                                  │
-│    48 │   │   # TODO 1.0 secs pause                                                              │
-│    49 │   │                                                                                      │
-│    50 │   │   s_1_text_font_size = 150                                                           │
-│ ❱  51 │   │   text_1 = Tex('침체', font_size=s_1_text_font_size).shift(L * 4)                    │
-│    52 │   │   text_2 = Tex('불황', font_size=s_1_text_font_size).shift(R * 4)                    │
-│    53 │   │   q_mark = Tex('?', font_size=s_1_text_font_size + 50).scale(2)                      │
-│    54                                                                                            │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\mobject\text\tex_mob │
-│ ject.py:434 in init                                                                          │
-│                                                                                                  │
-│   431 │   def init(                                                                          │
-│   432 │   │   self, *tex_strings, arg_separator="", tex_environment="center", **kwargs           │
-│   433 │   ):                                                                                     │
-│ ❱ 434 │   │   super().init(                                                                  │
 
-지환 박, [6/16/2022 9:41 PM]
-│   435 │   │   │   *tex_strings,                                                                  │
-│   436 │   │   │   arg_separator=arg_separator,                                                   │
-│   437 │   │   │   tex_environment=tex_environment,                                               │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\mobject\text\tex_mob │
-│ ject.py:303 in init                                                                          │
-│                                                                                                  │
-│   300 │   │   │   │   │   │   """,                                                               │
-│   301 │   │   │   │   │   ),                                                                     │
-│   302 │   │   │   │   )                                                                          │
-│ ❱ 303 │   │   │   raise compilation_error                                                        │
-│   304 │   │   self.set_color_by_tex_to_color_map(self.tex_to_color_map)                          │
-│   305 │   │                                                                                      │
-│   306 │   │   if self.organize_left_to_right:                                                    │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\mobject\text\tex_mob │
-│ ject.py:282 in init                                                                          │
-│                                                                                                  │
-│   279 │   │   self.brace_notation_split_occurred = False                                         │
-│   280 │   │   self.tex_strings = self._break_up_tex_strings(tex_strings)                         │
-│   281 │   │   try:                                                                               │
-│ ❱ 282 │   │   │   super().init(                                                              │
-│   283 │   │   │   │   self.arg_separator.join(self.tex_strings),                                 │
-│   284 │   │   │   │   tex_environment=self.tex_environment,                                      │
-│   285 │   │   │   │   tex_template=self.tex_template,                                            │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\mobject\text\tex_mob │
-│ ject.py:93 in init                                                                           │
-│                                                                                                  │
-│    90 │   │                                                                                      │
-│    91 │   │   assert isinstance(tex_string, str)                                                 │
-│    92 │   │   self.tex_string = tex_string                                                       │
-│ ❱  93 │   │   file_name = tex_to_svg_file(                                                       │
-│    94 │   │   │   self._get_modified_expression(tex_string),                                     │
-│    95 │   │   │   environment=self.tex_environment,                                              │
-│    96 │   │   │   tex_template=self.tex_template,                                                │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\utils\tex_file_writi │
-│ ng.py:48 in tex_to_svg_file                                                                      │
-│                                                                                                  │
 
-지환 박, [6/16/2022 9:41 PM]
-│    45 │   if tex_template is None:                                                               │
-│    46 │   │   tex_template = config["tex_template"]                                              │
-│    47 │   tex_file = generate_tex_file(expression, environment, tex_template)                    │
-│ ❱  48 │   dvi_file = compile_tex(                                                                │
-│    49 │   │   tex_file,                                                                          │
-│    50 │   │   tex_template.tex_compiler,                                                         │
-│    51 │   │   tex_template.output_format,                                                        │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\utils\tex_file_writi │
-│ ng.py:191 in compile_tex                                                                         │
-│                                                                                                  │
-│   188 │   │   exit_code = os.system(command)                                                     │
-│   189 │   │   if exit_code != 0:                                                                 │
-│   190 │   │   │   log_file = tex_file.replace(".tex", ".log")                                    │
-│ ❱ 191 │   │   │   print_all_tex_errors(log_file, tex_compiler, tex_file)                         │
-│   192 │   │   │   raise ValueError(                                                              │
-│   193 │   │   │   │   f"{tex_compiler} error converting to"                                      │
-│   194 │   │   │   │   f" {output_format[1:]}. See log output above or"                           │
-│                                                                                                  │
-│ C:\Users\JB\AppData\Local\Programs\Python\Python310\lib\site-packages\manim\utils\tex_file_writi │
-│ ng.py:253 in print_all_tex_errors                                                                │
-│                                                                                                  │
-│   250 │   │   │   "Check your LaTeX installation.",                                              │
-│   251 │   │   )                                                                                  │
-│   252 │   with open(log_file) as f:                                                              │
-│ ❱ 253 │   │   tex_compilation_log = f.readlines()                                                │
-│   254 │   │   error_indices = [                                                                  │
-│   255 │   │   │   index                                                                          │
-│   256 │   │   │   for index, line in enumerate(tex_compilation_log)                              │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-UnicodeDecodeError: 'cp949' codec can't decode byte 0xa8 in position 8149: illegal multibyte sequence
+
+
+
+
+
+
+
+
+
+
+
+
+# TODO 5.618 secs다른 덱스로 옮긴다면 전송수수료와 블록체인 상 처리시간 비싼 거래수수료도 지불합니다
+
+# TODO 0:01:01.137  ~  0:01:06.755
+
+# TODO 1.0secs pause
+
+# TODO 0:01:06.755  ~  0:01:07.755
+
+
+
+# TODO 5.424 secs다른 블록체인으로 브릿지를 해도 비싼 브릿지 수수료가 들것이고 시간도 더 걸립니다
+
+# TODO 0:01:07.755  ~  0:01:13.179
+
+# TODO 1.0secs pause
+
+# TODO 0:01:13.179  ~  0:01:14.179
+
+
+
+# TODO 2.888 secs각거래마다 슬리피지도 발생할 수도 있습니다
+
+# TODO 0:01:14.179  ~  0:01:17.067
+
+# TODO 1.0secs pause
+
+# TODO 0:01:17.067  ~  0:01:18.067
+
+
+
+# TODO 6.512 secs성공할지 안 할지 보장도 없구요 이 모든 것을 계산하고도 남는 장사라고 생각하면 아비트라지를 하는 것입니다
+
+# TODO 0:01:18.067  ~  0:01:24.579
+
+# TODO 1.0secs pause
+
+# TODO 0:01:24.579  ~  0:01:25.579
+
+
+
+# TODO 14.449 secs보통은 미세한 차이를 보고 하기 때문에 규모가 커야지 수익이 좀 남는 편이고, 얼핏보면 하는 거 없이 돈 버는 것 같지만 생각보다 리스크가 있고 인간의 손으로 하기에는 24시간 못 하고 너무 느려서 보통 컴퓨터로 봇을 만들어 돌리게 됩니다
+
+# TODO 0:01:25.579  ~  0:01:40.028
+
+# TODO 1.0secs pause
+
+# TODO 0:01:40.028  ~  0:01:41.028
+
+
+
+# TODO 4.349 secs아비트라지가 중요한 이유는 코인 가격을 맞춰주고 안정화 하기 때문입니다
+
+# TODO 0:01:41.028  ~  0:01:45.377
+
+# TODO 1.0secs pause
+
+# TODO 0:01:45.377  ~  0:01:46.377
+
+
+
+# TODO 12.105 secs여러분이 사용하는 거래소의 가격이 싸면 좋겠지만 만약 이상하게 비싼 상태로 유지되고 있다면 당연히 코인을 사는데 불리한 상황이겠지만 곧 아비트라저들의 와서 모든 시장의 가격의 평형을 이루게 합니다
+
+# TODO 0:01:46.377  ~  0:01:58.482
+
+# TODO 1.0secs pause
+
+# TODO 0:01:58.482  ~  0:01:59.482
+
+
+
+# TODO 9.218 secs수많은 거래소 사이에서 이 아비트라지 봇들이 코인을 사고 팔며 가격을 전부 똑같이 맞춰주고 그래서 우리는 어느 거래소든 다 비슷한 가격을 보게 됩니다.
+
+# TODO 0:01:59.482  ~  0:02:08.700
+
+# TODO 1.0secs pause
+
+# TODO 0:02:08.700  ~  0:02:09.700
+
+
+
+# TODO 6.27 secs마찬가지로 덱스에서 내가 최초로 풀을 만들 때 말도안 되는 가격으로 만든다는 상상을 할 수도 있습니다
+
+# TODO 0:02:09.700  ~  0:02:15.970
+
+# TODO 1.0secs pause
+
+# TODO 0:02:15.970  ~  0:02:16.970
+
+
+
+# TODO 6.693 secs내가 비트코인이 비싸지길 바라면서 10비트와 5000테더를 넣으면 그 순간 1비트의 가격은 500테더입니다
+
+# TODO 0:02:16.970  ~  0:02:23.663
+
+# TODO 1.0secs pause
+
+# TODO 0:02:23.663  ~  0:02:24.663
+
+
+
+# TODO 8.13 secs곧 아비트라저들이 와서 시장가격으로 맞춰줍니다.덱스도 중앙화거래소에 영향을 주고 중앙화 거래소도 덱스에 영향을 줍니다
+
+# TODO 0:02:24.663  ~  0:02:32.793
+
+# TODO 1.0secs pause
+
+# TODO 0:02:32.793  ~  0:02:33.793
+
+
+
+# TODO 4.615 secs모든 거래소가 아비트라지 봇으로 묶여있어 서로가 서로에게 영향을 줍니다
+
+# TODO 0:02:33.793  ~  0:02:38.408
+
+# TODO 1.0secs pause
+
+# TODO 0:02:38.408  ~  0:02:39.408
+
+
+
+# TODO 5.134 secs아비트라지도 금융 생태계를 이루는 중요한 요소 중 하나이므로 잘 이해하고 있어야합니다
+
+# TODO 0:02:39.408  ~  0:02:44.542
+
+# TODO 1.0secs pause
+
+# TODO 0:02:44.542  ~  0:02:45.542
+
+

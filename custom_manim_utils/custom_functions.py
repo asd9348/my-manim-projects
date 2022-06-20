@@ -2,7 +2,10 @@ from manim import *
 
 import pyttsx3
 import os
+import datetime
+import time
 
+from datetime import timedelta
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.effects import speedup
@@ -10,6 +13,23 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 import shutil
 from pprint import pprint
+
+
+def get_halfway(point_A, point_B, z=0):
+    x_dist = (abs(point_A[ 0 ]) + abs(point_B[ 0 ])) / 2
+    y_dist = (abs(point_A[ 1 ]) + abs(point_B[ 1 ])) / 2
+
+    if point_A[ 0 ] < point_B[ 0 ]:
+        x = point_A[ 0 ] + x_dist
+    else:
+        x = point_B[ 0 ] + x_dist
+
+    if point_A[ 1 ] < point_B[ 1 ]:
+        y = point_A[ 1 ] + y_dist
+    else:
+        y = point_B[ 1 ] + y_dist
+
+    return np.array([ x, y, z ])
 
 
 def get_mid_btwn_mobs(mob_a, mob_b, center_datum=True):
@@ -127,6 +147,10 @@ def create_entity(person_name, person_radius, person_color, asset_name, asset_co
 
 
 def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=False, lang='ko', update=False):
+    def format_td(seconds, digits=3):
+        isec, fsec = divmod(round(seconds * 10 ** digits), 10 ** digits)
+        return ("{}.{:0%d.0f}" % digits).format(timedelta(seconds=isec), fsec)
+
     dirpath = Path(rf'.\audio_cache\{title}')
     if dirpath.exists() and dirpath.is_dir():
         if update:
@@ -154,6 +178,7 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
     pprint(cut_text_list)
 
     file_list = [ ]
+    audio_pos_end=0
 
     missing_file_counter = 0
     for i in range(len(cut_text_list)):
@@ -175,7 +200,10 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
                 new_audio_seg = AudioSegment.from_file(gtts_file_path_text)
                 new_audio_seg.export(file_path_text,bitrate='312k')
                 file_list.append(new_audio_seg)
-                output += f'# TODO {new_audio_seg.duration_seconds} secs ' + clip + '\n'
+                audio_pos_start = audio_pos_end
+                audio_pos_end += new_audio_seg.duration_seconds
+                output += f'# TODO {new_audio_seg.duration_seconds} secs ' + clip + '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}'
+
 
 
 
@@ -202,8 +230,9 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
                         new_audio_seg.export(file_path_text)
 
                     file_list.append(new_audio_seg)
-                    output += f'# TODO {new_audio_seg.duration_seconds} secs' + clip + '\n'
-
+                    audio_pos_start = audio_pos_end
+                    audio_pos_end += new_audio_seg.duration_seconds
+                    output += f'# TODO {new_audio_seg.duration_seconds} secs' + clip + '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' '\n'
 
                 else:
                     print('it is empty text')
@@ -214,8 +243,9 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
             cut_muffled_pause_sound = muffled_pause_sound[ :clip * 1000 ]
             cut_muffled_pause_sound.export(rf".\audio_cache\{title}\pause\{title + 'L' + str(i) + ' ' + str(clip) + 's pause'}.mp3")
             file_list.append(cut_muffled_pause_sound)
-            output += f'# TODO {cut_muffled_pause_sound.duration_seconds} secs' + ' pause' + '\n\n'
-
+            audio_pos_start = audio_pos_end
+            audio_pos_end += cut_muffled_pause_sound.duration_seconds
+            output += f'# TODO {cut_muffled_pause_sound.duration_seconds}secs' + ' pause'+ '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' + '\n\n'
     if missing_file_counter==1:
         print('Creating concated file')
 

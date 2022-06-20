@@ -50,6 +50,7 @@ C_XRP: str = '#21272D'
 C_DOGE: str = '#B99E31'
 
 ETH_COIN = create_circle_asset(Tex(r'\textbf{ETH}',color=WHITE, font_size =30),  fill_color=C_ETH)
+USDT_COIN = create_circle_asset(Tex(r'\textbf{USDT}',color=WHITE, font_size =25),  fill_color=C_USDT)
 BTC_COIN = create_circle_asset(Tex(r'\textbf{BTC}',color=WHITE, font_size =30),  fill_color=C_BTC)
 ATOM_COIN = create_circle_asset(Tex(r'\textbf{ATOM}',color=C_ATOM2, font_size =25),  fill_color=C_ATOM1)
 DOT_COIN = create_circle_asset(Tex(r'\textbf{DOT}',color=WHITE, font_size =30),  fill_color=C_DOT)
@@ -58,7 +59,6 @@ BNB_COIN = create_circle_asset(Tex(r'\textbf{BNB}',color=C_BNB2, font_size =30),
 ADA_COIN = create_circle_asset(Tex(r'\textbf{ADA}',color=WHITE, font_size =30),  fill_color=C_ADA)
 XMR_COIN = create_circle_asset(Tex(r'\textbf{XMR}',color=C_XMR1, font_size =30),  fill_color=C_XMR2)
 USDC_COIN = create_circle_asset(Tex(r'\textbf{USDC}',color=WHITE, font_size =25),  fill_color=C_USDC)
-USDT_COIN = create_circle_asset(Tex(r'\textbf{USDT}',color=WHITE, font_size =25),  fill_color=C_USDT)
 MATIC_COIN = create_circle_asset(Tex(r'\textbf{MATIC}',color=WHITE, font_size =20), fill_color=C_MATIC)
 LINK_COIN = create_circle_asset(Tex(r'\textbf{LINK}',color=WHITE, font_size =25),  fill_color=C_LINK)
 FTX_COIN = create_circle_asset(Tex(r'\textbf{FTX}',color=WHITE, font_size =30), fill_color=C_FTX)

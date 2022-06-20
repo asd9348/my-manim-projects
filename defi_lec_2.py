@@ -1768,9 +1768,9 @@ class L_02_S_07_amm_xyk_adv_k_up_2(Scene):
         self.wait(t)
 
         liq_provider = create_entity(Tex(r' \emph{Init Liq\\Provider}', color=BLACK).scale(0.8), 1, WHITE, "10 BTC", BTC, 1.4,
-                                     0.3).next_to(liq_pool_rect, RIGHT, buff=1.5)
+                                     0.3,asset_text_color=WHITE).next_to(liq_pool_rect, RIGHT, buff=1.5)
         btc_asset = liq_provider[ 1 ]
-        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
+        usdt_asset = create_entity("A", 0.5, WHITE, "3000 USDT", USDT, 1.4, 0.3,asset_text_color=WHITE)[ 1 ].next_to(liq_provider, DOWN, buff=0.1)
         liq_provider.add(usdt_asset)
 
         self.play(Create(liq_provider), run_time=t)
