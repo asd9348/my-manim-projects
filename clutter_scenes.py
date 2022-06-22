@@ -205,3 +205,61 @@ class working2(Scene):
         self.wait(5)
 
 
+
+class working3(Scene):
+    config.frame_width = 16 * 4
+    config.frame_height = 9 * 4
+
+    def construct(self):
+
+        self.add(NumberPlane().set_z_index(1))
+
+        speak(self, title='L02S05', txt=
+        '아#1'
+              , keep_pitch=True, update=True, speed=1.4)
+
+
+        item_list = [ 'Mathmatical Physics',
+                      'Fluid Dynamics',
+                      'Numerical Analysis',
+                      'Optimization',
+                      'Probability Theory',
+                      'Statistics',
+                      'Financial Mathmatics',
+                      'Game Theory',
+                      ]
+
+        def bezier_branch_creater(item_list=[ ], font_size=20, str8_start_width=1, str8_end_width=1, branch=5, branch_width=2,
+                                  branch_height=7, direction=np.array((-1.0, 0.0, 0.0))):
+            start_line = Line(ORIGIN, direction)
+            clearance = branch_height / (branch - 1)
+            branches = VGroup()
+
+            for i in range(branch):
+                curve = CubicBezier(direction,
+                                    direction + direction * (branch_width / 2),
+                                    direction + direction * (branch_width / 2) + U * ((branch_height / 2) - clearance * i),
+                                    direction + direction * (branch_width) + U * ((branch_height / 2) - clearance * i))
+
+                end_line = Line(curve.get_end(), curve.get_end() + direction * str8_end_width)
+                bezier = VGroup(start_line.copy(), curve, end_line)
+                if len(item_list) != 0:
+                    text = Tex(item_list[ i ], font_size=font_size).next_to(end_line, U + direction).align_to(end_line, direction * (-1))
+                    bezier.add(text)
+
+                branches.add(bezier)
+
+            return branches
+
+        my_br = bezier_branch_creater(item_list=item_list,
+                                      str8_start_width=2,
+                                      str8_end_width=2,
+                                      branch=8,
+                                      branch_width=1,
+                                      branch_height=6,
+                                      direction=L)
+
+        self.play(Create(my_br))
+
+        self.wait(5)
+

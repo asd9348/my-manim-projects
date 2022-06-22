@@ -173,8 +173,6 @@ class stablecoin(Scene):
         C = create_entity_tether("C", 0.5, WHITE, "USD", 3, GREEN, 0.7, 0.3)
         D = create_entity_tether("D", 0.5, WHITE, "USD", 8, GREEN, 0.7, 0.3)
 
-        A_asset_pos = A[ 1 ].get_center
-        # self.add(index_labels())
 
         people_list = [ A, B, C, D ]
         people = VGroup(A, B, C, D).arrange(RIGHT, buff=0.2, aligned_edge=UP).to_edge(UR)

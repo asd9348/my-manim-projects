@@ -5,6 +5,7 @@ from math import *
 from colour import Color
 from custom_manim_utils.custom_consts import *
 from custom_manim_utils.custom_functions import *
+from custom_manim_utils.custom_color_consts import *
 
 config.frame_width = 16
 config.frame_height = 9
@@ -480,9 +481,9 @@ class L02S01(Scene):
         eval_audit_text = Tex(r'Evaluation \& Audit').to_edge(U)
         center_line = Line(UP * 7.5, ORIGIN, stroke_width=30).next_to(eval_audit_text, D)
 
-        shit_coin = LabeledDot(Tex('SHIT', color=BLACK), radius=1, color=GREEN).shift(U * 2).to_edge(L)
-        poop_coin = LabeledDot(Tex('POOP', color=BLACK), radius=1, color=YELLOW).shift(D * 3).to_edge(L)
-        btc_coin = LabeledDot(Tex('BTC', color=BLACK), radius=1, color=C_BTC).to_edge(L).shift(0.5 * D)
+        shit_coin = create_circle_asset(Tex(r'\textbf{SHIT}', color=WHITE, font_size=25), fill_color=C0492).scale_to_fit_width(2).shift(U * 2).to_edge(L)
+        poop_coin = create_circle_asset(Tex(r'\textbf{POOP}', color=WHITE, font_size=25), fill_color=C0493).scale_to_fit_width(2).shift(D * 3).to_edge(L)
+        btc_coin = create_circle_asset(Tex(r'\textbf{BTC}',color=WHITE, font_size =30),  fill_color=C_BTC).scale_to_fit_width(2).to_edge(L).shift(0.5 * D)
 
         limited_pairs = Tex('Limited pairs available...', 'BTC-USDT', 'ETH-BTC', r'\vdots').arrange(D).next_to(cex_text, D, buff=1)
 
@@ -513,13 +514,17 @@ class L02S01(Scene):
         # TODO 5.267 secs그러나 덱스에서는 누구나 유동성 풀을 만들어 다른 사람들의 거래를 도울 수 있습니다
         # TODO 1.0 secs1
         dex_text = Tex('DEX').scale(2).shift(R * 4 + U * 2)
-        shit_coin = LabeledDot(Tex('SHIT', color=BLACK).scale(0.5), radius=0.5, color=GREEN).shift(U * 1).to_edge(L)
-        poop_coin = LabeledDot(Tex('POOP', color=BLACK).scale(0.5), radius=0.5, color=YELLOW).shift(D * 1).to_edge(L)
+
+        # SHIT_COIN = create_circle_asset(Tex(r'\textbf{SHIT}', color=WHITE, font_size=25), fill_color=C0492)
+        # POOP_COIN = create_circle_asset(Tex(r'\textbf{POOP}', color=WHITE, font_size=25), fill_color=C0493)
+
+        shit_coin = create_circle_asset(Tex(r'\textbf{SHIT}', color=WHITE, font_size=25), fill_color=C0492).scale_to_fit_width(1).shift(U * 1).to_edge(L)
+        poop_coin = create_circle_asset(Tex(r'\textbf{POOP}', color=WHITE, font_size=25), fill_color=C0493).scale_to_fit_width(1).shift(D * 1).to_edge(L)
 
         any_pairs = Tex('Anyone can make pairs', 'POOP-USDT', 'SHIT-BTC', 'SHIT-POOP', r'\vdots').arrange(D).next_to(dex_text, D, buff=1)
 
-        random_coin_1 = LabeledDot(Tex('BLAH', color=BLACK).scale(0.5), radius=0.5, color=RED).shift(U * 3).to_edge(L)
-        random_coin_2 = LabeledDot(Tex('BLUH', color=BLACK).scale(0.5), radius=0.5, color=BLUE).shift(D * 3).to_edge(L)
+        random_coin_1 = create_circle_asset(Tex(r'\textbf{BLAH}', color=WHITE, font_size=25), fill_color=C0893).scale_to_fit_width(1).shift(U * 3).to_edge(L)
+        random_coin_2 = create_circle_asset(Tex(r'\textbf{BLUH}', color=WHITE, font_size=25), fill_color=C2593).scale_to_fit_width(1).shift(D * 3).to_edge(L)
 
         coins = VGroup(shit_coin, poop_coin, random_coin_1, random_coin_2)
 
@@ -3050,7 +3055,7 @@ class L02S08(MovingCameraScene):
         self.play(ReplacementTransform(px_impact_text_4,px_impact_text_5),run_time=0.5)
         self.wait(3)
 
-        self.wait(2)
+        self.wait(30)
         # TODO 14.026 secs우리는 이 실구매 평균단가와 우리가 지금 보고있는 현재가의 차이를 임팩트라고 부릅니다.
         #  어 이거 중앙화거래소에서 봤던 슬리피지라 비슷하다고 생각되어 슬리피지라는 것과 프라이스 임팩트란 단어가 쉽게 혼용되는 것을 볼 수 있ㅅ브니다
         # TODO 0:01:36.202  ~  0:01:50.228
@@ -3289,7 +3294,7 @@ class L02S09_px_impact(Scene):
         self.wait(t)
 
 
-        self.wait(5)
+        self.wait(30)
 
 
 class L02S10(MovingCameraScene):
@@ -3581,7 +3586,7 @@ class L02S10(MovingCameraScene):
         self.play(Create(scene2_slippage_form),
                   Create(scene2_slippage_text), run_time=3)
         self.play(ReplacementTransform(scene2_slippage_form, scene2_slippage_result), run_time=3)
-        self.wait(5)
+        self.wait(30)
 
 
 
@@ -3885,12 +3890,13 @@ class L02S11(Scene):
 
 
 
-        self.wait(5)
+        self.wait(30)
+
 
 
 class L02S12(MovingCameraScene):
     def construct(self):
-        # self.add(NumberPlane().set_z_index(1))
+        # self.add(NumberPlane().set_z_inex(1))
 
         speak(self, title='Scene2', txt=
         '#9'
@@ -4115,7 +4121,26 @@ class L02S12(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:00:55.538  ~  0:00:56.538
 
-        px_up = MathTex(r'Price \  \Uparrow').move_to(liq_provider[ 0 ])
+        def get_halfway(point_A, point_B, z=0):
+            x_dist = (abs(point_A[ 0 ]) + abs(point_B[ 0 ])) / 2
+            y_dist = (abs(point_A[ 1 ]) + abs(point_B[ 1 ])) / 2
+
+            if point_A[ 0 ] < point_B[ 0 ]:
+                x = point_A[ 0 ] + x_dist
+            else:
+                x = point_A[ 0 ] + x_dist
+
+            if point_A[ 1 ] < point_B[ 1 ]:
+                y = point_A[ 1 ] + y_dist
+            else:
+                y = point_A[ 1 ] + y_dist
+
+            return np.array([ x, y, z ])
+
+        position = get_halfway(np.array([ liq_pool_rect.get_right()[ 0 ], liq_pool_rect.get_right()[ 1 ], 0 ]),
+                               np.array([ ax.get_left()[ 0 ], liq_pool_rect.get_right()[ 1 ], 0 ]))
+        position[ 1 ] = position[ 1 ] + 1
+        px_up = MathTex(r'Price \  \Uparrow').move_to(position)
         self.play(Write(px_up))
 
         self.play(
@@ -4139,7 +4164,7 @@ class L02S12(MovingCameraScene):
         # TODO 1.0secs pause
 
         # TODO 0:00:59.413  ~  0:01:00.413
-        px_dn = MathTex(r'Price \  \Downarrow').move_to(liq_provider[ 0 ])
+        px_dn = MathTex(r'Price \  \Downarrow').move_to(position)
         self.play(Write(px_dn))
 
         self.play(
@@ -4154,7 +4179,7 @@ class L02S12(MovingCameraScene):
         self.add(k_org_px_dn_dot)
 
         # 원점#####################################################################################
-        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(k_origin_px_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4171,7 +4196,7 @@ class L02S12(MovingCameraScene):
         # TODO 0:01:04.301  ~  0:01:07.152
         # TODO 1.0secs pause
         # TODO 0:01:07.152  ~  0:01:08.152
-        k_dn = MathTex(r'K \  \Downarrow').move_to(liq_provider[ 0 ])
+        k_dn = MathTex(r'K \  \Downarrow').move_to(position)
         self.play(Write(k_dn), run_time=1)
 
         self.play(k_tracker.animate.set_value(14700),
@@ -4202,7 +4227,7 @@ class L02S12(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:01:03.301  ~  0:01:04.301
 
-        k_up = MathTex(r'K \  \Uparrow').move_to(liq_provider[ 0 ])
+        k_up = MathTex(r'K \  \Uparrow').move_to(position)
         self.play(Write(k_up), run_time=1)
 
         self.play(k_tracker.animate.set_value(50700),
@@ -4239,7 +4264,7 @@ class L02S12(MovingCameraScene):
         # TODO 0:01:27.353  ~  0:01:28.353
 
         # K 원점#####################################################################################
-        k_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        k_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(k_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4263,8 +4288,8 @@ class L02S12(MovingCameraScene):
         # TODO 0:01:40.661  ~  0:01:41.661
 
         self.wait(5)
-        k_up_px_dn = MathTex(r'K \  \Uparrow', r'Price\  \Downarrow').arrange(D).move_to(liq_provider[ 0 ])
-        k_up_px_up = MathTex(r'K \  \Uparrow', r'Price\  \Uparrow').arrange(D).move_to(liq_provider[ 0 ])
+        k_up_px_dn = MathTex(r'K \  \Uparrow', r'Price\  \Downarrow').arrange(D).move_to(position)
+        k_up_px_up = MathTex(r'K \  \Uparrow', r'Price\  \Uparrow').arrange(D).move_to(position)
         self.play(Write(k_up_px_dn[ 0 ]))
 
         self.play(k_tracker.animate.set_value(50700),
@@ -4285,9 +4310,13 @@ class L02S12(MovingCameraScene):
         # TODO 0:02:01.683  ~  0:02:07.615
         # TODO 1.0secs pause
         # TODO 0:02:07.615  ~  0:02:08.615
-        share_change_1 = MathTex(r'Moving\\30\% \\ $\Downarrow$ \\ 23\%\\of\  the\  pool', tex_environment='center')
-        k_up_px_dn_text_1 = MathTex(r'Price Impact\\23\% \\ $\downarrow$ \\ 19\%', tex_environment='center').arrange(D).next_to(k_up_px_dn, D)
-        k_up_px_up_text_1 = MathTex(r'Price Impact\\43\% \\ $\downarrow$ \\ 30\%', tex_environment='center').arrange(D).next_to(k_up_px_dn, D)
+        share_change_1 = MathTex(r'Moving\\ 30\% $\rightarrow$ 23\% \\of\  the\  pool', tex_environment='center').move_to(position)
+        k_up_px_dn_text_1 = MathTex(r'Price Impact\\23\% \\ $\downarrow$ \\ 19\%', tex_environment='center').arrange(D).next_to(k_up_px_dn,
+                                                                                                                                D,
+                                                                                                                                buff=0.75)
+        k_up_px_up_text_1 = MathTex(r'Price Impact\\43\% \\ $\downarrow$ \\ 30\%', tex_environment='center').arrange(D).next_to(k_up_px_dn,
+                                                                                                                                D,
+                                                                                                                                buff=0.75)
 
         self.play(Write(k_up_px_dn[ 1 ]))
 
@@ -4364,7 +4393,7 @@ class L02S12(MovingCameraScene):
         self.add(k_up_px_up_dot)
 
         # K 원점#####################################################################################
-        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(k_origin_px_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4375,23 +4404,17 @@ class L02S12(MovingCameraScene):
         self.wait(0.5)
         self.play(Unwrite(k_origin_px_origin), run_time=0.749)
 
-        # TODO 3.66 secs케이하락 후 가격상승 또는 하락하는 경우를 보겠습니다
-        # TODO 0:02:20.364  ~  0:02:24.024
-        # TODO 1.0secs pause
-        # TODO 0:02:24.024  ~  0:02:25.024
+        k_dn_px_dn = MathTex(r'K\  \Downarrow', r'Price \  \Downarrow').arrange(D).move_to(position)
+        k_dn_px_up = MathTex(r'K\  \Downarrow', r'Price \  \Uparrow').arrange(D).move_to(position)
 
-        # TODO 7.14 secs케이가 하락했다는 것은 유동성이 줄었다는 것이고 이전과 같은 양의 비티씨를 거래하더라도 프라이스 임팩트가 커집니다
-        # TODO 0:02:25.024  ~  0:02:32.164
-        # TODO 1.0secs pause
-        # TODO 0:02:32.164  ~  0:02:33.164
+        share_change_2 = MathTex(r'Moving\\ 30\%$\rightarrow$42\% \\of\  the\  pool', tex_environment='center').move_to(position)
 
-        k_dn_px_dn = MathTex(r'K\  \Downarrow', r'Price \  \Downarrow').arrange(D).move_to(liq_provider[ 0 ])
-        k_dn_px_up = MathTex(r'K\  \Downarrow', r'Price \  \Uparrow').arrange(D).move_to(liq_provider[ 0 ])
-
-        share_change_2 = MathTex(r'Moving\\30\% \\ $\Downarrow$ \\ 42\%\\of\  the\  pool', tex_environment='center')
-
-        k_dn_px_dn_text_1 = MathTex(r'Price Impact\\23\% \\ $\downarrow$ \\ 30\%', tex_environment='center').arrange(D).next_to(k_dn_px_dn, D)
-        k_dn_px_up_text_1 = MathTex(r'Price Impact\\43\% \\ $\downarrow$ \\ 75\%', tex_environment='center').arrange(D).next_to(k_dn_px_dn, D)
+        k_dn_px_dn_text_1 = MathTex(r'Price Impact\\23\% \\ $\downarrow$ \\ 30\%', tex_environment='center').arrange(D).next_to(k_dn_px_dn,
+                                                                                                                                D,
+                                                                                                                                buff=0.75)
+        k_dn_px_up_text_1 = MathTex(r'Price Impact\\43\% \\ $\downarrow$ \\ 75\%', tex_environment='center').arrange(D).next_to(k_dn_px_dn,
+                                                                                                                                D,
+                                                                                                                                buff=0.75)
 
         self.play(Write(k_dn_px_dn[ 0 ]))
 
@@ -4400,21 +4423,7 @@ class L02S12(MovingCameraScene):
                   usdt_tracker.animate.set_value(14700 / 7),
                   run_time=2, rate_func=rate_functions.ease_in_out_quint)
 
-        # 그말은 유동성이 줄었다는 거하고
-        # 아까 유동성이 늘었서 슬리피지가 덜 발행하던 것과 달리
-        # 지금부터는 슬리피지가 더 발생합니다
-        #
-
         self.wait(9.8)
-        # TODO 5.581 secs아까 300데터에서 3개를 매도할 때는 프라이스 임팩트가  23퍼센트 발생했지만
-        # TODO 0:02:33.164  ~  0:02:38.745
-        # TODO 1.0secs pause
-        # TODO 0:02:38.745  ~  0:02:39.745
-
-        # TODO 5.727 secs지금은 유동성으 적어졌고 3개 매도할 때 프라이스 임팩트가 30퍼센트 발생했습니다
-        # TODO 0:02:39.745  ~  0:02:45.472
-        # TODO 1.0secs pause
-        # TODO 0:02:45.472  ~  0:02:46.472
 
         self.play(Write(k_dn_px_dn[ 1 ]))
 
@@ -4433,15 +4442,6 @@ class L02S12(MovingCameraScene):
         k_dn_px_dn_dot = curr_dot.copy().clear_updaters().set_color(RED_A).set_z_index(1.5)
         self.add(k_dn_px_dn_dot)
 
-        # TODO 5.69 secs아까 300테더에서 3개를 매수할 때는 프라이스 임팩트가 43퍼센트 발생했지만
-        # TODO 0:02:46.472  ~  0:02:52.162
-        # TODO 1.0secs pause
-        # TODO 0:02:52.162  ~  0:02:53.162
-
-        # TODO 5.932 secs지금은 유동성으 적어졌고 3개 매수할 때 프라이스 임팩트가 75퍼센트 발생했습니다
-        # TODO 0:02:53.162  ~  0:02:59.094
-        # TODO 1.0secs pause
-        # TODO 0:02:59.094  ~  0:03:00.094
         self.play(Write(k_dn_px_up[ 1 ]))
 
         self.play(
@@ -4459,29 +4459,16 @@ class L02S12(MovingCameraScene):
 
         self.wait(0.417)
 
-        # TODO 3.721 secs같은 3비티씨지만 풀에서 차지하는 비율이 커졌습니다
-        # TODO 0:03:00.118  ~  0:03:03.839
-        # TODO 1.0secs pause
-        # TODO 0:03:03.839  ~  0:03:04.839
-
-        # TODO 6.113 secs아까는 10분에 3 지금은 7 분에 3, 퍼센트로 따지면 33퍼와 42퍼센트입니다
-        # TODO 0:03:04.839  ~  0:03:10.952
-        # TODO 1.0secs pause
-        # TODO 0:03:10.952  ~  0:03:11.952
-
         self.wait(2)
         self.play(Create(share_change_2))
         self.wait(5)
         self.play(Uncreate(share_change_2))
 
-        # self.wait(2.834)
-        # self.wait(2)
-
         k_dn_px_up_dot = curr_dot.copy().clear_updaters().set_color(GREEN_A).set_z_index(1.5)
         self.add(k_dn_px_up_dot)
 
         # 원점#####################################################################################
-        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(k_origin_px_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4503,8 +4490,8 @@ class L02S12(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:03:22.943  ~  0:03:23.943
 
-        px_up_k_up = MathTex(r'Price \  \Uparrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[ 0 ])
-        px_up_k_dn = MathTex(r'Price \  \Uparrow', r'K\  \Downarrow').arrange(D).move_to(liq_provider[ 0 ])
+        px_up_k_up = MathTex(r'Price \  \Uparrow', r'K\  \Uparrow').arrange(D).move_to(position)
+        px_up_k_dn = MathTex(r'Price \  \Uparrow', r'K\  \Downarrow').arrange(D).move_to(position)
 
         self.play(Write(px_up_k_up[ 0 ]), run_time=1)
 
@@ -4584,7 +4571,7 @@ class L02S12(MovingCameraScene):
 
         # 원점점#####################################################################################
 
-        k_origin_px_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        k_origin_px_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(k_origin_px_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4606,8 +4593,8 @@ class L02S12(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:03:56.853  ~  0:03:57.853
 
-        px_dn_k_up = MathTex(r'Price \  \Downarrow', r'K\  \Uparrow').arrange(D).move_to(liq_provider[ 0 ])
-        px_dn_k_dn = MathTex(r'Price \  \Downarrow', r'K\  \Downarrow').arrange(D).move_to(liq_provider[ 0 ])
+        px_dn_k_up = MathTex(r'Price \  \Downarrow', r'K\  \Uparrow').arrange(D).move_to(position)
+        px_dn_k_dn = MathTex(r'Price \  \Downarrow', r'K\  \Downarrow').arrange(D).move_to(position)
 
         self.play(Write(px_dn_k_up[ 0 ]))
 
@@ -4681,7 +4668,7 @@ class L02S12(MovingCameraScene):
         self.add(px_dn_k_dn_dot)
 
         # 가격 원점#####################################################################################
-        px_origin = MathTex(r'ORIGIN').move_to(liq_provider[ 0 ])
+        px_origin = MathTex(r'ORIGIN').move_to(position)
         self.play(Write(px_origin), run_time=0.5)
 
         self.play(k_tracker.animate.set_value(30000),
@@ -4723,8 +4710,7 @@ class L02S12(MovingCameraScene):
         px_dn_k_line = making_a_line_3points(px_dn_k_dn_dot, k_org_px_dn_dot, px_dn_k_up_dot, MAROON_E)
         self.play(Create(px_dn_k_line))
 
-        self.wait(2)
-
+        self.wait(30)
 
 
 class L02S13(Scene):
@@ -5332,6 +5318,6 @@ class L02S13(Scene):
         dex_line_3.set_color(WHITE)
         dex_line_4.set_color(WHITE)
         self.wait(0.25)
-        self.wait(5)
+        self.wait(30)
 
 

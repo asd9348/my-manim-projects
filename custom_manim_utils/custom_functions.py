@@ -14,6 +14,8 @@ from pathlib import Path
 import shutil
 from pprint import pprint
 
+from custom_manim_utils.custom_consts import *
+
 
 def get_halfway(point_A, point_B, z=0):
     x_dist = (abs(point_A[ 0 ]) + abs(point_B[ 0 ])) / 2
@@ -32,19 +34,7 @@ def get_halfway(point_A, point_B, z=0):
     return np.array([ x, y, z ])
 
 
-def get_mid_btwn_mobs(mob_a, mob_b, center_datum=True):
-    if center_datum:
-        mob_a_coor = mob_a.get_center()
-        mob_b_coor = mob_b.get_center()
 
-        midpoint()
-
-    else:
-        pass
-
-
-def there_and_back_expo(t: float) -> float:
-    return -t + 1
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -322,3 +312,25 @@ def speak_deprecated(self, txt, speed=1.4, keep_pitch=False, lang='ko'):
     final_audio.close()
 
     self.add_sound(final_audio_name)
+
+
+def bezier_branch_creater(str8_start_width=1, str8_end_width=1, branch=5, branch_width=2, branch_height=7):
+    start_line = Line(ORIGIN, R)
+
+    clearance = branch_height / (branch - 1)
+
+    branches = VGroup()
+
+    for i in range(branch):
+        curve = CubicBezier(R,
+                            R + R * (branch_width / 2),
+                            R + R * (branch_width / 2) + U * ((branch_height / 2) - clearance * i),
+                            R + R * (branch_width) + U * ((branch_height / 2) - clearance * i))
+
+        end_line = Line(curve.get_end(), curve.get_end() + R * str8_end_width)
+
+        bezier = VGroup(start_line.copy(), curve, end_line)
+
+        branches.add(bezier)
+
+    return branches
