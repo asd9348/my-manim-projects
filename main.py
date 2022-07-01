@@ -690,9 +690,145 @@ class working1(MovingCameraScene):
         self.add(NumberPlane().set_z_index(1))
 
         speak(self, title='L01S01', txt=
-        '그래서 모두가 통일된 규격으로 거래하고 일방적 계약파기의 위험을 없애고, 내가 자고 있어도 예약된 주문이 가능하게 하는 등 다양한 편의를 위해 거래자 사이에 제3자인 거래소가 등장하고 거래소가 거래를 중개하기 시작했습니다#1'
+        '참고로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다#1'
+        '스테이블 코인은 일반적으로 실제 코인을 보증하는 법정통화를 바탕으로 발행하고 1대1로 교환될 수 있는 코인을 말합니다#1'
+        '이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다#1'
+        '그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다#1'
+        '가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 채권과 같은 자산에 투자하여 수익을 얻습니다'
+        '다시 1테더를 가져가면 1테더를 소각시키고 1달러를 돌려받을 수 있습니다#1'
+        '이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌 자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다#1'
               , keep_pitch=True, update=True, speed=1.4)
 
+        # TODO 8.601 secs참고로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다
+        # TODO 0:00:00.000  ~  0:00:08.601
+        # TODO 1.0secs pause
+        # TODO 0:00:08.601  ~  0:00:09.601
+
+        # TODO 7.539 secs스테이블 코인은 일반적으로 실제 코인을 보증하는 법정통화를 바탕으로 발행하고 1대1로 교환될 수 있는 코인을 말합니다
+        # TODO 0:00:09.601  ~  0:00:17.140
+        # TODO 1.0secs pause
+        # TODO 0:00:17.140  ~  0:00:18.140
+
+        # TODO 7.901 secs이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다
+        # TODO 0:00:18.140  ~  0:00:26.041
+        # TODO 1.0secs pause
+        # TODO 0:00:26.041  ~  0:00:27.041
+
+        # TODO 4.24 secs그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다
+        # TODO 0:00:27.041  ~  0:00:31.281
+        # TODO 1.0secs pause
+        # TODO 0:00:31.281  ~  0:00:32.281
+
+        # TODO 18.097 secs가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 채권과 같은 자산에 투자하여 수익을 얻습니다다시 1테더를 가져가면 1테더를 소각시키고 1달러를  돌려받을 수 있습니다
+        # TODO 0:00:32.281  ~  0:00:50.378
+        # TODO 1.0secs pause
+        # TODO 0:00:50.378  ~  0:00:51.378
+
+        # TODO 13.132 secs이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌  자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다
+        # TODO 0:00:51.378  ~  0:01:04.510
+        # TODO 1.0secs pause
+        # TODO 0:01:04.510  ~  0:01:05.510        stablecoin = Tex('Stablecoin').scale(2)
+        stablecoin = Tex('Stablecoin').scale(2)
+
+        self.play(Create(stablecoin))
+
+        self.wait(q)
+        self.play(Uncreate(stablecoin))
+        #
+
+        # 기업 혹은 거래소 박스 형성 (중앙ㅇ에 할거고 이건 왼쪽은 은행이나 채권 만들고)
+        tether_company_rect = RoundedRectangle(height=8, width=4, corner_radius=0.5)
+        tether_company_text = Tex('Company or Exchange').next_to(tether_company_rect, UP)
+
+        tether_company = VGroup(tether_company_rect, tether_company_text).move_to(ORIGIN)
+
+        tether_company.set_z_index(3)
+
+        # self.add(index_labels(tether_company[0]))
+        self.play(Create(tether_company))
+
+        #
+        # 고객 엔터티 오른 쪽에 생성하고 법정화폐 붙임
+
+        def create_entity_tether(person_name, person_radius, person_color, asset_name, how_many, asset_color, asset_width, asset_height):
+            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+            text = manim.Text(asset_name, color=BLACK).scale(asset_height)
+
+            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+            assets = VGroup(asset)
+
+            assets = VGroup(*[ asset.copy() for i in range(how_many) ])
+            # for i in range(how_many):
+            #     VGroup.add(asset.copy())
+
+            assets.arrange(DOWN, buff=0.1).next_to(person, DOWN)
+
+            return VGroup(person, assets)
+
+        A = create_entity_tether("A", 0.5, WHITE, "USD", 15, GREEN, 0.7, 0.3)
+        B = create_entity_tether("B", 0.5, WHITE, "USD", 10, GREEN, 0.7, 0.3)
+        C = create_entity_tether("C", 0.5, WHITE, "USD", 3, GREEN, 0.7, 0.3)
+        D = create_entity_tether("D", 0.5, WHITE, "USD", 8, GREEN, 0.7, 0.3)
+
+
+        people_list = [ A, B, C, D ]
+        people = VGroup(A, B, C, D).arrange(RIGHT, buff=0.2, aligned_edge=UP).to_edge(UR)
+
+        self.play(Create(people))
+        #
+        # 그리고 고객들 돈을 기업으로 전송
+        each_money = VGroup()
+        for person in people_list:
+            for i in range(len(person[ 1 ])):
+                each_money.add(person[ 1 ][ i ])
+
+        self.play(each_money.animate.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ]))
+        #
+        # 기업에서 테더 발행 원래 받은 USD는 위로 밀리면서 새로운 USDT 뭉치가 생겨남
+
+        tether_1ea = create_entity_tether("A", 0.5, WHITE, "USDT", 36, BLUE, 0.7, 0.3)[ 1 ]
+
+        tethers = VGroup()
+        for i in range(len(tether_1ea)):
+            tethers.add(tether_1ea[ i ])
+        tethers.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ])
+        self.play(GrowFromCenter(tethers))
+        # tethers.arrange()
+        self.play(VGroup(each_money, tethers).animate.arrange(DOWN, buff=0.25).move_to(tether_company[ 0 ]))
+
+        #
+        # 테더는 다시 엔터티에게 전송
+        self.play(tethers[ 0:15 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
+        self.play(tethers[ 15:25 ].animate.arrange(DOWN, buff=0.1).next_to(B[ 0 ], DOWN))
+        self.play(tethers[ 25:28 ].animate.arrange(DOWN, buff=0.1).next_to(C[ 0 ], DOWN))
+        self.play(tethers[ 28:36 ].animate.arrange(DOWN, buff=0.1).next_to(D[ 0 ], DOWN))
+        #
+        # 그리고 달러 중 일부는 은행이나 채권등으로 투자
+        invest = LabeledRectangle('Banks Bonds etc', width=4, height=6, direction=UP, corner_radius=0.5).to_edge(LEFT)
+
+        self.play(Create(invest))
+
+        self.play(each_money[ 0:16 ].animate.arrange_in_grid(4, 4, buff=0.1).move_to(invest))
+
+        #
+        # 엔터티 중 한명이 테더를 반납하면 달러로 돌려줌
+        self.play(tethers[ 0:15 ].animate.arrange_in_grid(4, 4, buff=0.1).next_to(each_money[ 28:36 ], DOWN, buff=0.25))
+        # self.play(VGroup(each_money[16:36],tethers[ 0:15 ]).animate.arrange(DOWN))
+
+        self.play(each_money[ 23:36 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
+
+        self.play(Uncreate(tethers[ 0:15 ]))
+        #
+        # 전부 ㅇ벗어지고 알고리드믹 스테이블코인, 코인담보 스테이블 등이 있으나 나중에 알아보자
+
+        self.play(FadeOut(each_money),
+                  FadeOut(tethers),
+                  FadeOut(tether_company),
+                  FadeOut(invest),
+                  FadeOut(people),
+                  )
 
 
         self.wait(20)
