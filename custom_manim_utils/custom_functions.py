@@ -1,5 +1,5 @@
 from manim import *
-
+import manim
 import pyttsx3
 import os
 import datetime
@@ -15,6 +15,26 @@ import shutil
 from pprint import pprint
 
 from custom_manim_utils.custom_consts import *
+from custom_manim_utils.custom_color_consts import *
+# from custom_manim_utils.custom_ import *
+
+
+from typing import *
+
+import numpy as np
+from colour import Color
+
+from manim import config
+from manim.constants import *
+from manim.mobject.geometry.arc import Circle
+from manim.mobject.geometry.polygram import Square
+from manim.mobject.mobject import *
+from manim.mobject.opengl.opengl_compatibility import ConvertToOpenGL
+from manim.mobject.opengl.opengl_mobject import OpenGLMobject
+from manim.mobject.types.vectorized_mobject import VGroup, VMobject
+from manim.utils.color import *
+from manim.utils.iterables import tuplify
+from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
 def get_halfway(point_A, point_B, z=0):
@@ -125,11 +145,11 @@ def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fi
     return VGroup(circle, text)
 
 
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK):
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=RED):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
     box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = Text(asset_name, color=asset_text_color).scale(asset_height)
+    text = manim.Text(asset_name, color=asset_text_color).scale(asset_height)
 
     asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
 
@@ -334,3 +354,200 @@ def bezier_branch_creater(str8_start_width=1, str8_end_width=1, branch=5, branch
         branches.add(bezier)
 
     return branches
+
+
+class ThreeDVMobject(VMobject, metaclass=ConvertToOpenGL):
+    def __init__(self, shade_in_3d=True, **kwargs):
+        super().__init__(shade_in_3d=shade_in_3d, **kwargs)
+
+
+
+class MySurface(VGroup, metaclass=ConvertToOpenGL):
+
+
+    def __init__(
+        self,
+        func: Callable[[float, float], np.ndarray],
+        point1: np.ndarray = np.array([1,0,0]),
+        point2: np.ndarray =  np.array([-1,0,0]),
+        point3: np.ndarray =  np.array([0,1,0]),
+        u_range: Sequence[float] = [0, 1],
+        v_range: Sequence[float] = [0, 1],
+        resolution: Sequence[int] = 32,
+        surface_piece_config: dict = {},
+        fill_color: Color = BLUE_D,
+        fill_opacity: float = 1.0,
+        checkerboard_colors: Sequence[Color] = [BLUE_D, BLUE_E],
+        stroke_color: Color = LIGHT_GREY,
+        stroke_width: float = 0.5,
+        should_make_jagged: bool = False,
+        pre_function_handle_to_anchor_scale_factor: float = 0.00001,
+        **kwargs,
+    ) -> None:
+        self.u_range = u_range
+        self.v_range = v_range
+        super().__init__(**kwargs)
+        self.resolution = resolution
+        self.surface_piece_config = surface_piece_config
+        self.fill_color = fill_color
+        self.fill_opacity = fill_opacity
+        self.checkerboard_colors = checkerboard_colors
+        self.stroke_color = stroke_color
+        self.stroke_width = stroke_width
+        self.should_make_jagged = should_make_jagged
+        self.pre_function_handle_to_anchor_scale_factor = (
+            pre_function_handle_to_anchor_scale_factor
+        )
+        self.func = func
+        self._setup_in_uv_space()
+        self.apply_function(lambda p: func(p[0], p[1]))
+        if self.should_make_jagged:
+            self.make_jagged()
+
+    def _get_u_values_and_v_values(self):
+
+
+        u_values = [-1,0,1]
+        v_values =[0,1,0]
+
+        return u_values, v_values
+
+    def _setup_in_uv_space(self):
+        u_values, v_values = self._get_u_values_and_v_values()
+        faces = VGroup()
+        for i in range(len(u_values)):
+
+            u1=u_values[i ]
+            u2=u_values[i + 1]
+            v1=v_values[i ]
+            v2=v_values[i + 1]
+            face = ThreeDVMobject()
+            face.set_points_as_corners(
+                [
+                    [1, 0, 0],
+                    [1, 0, 5],
+                    [0, 1, 0],
+                    [0, 1, 5],
+                    [1, 0, 0],
+                ],
+            )
+            faces.add(face)
+            face.u_index = i
+            face.v_index = j
+            face.u1 = u1
+            face.u2 = u2
+            face.v1 = v1
+            face.v2 = v2
+        faces.set_fill(color=self.fill_color, opacity=self.fill_opacity)
+        faces.set_stroke(
+            color=self.stroke_color,
+            width=self.stroke_width,
+            opacity=self.stroke_opacity,
+        )
+        self.add(*faces)
+        if self.checkerboard_colors:
+            self.set_fill_by_checkerboard(*self.checkerboard_colors)
+
+    def set_fill_by_checkerboard(self, *colors, opacity=None):
+        n_colors = len(colors)
+        for face in self:
+            c_index = (face.u_index + face.v_index) % n_colors
+            face.set_fill(colors[c_index], opacity=opacity)
+        return self
+
+    def set_fill_by_value(
+        self,
+        axes: Mobject,
+        colors: Union[Iterable[Color], Color],
+        axis: int = 2,
+    ):
+        """Sets the color of each mobject of a parametric surface to a color relative to its axis-value
+
+        Parameters
+        ----------
+        axes :
+            The axes for the parametric surface, which will be used to map axis-values to colors.
+        colors :
+            A list of colors, ordered from lower axis-values to higher axis-values. If a list of tuples is passed
+            containing colors paired with numbers, then those numbers will be used as the pivots.
+        axis :
+            The chosen axis to use for the color mapping. (0 = x, 1 = y, 2 = z)
+
+        Returns
+        -------
+        :class:`~.Surface`
+            The parametric surface with a gradient applied by value. For chaining.
+
+        Examples
+        --------
+        .. manim:: FillByValueExample
+            :save_last_frame:
+
+            class FillByValueExample(ThreeDScene):
+                def construct(self):
+                    resolution_fa = 42
+                    self.set_camera_orientation(phi=75 * DEGREES, theta=-160 * DEGREES)
+                    axes = ThreeDAxes(x_range=(0, 5, 1), y_range=(0, 5, 1), z_range=(-1, 1, 0.5))
+                    def param_surface(u, v):
+                        x = u
+                        y = v
+                        z = np.sin(x) * np.cos(y)
+                        return z
+                    surface_plane = Surface(
+                        lambda u, v: axes.c2p(u, v, param_surface(u, v)),
+                        resolution=(resolution_fa, resolution_fa),
+                        v_range=[0, 5],
+                        u_range=[0, 5],
+                        )
+                    surface_plane.set_style(fill_opacity=1)
+                    surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+                    self.add(axes, surface_plane)
+        """
+
+        ranges = [axes.x_range, axes.y_range, axes.z_range]
+
+        if type(colors[0]) is tuple:
+            new_colors, pivots = [[i for i, j in colors], [j for i, j in colors]]
+        else:
+            new_colors = colors
+
+            pivot_min = ranges[axis][0]
+            pivot_max = ranges[axis][1]
+            pivot_frequency = (pivot_max - pivot_min) / (len(new_colors) - 1)
+            pivots = np.arange(
+                start=pivot_min,
+                stop=pivot_max + pivot_frequency,
+                step=pivot_frequency,
+            )
+
+        for mob in self.family_members_with_points():
+            axis_value = axes.point_to_coords(mob.get_midpoint())[axis]
+            if axis_value <= pivots[0]:
+                mob.set_color(new_colors[0])
+            elif axis_value >= pivots[-1]:
+                mob.set_color(new_colors[-1])
+            else:
+                for i, pivot in enumerate(pivots):
+                    if pivot > axis_value:
+                        color_index = (axis_value - pivots[i - 1]) / (
+                            pivots[i] - pivots[i - 1]
+                        )
+                        color_index = min(color_index, 1)
+                        mob_color = interpolate_color(
+                            new_colors[i - 1],
+                            new_colors[i],
+                            color_index,
+                        )
+                        if config.renderer == "opengl":
+                            mob.set_color(mob_color, recurse=False)
+                        else:
+                            mob.set_color(mob_color, family=False)
+                        break
+
+        return self
+
+
+
+# Specific shapes
+
+

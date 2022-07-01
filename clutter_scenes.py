@@ -263,3 +263,386 @@ class working3(Scene):
 
         self.wait(5)
 
+
+class working3(Scene):
+    def construct(self):
+        # self.add(NumberPlane().set_z_index(1))
+
+        speak(self, title='L02S05', txt=
+        '아#1'
+              , keep_pitch=True, update=True, speed=1.4)
+
+        set_1 = Circle(radius=2, color=RED_B, fill_opacity=0.5, fill_color=RED_B).shift(U * 1.732)
+        set_1_label = MathTex('A').next_to(set_1, U)
+        set_1.add(set_1_label)
+
+        set_2 = Circle(radius=2, color=GREEN_B, fill_opacity=0.5, fill_color=GREEN_B).shift(L * 1)
+        set_2_label = MathTex('B').next_to(set_2.get_center() + L * 1.414 + D * 1.414, DL)
+        set_2.add(set_2_label)
+
+        set_3 = Circle(radius=2, color=BLUE_B, fill_opacity=0.5, fill_color=BLUE_B).shift(R * 1)
+        set_3_label = MathTex('C').next_to(set_3.get_center() + R * 1.414 + D * 1.414, DR)
+        set_3.add(set_3_label)
+
+        sets = VGroup(set_1, set_2, set_3).move_to(ORIGIN)
+
+        self.play(DrawBorderThenFill(sets))
+
+        self.play(sets.animate.to_edge(L, buff=1))
+
+        a_intersection_b_form = MathTex(r'A\cap B=').shift(R * 1)
+
+        a_intersection_b_shape = Intersection(set_1, set_2, fill_color=YELLOW_D, fill_opacity=0.8)
+
+        self.play(Create(a_intersection_b_form))
+        self.play(Create(a_intersection_b_shape))
+        self.play(a_intersection_b_shape.animate.scale(0.3).rotate(-PI / 3).next_to(a_intersection_b_form, R))
+
+        a_intersection_b = VGroup(a_intersection_b_form, a_intersection_b_shape)
+        self.play(a_intersection_b.animate.to_edge(UR, buff=1))
+
+        a_difference_b_form = MathTex(r'A-B=').shift(R * 1)
+
+        a_difference_b_shape = Difference(set_1, set_2, fill_color=RED_D, fill_opacity=0.8)
+
+        self.play(Create(a_difference_b_form))
+        self.play(Create(a_difference_b_shape))
+        self.play(a_difference_b_shape.animate.scale(0.3).rotate(-PI / 3).next_to(a_difference_b_form, R))
+
+        a_difference_b = VGroup(a_difference_b_form, a_difference_b_shape)
+        self.play(a_difference_b.animate.next_to(a_intersection_b, D, buff=0.5, aligned_edge=L))
+
+        a_union_b_inter_c_form = MathTex(r'A\cup B\cap C=').shift(R * 1)
+
+        a_union_b_inter_c_shape = Intersection(Union(set_1, set_2), set_3, fill_color=PURPLE_D, fill_opacity=0.8)
+        self.play(Create(a_union_b_inter_c_form))
+        self.play(Create(a_union_b_inter_c_shape))
+        self.play(a_union_b_inter_c_shape.animate.scale(0.3).rotate(PI / 3).next_to(a_union_b_inter_c_form, R))
+
+        a_union_b_inter_c = VGroup(a_union_b_inter_c_form, a_union_b_inter_c_shape)
+        self.play(a_union_b_inter_c.animate.next_to(a_difference_b, D, buff=0.5, aligned_edge=L))
+
+        self.wait(5)
+
+
+
+class working3(ThreeDScene):
+    def func(self, u, v):
+        line = Line(ORIGIN, L)
+
+        r = 0.5
+        height = 2
+        x = u
+        y = v
+
+        z = (2 * x + 3 * y - 12) / 4
+        return np.array([ (12 - 3 * y - 4 * z) / 2, (-2 * x - 4 * z + 12) / 3, (2 * x + 3 * y - 12) / 4 ])
+
+    def construct(self):
+        # self.set_camera_orientation(phi=45 * DEGREES, theta=45 * DEGREES,gamma=45*DEGREES)
+
+        # self.add(Square().shift(np.array([ 0, 0, 4 ])).rotate(PI / 2, axis=X_AXIS))
+        # axes = ThreeDAxes()
+        # cylinder = Cylinder(radius=2, height=3)
+        # self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+        # self.add(axes, cylinder)
+
+        # self.set_camera_orientation(phi=60 * DEGREES, theta=150 * DEGREES)
+        # prismSmall = Prism(dimensions=[1, 2, 3]).rotate(PI / 2)
+        # prismLarge = Prism(dimensions=[1.5, 3, 4.5]).move_to([2, 0, 0])
+        # self.add(prismSmall, prismLarge)
+
+        axes = ThreeDAxes(x_range=[ -4, 4 ], x_length=8)
+        surface = Surface(
+            lambda u, v: axes.c2p(*self.func(u, v)),
+            u_range=[ -3, 3 ],
+            v_range=[ 0, 2 * PI ],
+            resolution=(32, 32)
+        )
+        self.set_camera_orientation(theta=70 * DEGREES, phi=75 * DEGREES)
+        self.add(axes, surface)
+
+        self.wait(5)
+
+
+class working3(ThreeDScene):
+    def construct(self):
+        resolution_fa = 45
+        self.set_camera_orientation(phi=75 * DEGREES, theta=-75 * DEGREES)
+        axes = ThreeDAxes(x_range=(0, 5, 1), y_range=(0, 5, 1), z_range=(-1, 1, 0.5))
+        # def param_surface(u, v):
+        #     x = u
+        #     y = v
+        #     z = np.sin(x) * np.cos(y)
+        #     return z
+        # surface_plane = Surface(
+        #     lambda u, v: axes.c2p(u, v, param_surface(u, v)),
+        #     resolution=(resolution_fa, resolution_fa),
+        #     v_range=[0, 5],
+        #     u_range=[0, 5],
+        #     )
+        # surface_plane.set_style(fill_opacity=1)
+        # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+        face = ThreeDVMobject()
+        face.set_points_as_corners([
+            [ 1, 0, 0 ],
+            [ 1, 0, 5 ],
+            [ 0, 1, 5 ],
+            [ 0, 1, 0 ],
+            [ 1, 0, 0 ]
+        ])
+
+        face.set_fill(color=RED, opacity=0.5)
+        face.set_stroke(color=RED_E,width=3,opacity=0.7)
+
+
+        self.add(axes, face)
+
+class working3(ThreeDScene):
+    def imp_loss_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        # hold_val = 0.5*x+0.5*y
+        # z = np.sin(x) * np.cos(y)
+        return np.array([x, y, z])
+
+    def dollar_val_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + x) + 0.5 * (1 + y)-1
+        curr_val = hold_val*(1+z)
+
+        return np.array([x, y, curr_val])
+
+    def construct(self):
+        resolution_fa = 15
+        self.set_camera_orientation(phi=90*DEGREES, theta=0,gamma=0)
+        axes = ThreeDAxes(x_range=(-1, 3, 1), y_range=(-1, 3, 1), z_range=(-1, 2, 0.5),
+                          x_length=5,y_length=5,z_length=5)
+
+
+        lab_x = axes.get_x_axis_label(Tex("$x$-label"))
+        lab_y = axes.get_y_axis_label(Tex("$y$-label"))
+        lab_z = axes.get_z_axis_label(Tex("$z$-label"))
+        labs = VGroup(lab_x,lab_y,lab_z)
+
+
+        imp_loss_graph = Surface(
+            lambda u, v: axes.c2p(*self.imp_loss_surface(u, v)),
+            v_range=[-0.99, 2],
+            u_range=[-0.99, 2],
+            color=PINK
+            )
+
+        val_graph = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
+            v_range=[-0.99, 2],
+            u_range=[-0.99, 2],
+            color=BLUE
+            )
+
+        # imp_loss_surface = Surface(
+        #     lambda u, v: axes.c2p(u, v, imp_loss_surface(u, v)),
+        #     resolution=(resolution_fa, resolution_fa),
+        #     v_range=[-0.9, 4],
+        #     u_range=[-0.9, 4],
+        #     color=PINK
+        #     )
+        # dollar_val_surface = Surface(
+        #     lambda u, v: axes.c2p(u, v, dollar_val_surface(u, v)),
+        #     resolution=(resolution_fa, resolution_fa),
+        #     v_range=[-0.9, 4],
+        #     u_range=[-0.9, 4],
+        #     color=RED
+        #     )
+        #
+
+        my_graph = axes.plot(lambda x : x, x_range=[-1,5])
+        # my_graph.set_colors_by_gradient([RED,BLUE])
+        # surface_plane.set_style(fill_opacity=1)
+        # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+        # face = ThreeDVMobject()
+        # face.set_points_as_corners([
+        #     [ 1, 0, 0 ],
+        #     [ 1, 0, 5 ],
+        #     [ 0, 1, 5 ],
+        #     [ 0, 1, 0 ],
+        #     [ 1, 0, 0 ]
+        # ])
+        #
+        # face.set_fill(color=RED, opacity=0.5)
+        # face.set_stroke(color=RED_E,width=3,opacity=0.7)
+        #
+
+        # surface_plane.set_style(fill_opacity=1)
+        # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+        self.add(axes,labs)
+        # self.play(Create(val_graph),run_time=5)
+        self.add(val_graph)
+        # self.play(Create(my_graph))
+        # self.play(my_graph.animate.set_color_by_gradient([RED,BLUE,GREEN]),run_time=3)
+        # self.play(my_graph.animate.set_color(RED),run_time=3)
+        # self.set_camera_orientation(phi=2 * PI / 5, theta=PI / 5)
+        # self.begin_ambient_camera_rotation(rate=0.2, about="theta",run_time=1)
+        # self.move_camera(phi=45*DEGREES, about="phi",run_time=3)
+        # self.set_camera_orientation(phi=90*DEGREES, theta=45*DEGREES,gamma=0)
+
+        self.move_camera(theta=PI/2, about="theta",run_time=5)
+        self.move_camera(theta=2*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=3*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=4*PI/2, about="theta",run_time=5)
+        self.move_camera(phi=45*DEGREES, about="phi",run_time=3)
+        self.move_camera(theta=PI/2, about="theta",run_time=5)
+        self.move_camera(theta=2*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=3*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=4*PI/2, about="theta",run_time=5)
+        self.move_camera(phi=45*DEGREES, about="phi",run_time=3)
+        self.move_camera(theta=PI/2, about="theta",run_time=5)
+        self.move_camera(theta=2*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=3*PI/2, about="theta",run_time=5)
+        self.move_camera(theta=4*PI/2, about="theta",run_time=5)
+
+
+
+class working(Scene):
+    def construct(self):
+        p1 = np.array([ -4, -2, 0 ])
+        p2 = np.array([ 4, -2, 0 ])
+        p3 = [ 1, 1, 0 ]
+        p4 = [ -1, 1, 0 ]
+        # a = Line(p1,p2).append_points(Line(p2,p3).points).append_points(Line(p3,p4).points)
+        a = Line(start=p1, end=p2, buff=0.1)
+        # point_start= a.get_start()
+        # point_end  = a.get_end()
+        # point_center = a.get_center()
+
+        # self.add(Dot(a.get_start()).set_color(YELLOW).scale(2))
+        # self.add(Dot(a.get_end()).set_color(RED).scale(2))
+        # self.add(Dot(a.get_top()).set_color(GREEN_A).scale(2))
+        # self.add(Dot(a.get_bottom()).set_color(GREEN_D).scale(2))
+        # self.add(Dot(a.get_center()).set_color(BLUE).scale(2))
+        # self.add(Dot(a.point_from_proportion(0.5)).set_color(ORANGE).scale(2))
+        self.add(*[ Dot(x) for x in a.points ])
+        self.add(a)
+
+
+class working3(ThreeDScene):
+    def imp_loss_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        # hold_val = 0.5*x+0.5*y
+        # z = np.sin(x) * np.cos(y)
+        return np.array([ x, y, z ])
+
+    def dollar_val_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + x) + 0.5 * (1 + y)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ x, y, curr_val ])
+
+    def construct(self):
+        resolution_fa = 20
+        self.set_camera_orientation(phi=0 * DEGREES, theta=0 * DEGREES, gamma=0, zoom=1)
+        axes = ThreeDAxes(x_range=(-0.99, 3, 0.11), y_range=(-0.99, 3, 0.11), z_range=(-1, 3, 0.1),
+                          x_length=5, y_length=5, z_length=5)
+
+        lab_x = axes.get_x_axis_label(Tex("$x$-label"))
+        lab_y = axes.get_y_axis_label(Tex("$y$-label"))
+        lab_z = axes.get_z_axis_label(Tex("$z$-label"))
+        labs = VGroup(lab_x, lab_y, lab_z)
+
+        imp_loss_graph = Surface(
+            lambda u, v: axes.c2p(*self.imp_loss_surface(u, v)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99, 3 ],
+            fill_color=PINK
+        )
+
+        val_graph = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99, 3 ],
+            resolution=50
+            # checkerboard_colors=[C0177, C0134]
+        )
+
+        val_graph.set_style(fill_opacity=0.8)
+        val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
+
+        # imp_loss_surface = Surface(
+        #     lambda u, v: axes.c2p(u, v, imp_loss_surface(u, v)),
+        #     resolution=(resolution_fa, resolution_fa),
+        #     v_range=[-0.9, 4],
+        #     u_range=[-0.9, 4],
+        #     color=PINK
+        #     )
+        # dollar_val_surface = Surface(
+        #     lambda u, v: axes.c2p(u, v, dollar_val_surface(u, v)),
+        #     resolution=(resolution_fa, resolution_fa),
+        #     v_range=[-0.9, 4],
+        #     u_range=[-0.9, 4],
+        #     color=RED
+        #     )
+        #
+
+        my_graph = axes.plot(lambda x: x, x_range=[ -1, 5 ])
+        # my_graph.set_colors_by_gradient([RED,BLUE])
+        # surface_plane.set_style(fill_opacity=1)
+        # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+        # face = ThreeDVMobject()
+        # face.set_points_as_corners([
+        #     [ 1, 0, 0 ],
+        #     [ 1, 0, 5 ],
+        #     [ 0, 1, 5 ],
+        #     [ 0, 1, 0 ],
+        #     [ 1, 0, 0 ]
+        # ])
+        #
+        # face.set_fill(color=RED, opacity=0.5)
+        # face.set_stroke(color=RED_E,width=3,opacity=0.7)
+        #
+
+        # surface_plane.set_style(fill_opacity=1)
+        # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
+        self.add(axes, labs)
+        # self.add(imp_loss_graph)
+        # self.play(Create(val_graph),run_time=5)
+        self.add(val_graph)
+        # self.play(Create(my_graph))
+        # self.play(my_graph.animate.set_color_by_gradient([RED,BLUE,GREEN]),run_time=3)
+        # self.play(my_graph.animate.set_color(RED),run_time=3)
+        # self.set_camera_orientation(phi=2 * PI / 5, theta=PI / 5)
+        # self.begin_ambient_camera_rotation(rate=0.2, about="theta",run_time=1)
+        # self.move_camera(phi=45*DEGREES, about="phi",run_time=3)
+        # self.set_camera_orientation(phi=90*DEGREES, theta=45*DEGREES,gamma=0)
+
+        self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
+        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        self.move_camera(phi=90 * DEGREES, about="phi", run_time=1)
+        self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        self.move_camera(phi=135 * DEGREES, about="phi", run_time=1)
+        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        self.move_camera(theta=PI / 2, about="theta", run_time=2)
+

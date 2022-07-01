@@ -46,7 +46,6 @@ SOL_COIN = create_circle_asset(Tex(r'\textbf{SOL}',color=C_SOL3, font_size =30),
 # sol_text.set_color_by_tex('S', color=C_SOL3)
 # sol_text.set_color_by_tex('O', color=C_SOL2)
 # sol_text.set_color_by_tex('L', color=C_SOL1)
-#
 # ETH_COIN = create_circle_asset(Tex(r'\textbf{ETH}',color=WHITE), font_size =10, WHITE, fill_color=C_ETH, stroke_color=GREEN, stroke_width=0)
 # BTC_COIN = create_circle_asset(Tex(r'\textbf{BTC}',color=WHITE), font_size =10, WHITE, fill_color=C_BTC, stroke_color=GREEN, stroke_width=0)
 # ATOM_COIN = create_circle_asset(Tex(r'\textbf{AT}',color=C_ATOM2), font_size =10, C_ATOM2, fill_color=C_ATOM1, stroke_color=GREEN, stroke_width=0)
