@@ -18,19 +18,24 @@ from pprint import pprint
 
 class final(Scene):
     def construct(self):
-        pass
+        self.add(NumberPlane())
         # lec1_s1.construct(self)
 
 
 class working4(MovingCameraScene):
     def construct(self):
-        # self.add(NumberPlane())
+        #     self.add(NumberPlane())
 
         speak(self, title='Scene2', txt=
         '페어를 표시할 때는 보통 슬래시나 대시를 사용하거나 그냥 티커를 붙여서 표시하기도 합니다#1'
         '그리고 일반적으로 왼쪽의 자산을 베이스 에셋 오른쪽을 쿼트 에셋이라고 부릅니다#1'
         '비티씨 테더 거래쌍의 가격이 현재 100이라면 현재 비티씨는 100테더라는 것입니다#1'
         '심볼처럼 말그대로 1베이스 에셋을 얻으려면 얼마나 많은 쿼트 에셋을 줘야하는지를 표시하는 것입니다#1'
+        '여기서 베이스 에셋이 비티씨라고 테더를 가지고 이더를 사기만 할 수 있는게 아니라 당연히 비티씨를 가지고 테더를 살 수도 있습니다#1'
+        '우린 이걸 각각 비티씨를 매수한다, 매도한다라고 부릅니다. 비티씨 매수는 테더 매도와 같고, 테더 매수는 비티씨 매도와 같습니다#1'
+        '거래 자체가 서로 다른 걸 교환하는 것이기에 내가 비트코인을 들고있는 쪽이 될지 테더를 들고있는 쪽이 될지는 마음대로 정할 수 있습니다 #1'
+        '일반적으로 거래쌍의 표기에 있어서는 가격이란 것이 원래 자산의 가치 변동을 표현하기 위한 것이므로 상대적으로 변동성이 큰 자산이 베이스 에셋이 되고 '
+        '그에 비해 더 안정적이고 유명한 자산이 가치의 척도가 되기에 용이해 쿼트 에셋으로는 상대적으로 변동성이 작은 스테이블 코인, 법정통화, 비티씨, 이더리움 등이 많이 사용됩니다#1'
         '일반적인 주식 어플에서는 베이스 에셋과 쿼트 에셋을 생각해본 적이 없을 겁니다#1'
         '어차피 전부 쿼트에셋으로 원화만 사용하기 때문에 거래쌍이라는 개념보다는 주식쇼핑같은 느낌입니다#1'
         '하지만 외환시장, 즉 FOREX를 겪어보신 분이면 달러 엔, 유로 달러등의 거래쌍을 보셨을 겁니다#1'
@@ -38,244 +43,6 @@ class working4(MovingCameraScene):
         '주식에서는 1 현대차가 3 삼성전자 이런 식으로 표현하지 않지만 크립토마켓에서는 1이더리움은 0.1비티씨, 1폴카닷은 0.01이더리움과 같은 표현이 많이 나옵니다#1'
 
               , keep_pitch=True, update=True, speed=1.4)
-        # TODO 5.799 secs페어를 표시할 때는 보통 슬래시나 대시를 사용하거나 그냥 티커를 붙여서 표시하기도 합니다
-        # TODO 0:00:00.000  ~  0:00:05.799
-        # TODO 1.0secs pause
-        # TODO 0:00:05.799  ~  0:00:06.799
-
-        BTC_slash_USDT_text = Tex("BTC/USDT").scale(2)
-        BTC_dash_USDT_text = Tex("BTC-USDT").scale(2)
-        BTC_none_USDT_text = Tex("BTCUSDT", substrings_to_isolate=[ 'BTC', 'USDT' ]).scale(2)
-        self.play(Write(BTC_slash_USDT_text))
-        self.wait(1.25)
-        self.play(TransformMatchingShapes(BTC_slash_USDT_text, BTC_dash_USDT_text))
-        self.wait(1.25)
-        self.play(TransformMatchingShapes(BTC_dash_USDT_text, BTC_none_USDT_text))
-        self.wait(1.299)
-
-        # TODO 5.182 secs그리고 일반적으로 왼쪽의 자산을 베이스 에셋 오른쪽을 쿼트 에셋이라고 부릅니다
-        # TODO 0:00:06.799  ~  0:00:11.981
-        # TODO 1.0secs pause
-        # TODO 0:00:11.981  ~  0:00:12.981
-
-        base_asset = Tex("Base asset").next_to(BTC_none_USDT_text, DL, buff=1.5)
-        base_asset_arrow = Arrow(start=base_asset.get_corner(UR), end=BTC_none_USDT_text.get_corner(DL))
-        quote_asset = Tex("Quote asset").next_to(BTC_none_USDT_text, DR, buff=1.5)
-        quote_asset_arrow = Arrow(start=quote_asset.get_corner(UL), end=BTC_none_USDT_text.get_corner(DR))
-        # self.add(index_labels(BTC_none_USDT_text))
-
-        self.play(AnimationGroup(Circumscribe(BTC_none_USDT_text[ 0 ]),
-                                 Create(base_asset),
-                                 GrowArrow(base_asset_arrow),
-                                 lag_ratio=0.7,
-                                 run_time=3.091))
-
-        self.play(AnimationGroup(Circumscribe(BTC_none_USDT_text[ 1 ]),
-                                 Create(quote_asset),
-                                 GrowArrow(quote_asset_arrow),
-                                 lag_ratio=0.7,
-                                 run_time=3.091))
-
-        # TODO 5.472 secs비티씨 테더 거래쌍의 가격이 현재 100이라면 현재 비티씨는 100테더라는 것입니다
-        # TODO 0:00:12.981  ~  0:00:18.453
-        # TODO 1.0secs pause
-        # TODO 0:00:18.453  ~  0:00:19.453
-
-        expl_text_1 = Tex(r"If price of BTCUSDT is 100, then it means 1 BTC is 100 USDT").shift(DOWN * 3.5)
-
-        self.play(Write(expl_text_1),
-                  run_time=1)
-        self.wait(4.472)
-        self.play(Unwrite(expl_text_1),
-                  run_time=1)
-
-        # eth_text = Tex('ETH').move_to(BTC_none_USDT_text[ 0 ]).scale(2)
-        # btc_text = Tex('BTC').move_to(BTC_none_USDT_text[ 1 ]).scale(2)
-        #
-        # self.play(Transform(BTC_none_USDT_text[ 0 ], eth_text))
-        # self.play(Transform(BTC_none_USDT_text[ 1 ], btc_text))
-        #
-        # expl_text_2 = Tex("If price of ETHBTC is 0.1., then it means 1BTC is 0.1BTC").shift(DOWN * 2.5)
-        # self.play(Write(expl_text_2))
-        # self.play(Unwrite(expl_text_2))
-        #
-        # self.wait(q)
-
-        # TODO 6.523 secs심볼처럼 말그대로 1베이스 에셋을 얻으려면 얼마나 많은 쿼트 에셋을 줘야하는지를 표시하는 것입니다
-        # TODO 0:00:19.453  ~  0:00:25.976
-        # TODO 1.0secs pause
-        # TODO 0:00:25.976  ~  0:00:26.976
-
-        expl_text_2 = Tex('1 BTC = 100 USDT').move_to(expl_text_1)
-        self.play(ReplacementTransform(expl_text_1, expl_text_2), run_time=3)
-        self.wait(3.523)
-
-        # TODO 5.182 secs일반적인 주식 어플에서는 베이스 에셋과 쿼트 에셋을 생각해본 적이 없을 겁니다
-        # TODO 0:00:26.976  ~  0:00:32.158
-        # TODO 1.0secs pause
-        # TODO 0:00:32.158  ~  0:00:33.158
-
-        stock_app_rect = RoundedRectangle(width=5, height=4)
-        stock_app_text = Tex('Stock App').next_to(stock_app_rect, U)
-        stock_app = VGroup(stock_app_rect, stock_app_text)
-
-        self.play(ReplacementTransform(VGroup(BTC_none_USDT_text,
-                                              base_asset_arrow,
-                                              quote_asset_arrow,
-                                              base_asset,
-                                              quote_asset,
-                                              expl_text_2), stock_app),
-                  run_time=3)
-        self.wait(3.182)
-
-        # TODO 6.185 secs어차피 전부 쿼트에셋으로 원화만 사용하기 때문에 거래쌍이라는 개념보다는 주식쇼핑같은 느낌입니다
-        # TODO 0:00:33.158  ~  0:00:39.343
-        # TODO 1.0secs pause
-        # TODO 0:00:39.343  ~  0:00:40.343
-        krw = Tex(r'Only \textwon').scale(2).next_to(stock_app, D)
-
-        self.play(Create(krw))
-        self.wait(2)
-
-        stock_app_buff = 0.4
-        pair_text = Tex('Pair').next_to(stock_app[ 0 ].get_corner(UL), DR, buff=stock_app_buff)
-        base_text = Tex('Base Asset').next_to(stock_app[ 0 ].get_right(), L, buff=stock_app_buff)
-        quote_text = Tex('Quote Asset').next_to(stock_app[ 0 ].get_corner(DL), UR, buff=stock_app_buff)
-        pair_text_cross = Cross().scale(0.4).move_to(pair_text)
-        base_text_cross = Cross().scale(0.4).move_to(base_text)
-        quote_text_cross = Cross().scale(0.4).move_to(quote_text)
-
-        self.play(AnimationGroup(Create(pair_text),
-                                 Create(base_text),
-                                 Create(quote_text),
-                                 lag_ratio=0.6),
-                  run_time=2.185)
-
-        pair_text.add(pair_text_cross)
-        base_text.add(base_text_cross)
-        quote_text.add(quote_text_cross)
-
-        self.play(AnimationGroup(Create(pair_text_cross),
-                                 Create(base_text_cross),
-                                 Create(quote_text_cross),
-                                 lag_ratio=0.6),
-                  run_time=1)
-
-        self.wait(1)
-
-        # TODO 7.188 secs하지만 외환시장, 즉 FOREX를 겪어보신 분이면 달러 엔, 유로 달러등의 거래쌍을 보셨을 겁니다
-        # TODO 0:00:40.343  ~  0:00:47.531
-        # TODO 1.0secs pause
-        # TODO 0:00:47.531  ~  0:00:48.531
-
-        currencies = Tex(r'\textwon\  \textyen\  \textdollar\  \texteuro').scale(2).next_to(stock_app, D)
-
-        forex_title = Tex('FOREX').move_to(stock_app_text)
-        self.play(ReplacementTransform(stock_app_text, forex_title))
-        self.play(ReplacementTransform(krw, currencies))
-        self.wait(1)
-
-        forex_buff = 0.4
-        usd_jpy_text = Tex('USD/JPY').next_to(stock_app[ 0 ].get_corner(UL), DR, buff=forex_buff)
-        gbp_jpy_text = Tex('GBP/JPY').next_to(stock_app[ 0 ].get_right(), L, buff=forex_buff)
-        eur_usd_text = Tex('EUR/USD').next_to(stock_app[ 0 ].get_corner(DL), UR, buff=forex_buff)
-
-        self.play(AnimationGroup(ReplacementTransform(pair_text, usd_jpy_text),
-                                 ReplacementTransform(base_text, gbp_jpy_text),
-                                 ReplacementTransform(quote_text, eur_usd_text),
-                                 lag_ratio=0.6),
-                  run_time=3.188)
-
-        self.wait(2)
-
-        # TODO 10.413 secs크립토 마켓도 특정 코인을 사기위해서 비트코인이나 이더리움을 지불하는 경우도 많고,
-        #  스테이블 코인만 해도 종류가 여러가지여서 거래쌍 개념이 더 절실히 다가옵니다
-        # TODO 0:00:48.531  ~  0:00:58.944
-        # TODO 1.0secs pause
-        # TODO 0:00:58.944  ~  0:00:59.944
-
-        ex_title = Tex('Crypto Exchange').move_to(stock_app_text)
-
-        ETH_COIN = create_circle_asset(Tex(r'\textbf{ETH}', color=WHITE, font_size=30), fill_color=C_ETH)
-        BTC_COIN = create_circle_asset(Tex(r'\textbf{BTC}', color=WHITE, font_size=30), fill_color=C_BTC)
-        BNB_COIN = create_circle_asset(Tex(r'\textbf{BNB}', color=C_BNB2, font_size=30), fill_color=C_BNB1)
-
-        self.play(ReplacementTransform(forex_title, ex_title))
-
-        self.play(VGroup(ex_title,
-                         stock_app_rect,
-                         usd_jpy_text,
-                         gbp_jpy_text,
-                         eur_usd_text,
-                         currencies).animate.to_edge(U))
-
-        self.wait(1)
-
-        cryptos = VGroup(BTC_COIN, ETH_COIN, BNB_COIN).arrange(R).scale(1.2).arrange(R).next_to(stock_app_rect, D)
-
-        stable_coin = Tex('Stable Coin').next_to(cryptos, D)
-
-        cryptos.add(stable_coin)
-        self.play(ReplacementTransform(currencies, cryptos), run_time=3)
-
-        left_stable = Tex('USDT', 'USDC', 'BUSD', 'DAI', 'TUSD').scale(1.5).arrange(D, buff=1).to_edge(L)
-        right_stable = Tex('USDP', 'USDN', 'USTC', 'USDD', 'FRAX').scale(1.5).arrange(D, buff=1).to_edge(R)
-        stables = VGroup(left_stable, right_stable)
-        self.wait(2)
-        self.play(ReplacementTransform(stable_coin, stables), run_time=1)
-
-        ex_buff = 0.4
-
-        btc_usdt_text = Tex('BTC/USDT', substrings_to_isolate='/').next_to(stock_app[ 0 ].get_corner(UL), DR, buff=ex_buff)
-        btc_usdt_text[ 0 ].set_color(C_BTC)
-        btc_usdt_text[ 2 ].set_color(C_USDT)
-        eth_btc_text = Tex('ETH/BTC', substrings_to_isolate='/').next_to(stock_app[ 0 ].get_right(), L, buff=ex_buff)
-        eth_btc_text[ 0 ].set_color(C_ETH)
-        eth_btc_text[ 2 ].set_color(C_BTC)
-
-        sol_eth_text = Tex('SOL/ETH', substrings_to_isolate='/').next_to(stock_app[ 0 ].get_corner(DL), UR, buff=ex_buff)
-        sol_eth_text[ 0 ].set_color(C_SOL1)
-        sol_eth_text[ 2 ].set_color(C_ETH)
-
-        self.play(AnimationGroup(ReplacementTransform(usd_jpy_text, btc_usdt_text),
-                                 ReplacementTransform(gbp_jpy_text, eth_btc_text),
-                                 ReplacementTransform(eur_usd_text, sol_eth_text),
-                                 lag_ratio=0.6),
-                  run_time=2.413)
-
-        # TODO 11.259 secs주식에서는 1 현대차가 3 삼성전자 이런 식으로 표현하지 않지만 크립토마켓에서는 1이더리움은 0.1비티씨, 1폴카닷은 0.01이더리움과 같은 표현이 많이 나옵니다
-        # TODO 0:00:59.944  ~  0:01:11.203
-
-        long_line = Tex(
-            r"We don't say\\1 HYUNDAI MOTORS = 3 SAMSUNG ELECTROINCS\\but we sure say\\1 ETH = 0.1 BTC or 1 DOT = 0.01 ETH",
-            substrings_to_isolate=[ 'HYUNDAI MOTORS', 'SAMSUNG ELECTROINCS', '1' ]).next_to(stock_app_rect, D, buff=0.7)
-
-        # 교육 참고용 이해하기 쉽게 색깔 넣고 싶으면 주석해제
-        # long_line[0].set_color(RED)
-        # long_line[1].set_color(LIGHT_BROWN)
-        # long_line[2].set_color(BLUE)
-        # long_line[3].set_color(GREEN)
-        # long_line[4].set_color(PURPLE)
-        # self.add(index_labels(long_line))
-
-        hyundai = SVGMobject('hyundai_logo.svg', fill_color='#3677AE').scale_to_fit_height(long_line[ 1 ].height).next_to(
-            long_line[ 4 ].copy().move_to(np.array([ 0, long_line[ 4 ].get_y(), 0 ])), L)
-        samsung = SVGMobject('samsung.svg', fill_color='#034A9A').scale_to_fit_height(long_line[ 1 ].height).next_to(
-            long_line[ 4 ].copy().move_to(np.array([ 0, long_line[ 4 ].get_y(), 0 ])), R)
-
-        samsung[ 1:8 ].set_fill(color=WHITE, opacity=1)
-
-        self.play(ReplacementTransform(VGroup(stables, cryptos), long_line))
-        self.wait(1.5)
-
-        self.play(AnimationGroup(FadeOut(VGroup(long_line[ 3 ], long_line[ 5 ])),
-                                 long_line[ 4 ].animate.move_to(np.array([ 0, long_line[ 4 ].get_y(), 0 ])),
-                                 AnimationGroup(long_line[ 1 ].animate.next_to(hyundai, L),
-                                                DrawBorderThenFill(hyundai),
-                                                DrawBorderThenFill(samsung)), lag_ratio=0.3
-                                 ))
-
-        self.wait(5)
 
 
 class working2(MovingCameraScene):
@@ -687,74 +454,69 @@ class working2(MovingCameraScene):
 
 class working1(MovingCameraScene):
     def construct(self):
-        self.add(NumberPlane().set_z_index(1))
+        # self.add(NumberPlane().set_z_index(1))
 
         speak(self, title='L01S01', txt=
-        '참고로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다#1'
-        '스테이블 코인은 일반적으로 실제 코인을 보증하는 법정통화를 바탕으로 발행하고 1대1로 교환될 수 있는 코인을 말합니다#1'
+        '잠시 스테이블 코인에 대해서 알아보고 가겠습니다#1'
+        '일반적으로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다#1'
+        '스테이블 코인은 일반적으로 은행을 통해 실제 코인을 보증할 법정통화를 보내면 스테이블 코인 회사에서 발행합니다#1'
+        '이제 이 스테이블코인으로 해외 거래소나 탈중앙화 거래소를 마음대로 이용할 수 있습니다#1'
+        '스테이블 코인과 달러는 1대 1로 교환될 수 있습니다#1'
         '이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다#1'
         '그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다#1'
-        '가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 채권과 같은 자산에 투자하여 수익을 얻습니다'
+        '가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 활용해 투자수익을 얻습니다#1'
         '다시 1테더를 가져가면 1테더를 소각시키고 1달러를 돌려받을 수 있습니다#1'
         '이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌 자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다#1'
-              , keep_pitch=True, update=True, speed=1.4)
+              , keep_pitch=True, update=0, speed=1.4)
 
-        # TODO 8.601 secs참고로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다
-        # TODO 0:00:00.000  ~  0:00:08.601
+        # TODO 3.08 secs잠시 스테이블 코인에 대해서 알아보고 가겠습니다
+        # TODO 0:00:00.000  ~  0:00:03.080
         # TODO 1.0secs pause
-        # TODO 0:00:08.601  ~  0:00:09.601
+        # TODO 0:00:03.080  ~  0:00:04.080
 
-        # TODO 7.539 secs스테이블 코인은 일반적으로 실제 코인을 보증하는 법정통화를 바탕으로 발행하고 1대1로 교환될 수 있는 코인을 말합니다
-        # TODO 0:00:09.601  ~  0:00:17.140
-        # TODO 1.0secs pause
-        # TODO 0:00:17.140  ~  0:00:18.140
-
-        # TODO 7.901 secs이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다
-        # TODO 0:00:18.140  ~  0:00:26.041
-        # TODO 1.0secs pause
-        # TODO 0:00:26.041  ~  0:00:27.041
-
-        # TODO 4.24 secs그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다
-        # TODO 0:00:27.041  ~  0:00:31.281
-        # TODO 1.0secs pause
-        # TODO 0:00:31.281  ~  0:00:32.281
-
-        # TODO 18.097 secs가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 채권과 같은 자산에 투자하여 수익을 얻습니다다시 1테더를 가져가면 1테더를 소각시키고 1달러를  돌려받을 수 있습니다
-        # TODO 0:00:32.281  ~  0:00:50.378
-        # TODO 1.0secs pause
-        # TODO 0:00:50.378  ~  0:00:51.378
-
-        # TODO 13.132 secs이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌  자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다
-        # TODO 0:00:51.378  ~  0:01:04.510
-        # TODO 1.0secs pause
-        # TODO 0:01:04.510  ~  0:01:05.510        stablecoin = Tex('Stablecoin').scale(2)
         stablecoin = Tex('Stablecoin').scale(2)
 
         self.play(Create(stablecoin))
 
-        self.wait(q)
+        self.wait(2.08)
         self.play(Uncreate(stablecoin))
-        #
 
-        # 기업 혹은 거래소 박스 형성 (중앙ㅇ에 할거고 이건 왼쪽은 은행이나 채권 만들고)
-        tether_company_rect = RoundedRectangle(height=8, width=4, corner_radius=0.5)
-        tether_company_text = Tex('Company or Exchange').next_to(tether_company_rect, UP)
+        # TODO 8.734 secs일반적으로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다
+        # TODO 0:00:04.080  ~  0:00:12.814
+        # TODO 1.0secs pause
+        # TODO 0:00:12.814  ~  0:00:13.814
+        tether_company_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        tether_company_text = Tex('Stablecoin Company').next_to(tether_company_rect, UP).align_to(tether_company_rect, L)
+        tether_company = VGroup(tether_company_rect, tether_company_text).to_edge(UL, buff=0.5)
+        tether_company.set_z_index(1.5)
 
-        tether_company = VGroup(tether_company_rect, tether_company_text).move_to(ORIGIN)
+        investment_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        investment_text = Tex('Investment').next_to(investment_rect, UP).align_to(investment_rect, L)
+        investment = VGroup(investment_rect, investment_text).to_edge(DL, buff=0.5)
+        investment.set_z_index(1.5)
 
-        tether_company.set_z_index(3)
+        exchange_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        exchange_text = Tex('Exchange').next_to(exchange_rect, UP).align_to(exchange_rect, L)
+        exchange = VGroup(exchange_rect, exchange_text).next_to(investment, R, buff=0.5)
+        exchange.set_z_index(1.5)
+
+        bank_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        bank_text = Tex('Bank').next_to(bank_rect, UP).align_to(bank_rect, L)
+        bank = VGroup(bank_rect, bank_text).next_to(tether_company, R, buff=0.5)
+        bank.set_z_index(1.5)
 
         # self.add(index_labels(tether_company[0]))
-        self.play(Create(tether_company))
+        self.play(Create(VGroup(tether_company,
+                                bank,
+                                investment,
+                                exchange)))
 
-        #
-        # 고객 엔터티 오른 쪽에 생성하고 법정화폐 붙임
-
-        def create_entity_tether(person_name, person_radius, person_color, asset_name, how_many, asset_color, asset_width, asset_height):
+        def create_entity_tether(person_name, person_radius, person_color, asset_name, how_many, asset_color, asset_width, asset_height,
+                                 asset_text_color=WHITE):
             person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
             box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-            text = manim.Text(asset_name, color=BLACK).scale(asset_height)
+            text = manim.Text(asset_name, color=asset_text_color).scale(asset_height)
 
             asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
             assets = VGroup(asset)
@@ -767,70 +529,294 @@ class working1(MovingCameraScene):
 
             return VGroup(person, assets)
 
-        A = create_entity_tether("A", 0.5, WHITE, "USD", 15, GREEN, 0.7, 0.3)
-        B = create_entity_tether("B", 0.5, WHITE, "USD", 10, GREEN, 0.7, 0.3)
-        C = create_entity_tether("C", 0.5, WHITE, "USD", 3, GREEN, 0.7, 0.3)
-        D = create_entity_tether("D", 0.5, WHITE, "USD", 8, GREEN, 0.7, 0.3)
+        A = create_entity_tether("A", 0.5, WHITE, "USD", 20, '#9DC87B', 0.7, 0.3, asset_text_color='#2A5A25').shift(R * 5.5 + U * 3)
+        A[ 1 ].arrange_in_grid(rows=4, cols=5, buff=0.1).next_to(A[ 0 ], D)
+        self.play(Create(A))
 
+        bank2ex_bridge_arc_1 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).move_to(get_halfway(bank_rect, exchange_rect)).shift(
+            L * 0.5 + R * 1).set_z_index(2)
+        bank2ex_bridge_arc_2 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).flip(axis=U).move_to(
+            get_halfway(bank_rect, exchange_rect)).shift(R * 0.5 + R * 1).set_z_index(2)
+        usdts_moved2ex = A[ 1 ].copy().move_to(exchange_rect)
+        usdts_moved2bank = A[ 1 ].copy().move_to(bank_rect)
+        bank2ex_bridge = VGroup(bank2ex_bridge_arc_1, bank2ex_bridge_arc_2)
 
-        people_list = [ A, B, C, D ]
-        people = VGroup(A, B, C, D).arrange(RIGHT, buff=0.2, aligned_edge=UP).to_edge(UR)
+        bank2ex_path = VMobject()
 
-        self.play(Create(people))
+        A_usdts_list = reversed([ *A[ 1 ] ])
+        # for name, age in zip(names, ages):
+        #     print(name, age)
+
+        # [ MoveAlongPath(A_usdts_list[ i ], VMobject().set_points_as_corners(
+        #     [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2bank[ index ].get_center ])) for
+        #   usdt, index in zip(A_usdts_list, range(len(usdts_moved2bank))) ]
+
+        # path_list = [ ]
+        # for usdt, index in zip(A_usdts_list, range(len(usdts_moved2bank))):
+        #     path_list.append(VMobject().set_points_as_corners(
+        #         [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2bank[ index ].get_center() ]))
         #
-        # 그리고 고객들 돈을 기업으로 전송
-        each_money = VGroup()
-        for person in people_list:
-            for i in range(len(person[ 1 ])):
-                each_money.add(person[ 1 ][ i ])
-
-        self.play(each_money.animate.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ]))
         #
-        # 기업에서 테더 발행 원래 받은 USD는 위로 밀리면서 새로운 USDT 뭉치가 생겨남
+        # self.play(Create(VGroup(*path_list)))
+        # bank2ex_path.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5,-1, 0 ]),
+        #                                   last_anchor)
+        # bank2ex_path.set_style(stroke_width=10, stroke_color=RED)
 
-        tether_1ea = create_entity_tether("A", 0.5, WHITE, "USDT", 36, BLUE, 0.7, 0.3)[ 1 ]
+        self.play(Create(bank2ex_bridge_arc_1),
+                  Create(bank2ex_bridge_arc_2))
 
-        tethers = VGroup()
-        for i in range(len(tether_1ea)):
-            tethers.add(tether_1ea[ i ])
-        tethers.arrange_in_grid(9, 4, buff=0.1).move_to(tether_company[ 0 ])
-        self.play(GrowFromCenter(tethers))
-        # tethers.arrange()
-        self.play(VGroup(each_money, tethers).animate.arrange(DOWN, buff=0.25).move_to(tether_company[ 0 ]))
+        self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
 
-        #
-        # 테더는 다시 엔터티에게 전송
-        self.play(tethers[ 0:15 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
-        self.play(tethers[ 15:25 ].animate.arrange(DOWN, buff=0.1).next_to(B[ 0 ], DOWN))
-        self.play(tethers[ 25:28 ].animate.arrange(DOWN, buff=0.1).next_to(C[ 0 ], DOWN))
-        self.play(tethers[ 28:36 ].animate.arrange(DOWN, buff=0.1).next_to(D[ 0 ], DOWN))
-        #
-        # 그리고 달러 중 일부는 은행이나 채권등으로 투자
-        invest = LabeledRectangle('Banks Bonds etc', width=4, height=6, direction=UP, corner_radius=0.5).to_edge(LEFT)
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2ex[ index ].get_center() ])) for
+                                    usdt, index in zip(reversed([ *A[ 1 ] ]), range(len(usdts_moved2ex))) ]
+                                 , lag_ratio=0.5), run_time=2)
+        self.wait(2)
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), bank2ex_bridge.get_bottom(), bank2ex_bridge.get_top(), usdts_moved2bank[ index ].get_center() ])) for
+                                    usdt, index in zip(list(A[ 1 ]), range(len(usdts_moved2bank))) ]
+                                 , lag_ratio=0.5), run_time=2)
 
-        self.play(Create(invest))
+        self.wait(0.734)
 
-        self.play(each_money[ 0:16 ].animate.arrange_in_grid(4, 4, buff=0.1).move_to(invest))
+        # [ usdt.animate. for usdt in A_usdts_list ]
 
-        #
-        # 엔터티 중 한명이 테더를 반납하면 달러로 돌려줌
-        self.play(tethers[ 0:15 ].animate.arrange_in_grid(4, 4, buff=0.1).next_to(each_money[ 28:36 ], DOWN, buff=0.25))
-        # self.play(VGroup(each_money[16:36],tethers[ 0:15 ]).animate.arrange(DOWN))
+        # A_usdts_list =list(A[1])
 
-        self.play(each_money[ 23:36 ].animate.arrange(DOWN, buff=0.1).next_to(A[ 0 ], DOWN))
+        # A_usdts_list  =[]
+        # for i in range(len(A[1])):
+        #     A_usdts_list.append()
 
-        self.play(Uncreate(tethers[ 0:15 ]))
-        #
-        # 전부 ㅇ벗어지고 알고리드믹 스테이블코인, 코인담보 스테이블 등이 있으나 나중에 알아보자
+        # TODO 7.079 secs스테이블 코인은 일반적으로 은행을 통해 실제 코인을 보증할 법정통화를 보내면 스테이블 코인 회사에서 발행합니다
+        # TODO 0:00:13.814  ~  0:00:20.893
+        # TODO 1.0secs pause
+        # TODO 0:00:20.893  ~  0:00:21.893
 
-        self.play(FadeOut(each_money),
-                  FadeOut(tethers),
-                  FadeOut(tether_company),
-                  FadeOut(invest),
-                  FadeOut(people),
+        # bridge_arc_1 = ArcBetweenPoints(O, L*2.5)
+        bridge_arc_1 = ArcBetweenPoints(O, L * 2, radius=-3, color=DARK_GRAY).move_to(get_halfway(tether_company_rect, bank_rect)).shift(
+            U * 1).set_z_index(2)
+        bridge_arc_2 = ArcBetweenPoints(O, L * 2, radius=-3, color=DARK_GRAY).flip(axis=L).move_to(
+            get_halfway(tether_company_rect, bank_rect)).shift(D * 1).set_z_index(2)
+
+        self.play(Create(bridge_arc_1),
+                  Create(bridge_arc_2))
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        self.play(A[ 1 ].animate.move_to(tether_company_rect))
+        self.wait(1.079)
+
+        usdts = create_entity_tether("A", 0.5, WHITE, "USDT", 20, C_USDT, 0.7, 0.3)[ 1 ]
+
+        # tethers = VGroup([])
+        # for i in range(len(tether_1ea)):
+        #     tethers.add(tether_1ea[ i ])
+        usdts.arrange_in_grid(4, 5, buff=0.1).move_to(A[ 1 ])
+
+        self.play(Create(usdts))
+
+        last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        my_line = VMobject()
+        my_line.set_points_as_corners([ usdts.get_center(), [ usdts.get_x(), -1, 0 ], [ 2, -1, 0 ] ])
+        my_line.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]),
+                                          last_anchor)
+        my_line.set_style(stroke_width=10, stroke_color=RED)
+        # my_line.add_points_as_corners([ 2 * RIGHT + DOWN, 2 * RIGHT + 2 * DOWN ])
+
+        # self.add(my_line)
+
+        self.play(AnimationGroup(VGroup(exchange, investment).animate.shift(D * 2),
+                                 AnimationGroup(FadeOut(bank2ex_bridge_arc_1), FadeOut(bank2ex_bridge_arc_2)),
+                                 MoveAlongPath(usdts, path=my_line),
+                                 lag_ratio=0.5,
+                                 run_time=3
+                                 )
                   )
 
+        self.play(VGroup(exchange, investment).animate.shift(U * 2),
+                  # AnimationGroup(FadeIn(bank2ex_bridge_arc_1), FadeIn(bank2ex_bridge_arc_2)),
+                  )
 
+        # TODO 5.014 secs이제 이 스테이블코인으로 해외 거래소나 탈중앙화 거래소를 마음대로 이용할 수 있습니다
+        # TODO 0:00:21.893  ~  0:00:26.907
+        # TODO 1.0secs pause
+        # TODO 0:00:26.907  ~  0:00:27.907
+
+        # self.play(usdts.animate.move_to(exchange_rect),run_time=2)
+        # self.wait(4.014)
+
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
+        usdts_moved2ex = A[ 1 ].copy().move_to(exchange_rect)
+        self.wait(1)
+        self.play(AnimationGroup(*[ usdt.animate.move_to(usdts_moved2ex[ index ].get_center()) for
+                                    usdt, index in zip([ *usdts[ 10: ] ], range(len(usdts_moved2ex))) ]
+                                 , lag_ratio=0.5), run_time=2)
+
+        profit_from_ex = Tex('Users earn Profit', font_size=40).next_to(usdts[ 17 ], D)
+        self.wait(1.014)
+        self.play(Create(profit_from_ex))
+        self.wait(1)
+
+        # TODO 3.383 secs스테이블 코인과 달러는 1대 1로 교환될 수 있습니다
+        # TODO 0:00:21.893  ~  0:00:25.276
+        # TODO 1.0secs pause
+        # TODO 0:00:25.276  ~  0:00:26.276
+
+        usd_1ea = create_entity_tether("A", 0.5, WHITE, "1 USD", 20, '#9DC87B', 1.2, 0.4, asset_text_color='#2A5A25')[ 1 ][ 0 ]
+        usdt_1ea = create_entity_tether("A", 0.5, WHITE, "1 USDT", 20, C_USDT, 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        arrow = MathTex(r'\Leftrightarrow')
+        # arrow = MathTex()
+
+        usd_equals_usdt = VGroup(usd_1ea, arrow, usdt_1ea).arrange(R)
+        usd_equals_usdt.move_to(get_moved_coor_based_submob(usd_equals_usdt, usd_equals_usdt.get_top(), [ 5.5, -1, 0 ]))
+
+        self.play(Create(usd_equals_usdt), run_time=3)
+        self.wait(1.383)
+
+        # TODO 7.901 secs이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다
+        # TODO 0:00:26.276  ~  0:00:34.177
+        # TODO 1.0secs pause
+        # TODO 0:00:34.177  ~  0:00:35.177
+        eth_1ea = create_entity_tether("A", 0.5, WHITE, "ETH", 20, C_ETH, 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        luna_1ea = create_entity_tether("A", 0.5, WHITE, "LUNA", 20, '#071C4B', 1.2, 0.4, asset_text_color='#FEE834')[ 1 ][ 0 ]
+        dai_1ea = create_entity_tether("A", 0.5, WHITE, "DAI", 20, '#DFAF4B', 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        ustc_1ea = create_entity_tether("A", 0.5, WHITE, "USTC", 20, '#528EED', 1.2, 0.4, asset_text_color='#0B389B')[ 1 ][ 0 ]
+
+        luna_equals_ustc = VGroup(luna_1ea, arrow.copy(), ustc_1ea).arrange(R).move_to([ 5, -2, 0 ]).next_to(usd_equals_usdt, D, buff=0.6)
+        eth_equals_dai = VGroup(eth_1ea, arrow.copy(), dai_1ea).arrange(R).move_to([ 5, -2, 0 ]).next_to(luna_equals_ustc, D, buff=0.6)
+
+        self.play(Create(luna_equals_ustc), run_time=2)
+        self.play(Create(eth_equals_dai), run_time=2)
+
+        self.wait(4.901)
+
+        # self.play(ReplacementTransform(usd_1ea, colla_1ea))
+
+        # other_stables_1eas = VGroup(dai_1ea,ustc_1ea).arrange(D).move_to(usdt_1ea)
+
+        # self.play(ReplacementTransform(usdt_1ea,other_stables_1eas))
+
+        # TODO 4.24 secs그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다
+        # TODO 0:00:35.177  ~  0:00:39.417
+        # TODO 1.0secs pause
+        # TODO 0:00:39.417  ~  0:00:40.417
+
+        self.play(Uncreate(eth_equals_dai), run_time=1.5)
+        self.play(Uncreate(luna_equals_ustc), run_time=1.5)
+        self.wait(2.24)
+
+        # self.play(Uncreate())
+
+        # TODO 12.395 secs가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 활용해 투자수익을 얻습니다
+
+        # TODO 0:00:46.431  ~  0:00:58.826
+
+        # TODO 1.0secs pause
+
+        # TODO 0:00:58.826  ~  0:00:59.826
+
+        self.play(Circumscribe(usd_equals_usdt), run_time=2)
+        self.wait(4)
+
+        # self.add(index_labels(A[1]))
+
+        comp2inv_bridge_arc_1 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).move_to(
+            get_halfway(tether_company_rect, investment_rect)).shift(
+            L * 0.5 + R * 1).set_z_index(2)
+        comp2inv_bridge_arc_2 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).flip(axis=U).move_to(
+            get_halfway(tether_company_rect, investment_rect)).shift(R * 0.5 + R * 1).set_z_index(2)
+        usdts_moved2inv = A[ 1 ].copy().move_to(investment_rect)
+        usdts_moved2comp = A[ 1 ].copy().move_to(tether_company_rect)
+        comp2inv_bridge = VGroup(comp2inv_bridge_arc_1, comp2inv_bridge_arc_2)
+
+        self.play(Create(comp2inv_bridge_arc_1),
+                  Create(comp2inv_bridge_arc_2))
+
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
+
+        return2_pos = A[ 1 ][ 12 ].get_center()
+
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), comp2inv_bridge.get_top(), comp2inv_bridge.get_bottom(), usdts_moved2inv[ index ].get_center() ])) for
+                                    usdt, index in zip(reversed([ *A[ 1 ][ -10: ] ]), range(len(usdts_moved2inv))) ]
+                                 , lag_ratio=0.5), run_time=3)
+
+        profit_from_inv = Tex('Companies earn Profit', font_size=40).next_to(A[ 1 ][ 12 ], D)
+        self.play(Create(profit_from_inv))
+        self.wait(2.395)
+        # self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+        #     [ usdt.get_center(), comp2inv_bridge.get_bottom(), comp2inv_bridge.get_top(), usdts_moved2comp[ index ].get_center() ])) for
+        #                             usdt, index in zip(list(A[ 1 ]), range(len(usdts_moved2comp))) ]
+        #                          , lag_ratio=0.5), run_time=2)
+
+        # TODO 5.086 secs다시 1테더를 가져가면 1테더를 소각시키고 1달러를 돌려받을 수 있습니다
+        # TODO 0:00:59.826  ~  0:01:04.912
+        # TODO 1.0secs pause
+        # TODO 0:01:04.912  ~  0:01:05.912
+        # last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        # my_line = VMobject()
+        # my_line.set_points_as_corners( [usdts[7].get_center(),usdts[7].get_center()])
+        # my_line.add_cubic_bezier_curve_to
+        # my_line.add_points_as_corners([ [usdts[7].get_x(), -1, 0] , return2_pos])
+        # my_line.set_style(stroke_width=10, stroke_color=RED)
+
+        usdt_return_path = CubicBezier(usdts[ 7 ].get_center(), np.array([ usdts[ 7 ].get_x() - 0.5, -1, 0 ]),
+                                       np.array([ usdts[ 7 ].get_x() - 0.5, -1, 0 ]),
+                                       np.array([ 2, -1, 0 ]))
+
+        usdt_return_path.add_points_as_corners([ np.array([ A[ 1 ][ 7 ].get_x(), -1, 0 ]), return2_pos ])
+
+        # self.play(Create(bezier))
+
+        # self.play()
+
+        A_asset_row_2 = usdts[ 7 ].get_center()
+        # last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        # my_line = VMobject()
+        # my_line.set_points_as_corners([ usdts.get_center(), [ usdts.get_x(), -1, 0 ], [ 2, -1, 0 ] ])
+        # my_line.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]),
+        #                                   last_anchor)
+        # my_line.set_style(stroke_width=10, stroke_color=RED)
+
+        # self.play(MoveAlongPath(usdts[5:10], VMobject().set_points_as_corners(
+        #     [ usdts[5:10].get_center(), comp2inv_bridge.get_top(), comp2inv_bridge.get_bottom(), A[1][7].get_bottom()+D*0.1]))
+
+        # self.play(AnimationGroup(VGroup(exchange, investment).animate.shift(D * 2),
+        #                          AnimationGroup(FadeOut(bank2ex_bridge_arc_1), FadeOut(bank2ex_bridge_arc_2)),
+        #                          MoveAlongPath(usdts, path=my_line),
+        #                          lag_ratio=0.5,
+        #                          run_time=3
+        #                          )
+        #           )
+        #
+        # self.play(VGroup(exchange, investment).animate.shift(U * 2),
+        #           # AnimationGroup(FadeIn(bank2ex_bridge_arc_1), FadeIn(bank2ex_bridge_arc_2)),
+        #           )
+
+        self.play(AnimationGroup(
+            VGroup(investment, exchange, usdts[ 10: ], A[ 1 ][ 10: ], profit_from_inv, profit_from_ex, usd_equals_usdt).animate.shift(
+                D * 2),
+            FadeOut(VGroup(comp2inv_bridge)),
+            MoveAlongPath(usdts[ 5:10 ], usdt_return_path),
+            lag_ratio=0.5,
+            run_time=2.086))
+        # self.play(MoveAlongPath(usdts[ 5:10 ], usdt_return_path))
+        self.play(Uncreate(usdts[ 5:10 ], reverse_rate_function=True))
+        self.play(A[ 1 ][ 5:10 ].animate.move_to([ bank_rect.get_x(), A[ 1 ][ 5 ].get_y(), 0 ]))
+        self.play(A[ 1 ][ 5:10 ].animate.move_to(A_asset_row_2))
+        self.play(VGroup(investment, exchange, usdts[ 10: ], A[ 1 ][ 10: ], profit_from_inv, profit_from_ex, usd_equals_usdt).animate.shift(
+            U * 2))
+
+        # TODO 13.132 secs이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌 자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다
+        # TODO 0:00:58.487  ~  0:01:11.619
+        # TODO 1.0secs pause
+        # TODO 0:01:11.619  ~  0:01:12.619
+
+
+
+
+        #
         self.wait(20)
 
 
@@ -932,63 +918,16 @@ class working3(ThreeDScene):
         self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
         self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
-
-class working3(MovingCameraScene):
-
-    def construct(self):
-
-        self.camera.frame.save_state()
-
-        numberline = NumberLine(x_range=[ 0, 5.5, 1 ],
-                                length=14,
-                                include_numbers=True,
-                                include_tip=True,
-                                stroke_color=RED,
-                                stroke_width=6,
-                                longer_tick_multiple=3,
-                                )
-
-        self.add(index_labels(numberline[ 3 ]).shift(D * 1))
-
-        self.add(numberline)
-
-        i = 0
-        for tick in numberline[ 2 ]:
-            if i == 0:
-                self.play(self.camera.frame.animate(rate_func=linear).scale(0.5).move_to(tick))
-                i = i + 1
-            else:
-                self.play(self.camera.frame.animate(rate_func=linear).move_to(tick))
-
-        self.play(Restore(self.camera.frame, rate_func=linear))
-
-        # self.play(Create(numberline))
-
-
-class working4(Scene):
-    def construct(self):
-        screen_verticl_pixel = 100
-        screen_horizontal_pixel= 100
-        screen = VGroup()
-
-        for l in np.linspace(0,1,screen_horizontal_pixel):
-            for h in np.linspace(0,1,screen_verticl_pixel):
-                pixel = Square(0.1, fill_color=Color(hsl=(h, 1, l)), fill_opacity=1, stroke_opacity=0)
-                screen.add(pixel)
-
-        screen.arrange_in_grid(screen_verticl_pixel,screen_horizontal_pixel,buff=0).scale(0.5)
-
-        self.play(Create(screen))
-
-        self.play(screen.animate.arrange_in_grid(screen_verticl_pixel,screen_horizontal_pixel,buff=0.05))
-        self.play(screen.animate.arrange_in_grid(screen_verticl_pixel,screen_horizontal_pixel,buff=0))
-
-        # self.add(screen)
-
-
-
-
-
-
-
-
+#
+# class working1(MovingCameraScene):
+#     def construct(self):
+#         self.add(NumberPlane())
+#         circle = Circle().scale(0.7).shift(R * 4 + U * 2)
+#         circles = VGroup(*[ Circle() for i in range(4) ]).arrange_in_grid(rows=2, cols=2, buff=0)
+#
+#         self.play(Create(circle),
+#                   Create(circles))
+#         self.add(index_labels(circles))
+#         self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
+#
+#         self.wait(5)

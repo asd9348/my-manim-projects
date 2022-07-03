@@ -37,9 +37,25 @@ from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
-def get_halfway(point_A, point_B, z=0):
-    x_dist = (abs(point_A[ 0 ]) + abs(point_B[ 0 ])) / 2
-    y_dist = (abs(point_A[ 1 ]) + abs(point_B[ 1 ])) / 2
+def get_halfway(A, B, z=0):
+
+    if isinstance(A, np.ndarray):
+        point_A = A
+    else:
+        point_A = A.get_center()
+
+    if isinstance(B, np.ndarray):
+        point_B = B
+    else:
+        point_B = B.get_center()
+
+    if point_A[0] * point_B[ 0 ]>0:
+        x_dist = abs(point_A[ 0 ] - point_B[ 0 ]) / 2
+        y_dist = abs(point_A[ 1 ] - point_B[ 1 ]) / 2
+
+    else:
+        x_dist = (abs(point_A[ 0 ]) + abs(point_B[ 0 ])) / 2
+        y_dist = (abs(point_A[ 1 ]) + abs(point_B[ 1 ])) / 2
 
     if point_A[ 0 ] < point_B[ 0 ]:
         x = point_A[ 0 ] + x_dist
@@ -54,7 +70,14 @@ def get_halfway(point_A, point_B, z=0):
     return np.array([ x, y, z ])
 
 
+def get_moved_coor_based_submob(main_mob, point_inside_main_mob, point_goes_to):
+    x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
+    y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
 
+    x = point_goes_to[ 0 ] + x_compen
+    y = point_goes_to[ 1 ] + y_compen
+
+    return [ x, y, 0 ]
 
 
 class LabeledRectangle(RoundedRectangle):
@@ -145,7 +168,7 @@ def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fi
     return VGroup(circle, text)
 
 
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=RED):
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
     box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)

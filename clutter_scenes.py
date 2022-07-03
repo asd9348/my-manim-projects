@@ -646,3 +646,53 @@ class working3(ThreeDScene):
         self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
         self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
+class working3(MovingCameraScene):
+
+    def construct(self):
+
+        self.camera.frame.save_state()
+
+        numberline = NumberLine(x_range=[ 0, 5.5, 1 ],
+                                length=14,
+                                include_numbers=True,
+                                include_tip=True,
+                                stroke_color=RED,
+                                stroke_width=6,
+                                longer_tick_multiple=3,
+                                )
+
+        self.add(index_labels(numberline[ 3 ]).shift(D * 1))
+
+        self.add(numberline)
+
+        i = 0
+        for tick in numberline[ 2 ]:
+            if i == 0:
+                self.play(self.camera.frame.animate(rate_func=linear).scale(0.5).move_to(tick))
+                i = i + 1
+            else:
+                self.play(self.camera.frame.animate(rate_func=linear).move_to(tick))
+
+        self.play(Restore(self.camera.frame, rate_func=linear))
+
+        # self.play(Create(numberline))
+
+class working4(Scene):
+    def construct(self):
+        screen_verticl_pixel = 100
+        screen_horizontal_pixel = 100
+        screen = VGroup()
+
+        for l in np.linspace(0, 1, screen_horizontal_pixel):
+            for h in np.linspace(0, 1, screen_verticl_pixel):
+                pixel = Square(0.1, fill_color=Color(hsl=(h, 1, l)), fill_opacity=1, stroke_opacity=0)
+                screen.add(pixel)
+
+        screen.arrange_in_grid(screen_verticl_pixel, screen_horizontal_pixel, buff=0).scale(0.5)
+
+        self.play(Create(screen))
+
+        self.play(screen.animate.arrange_in_grid(screen_verticl_pixel, screen_horizontal_pixel, buff=0.05))
+        self.play(screen.animate.arrange_in_grid(screen_verticl_pixel, screen_horizontal_pixel, buff=0))
+
+        # self.add(screen)
