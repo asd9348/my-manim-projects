@@ -696,3 +696,15 @@ class working4(Scene):
         self.play(screen.animate.arrange_in_grid(screen_verticl_pixel, screen_horizontal_pixel, buff=0))
 
         # self.add(screen)
+class working1(MovingCameraScene):
+    def construct(self):
+        self.add(NumberPlane())
+        circle = Circle().scale(0.7).shift(R * 4 + U * 2)
+        circles = VGroup(*[ Circle() for i in range(4) ]).arrange_in_grid(rows=2, cols=2, buff=0)
+
+        self.play(Create(circle),
+                  Create(circles))
+        self.add(index_labels(circles))
+        self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
+
+        self.wait(5)

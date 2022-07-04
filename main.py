@@ -1,6 +1,5 @@
 from manim import *
 
-Text
 import random as rd
 import numpy as np
 from math import *
@@ -41,7 +40,6 @@ class working4(MovingCameraScene):
         '하지만 외환시장, 즉 FOREX를 겪어보신 분이면 달러 엔, 유로 달러등의 거래쌍을 보셨을 겁니다#1'
         '크립토 마켓도 특정 코인을 사기위해서 비트코인이나 이더리움을 지불하는 경우도 많고, 스테이블 코인만 해도 종류가 여러가지여서 거래쌍 개념이 더 절실히 다가옵니다#1'
         '주식에서는 1 현대차가 3 삼성전자 이런 식으로 표현하지 않지만 크립토마켓에서는 1이더리움은 0.1비티씨, 1폴카닷은 0.01이더리움과 같은 표현이 많이 나옵니다#1'
-
               , keep_pitch=True, update=True, speed=1.4)
 
 
@@ -813,9 +811,6 @@ class working1(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:01:11.619  ~  0:01:12.619
 
-
-
-
         #
         self.wait(20)
 
@@ -918,16 +913,168 @@ class working3(ThreeDScene):
         self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
         self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
-#
-# class working1(MovingCameraScene):
-#     def construct(self):
-#         self.add(NumberPlane())
-#         circle = Circle().scale(0.7).shift(R * 4 + U * 2)
-#         circles = VGroup(*[ Circle() for i in range(4) ]).arrange_in_grid(rows=2, cols=2, buff=0)
-#
-#         self.play(Create(circle),
-#                   Create(circles))
-#         self.add(index_labels(circles))
-#         self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
-#
-#         self.wait(5)
+
+class working1(MovingCameraScene):
+    def construct(self):
+        # self.add(NumberPlane().set_z_index(1))
+
+        speak(self, title='L01S01', txt=
+        '거래쌍을 다루기에 가격이라는 개념도 정확히 하고 가겠습니다#1'
+
+        '가격은 경제,비즈니스면에서 물건,용역,자산의 금전적 수적가치를 따지는 것이다#1'
+        '한 제품 및 서비스의 가격이란 소비자가 그 제품이나 서비스를 한 단위로 구매하기 위해 지불해야 하는 화폐의 양을 말한다#1'
+
+        '비티씨 테더 페어에서 38000테더라고 적혀있다면 있다면 우리는 비티씨의 가격이 얼마일까요#1'
+        '38000달러라고 부릅니다. 그러나 이는 엄밀하게 보면 틀린 표현입니다#1'
+        '비티씨의 가격은 38000테더입니다. 테더와 달러는 다른 것입니다.다른 스테이블 코인도 마찬가지입니다#1'
+        '테더는 실제로 거래해보면 보통 0.999에서 1.001 달러사이를 움직이며 거래되기 때문에 달러와 혼동하기 쉽습니다#1'
+        '그러나 달러는 달러 그 자체이고 테더는 이 달러를 담보로 발행했기에 테더 회사가 도망가면 테더는 디지털 쓰레기가 됩니다#1'
+        '달러를 옹호하는 건 아닙니다. 미국정부가 망하면 달러는 종이 쓰레기가 됩니다#1'
+        '마치 금본위제 시절에 달러가 금이랑 같다고 여기는 것과 같습니다#1'
+        '달러는 금이 아니고 금에 대한 보증서 개념이었고 달러가 금이 되기 위해서는 추가적으로 달러지폐를 금으로 교환하는 과정을 거쳐야 했습니다#1'
+        '지금까지는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 다른 개념을 이해하는데 도움이 됩니다#1'
+
+        '어쨌든 가격이란것은 단위 화폐에 따라 결정이 되는 것이고, 단위가 없는 무차원 수같은 것이 아닙니다#1'
+        '1비트코인은 오천만원 사만달러라고 부르지 오천이나 사만이라고만 부르지 않습니다#1'
+
+        '그렇다면 가격은 어떻게 움직일까요#1'
+        '우리가 배우기로는 수요와 공급이 교차하는 지점에서 결정된다고 배웁니다#1'
+        '그러나 거래소에서의 가격은 그 말보다는 인내심이 더 부족한 쪽에 의해 결정된다고 하는게 이해하기 쉬울겁니다#1'
+        '누구나 더 높은 가격에 팔고 더 낮은 가격에 사고 싶기 때문에 호가창에는 지정가 주문들이 쌓이기 시작합니다#1'
+        '그렇게 지정가 주문들이 현재가 위 아래로 계속 쌓이기만 하면 가격은 움직이지 않습니다 #1'
+        '실제로 호가창에 100달러과 101달러가 맞닿아 있고 아무도 시장가 주문을 넣지 않으면 가격은 마지막 주문이 100달러에서 매수였으면 100달러 101달러에서 매도였으면 101달러에 정지해있습니다#1'
+        '그러다가 누군가 기다림을 참지 못하고 시장가로 구매를 하면 호가창에 쌓여있던 물량이 시장가로 소화되면서 가격은 움직입니다 #1'
+        '잘 생각해보면 모든 사람이 지정가 주문만 넣으면 아무 일도 일어나지 않고 모두 기다리기만 합니다#1'
+
+              , keep_pitch=True, update=1, speed=1.4)
+
+        price = Tex('Price').scale(2)
+
+        self.play(Create(price))
+        self.wait(2)
+        self.play(Uncreate(price))
+
+        price_text = Tex(
+            r'A price is the (usually not negative) quantity of payment \\'
+            r'or compensation given by one party to another\\in return for goods or services.').shift(D * 2.5)
+        self.play(Create(price_text))
+
+        product = Tex('Product', font_size=60)
+        service = Tex('service', font_size=60)
+        asset = Tex('asset', font_size=60)
+
+        self.play(Create(product))
+
+        self.play(FadeOut(product, shift=U),
+                  FadeIn(service, shift=U))
+        self.play(FadeOut(service, shift=U),
+                  FadeIn(asset, shift=U))
+
+        self.play(Uncreate(price),
+                  Uncreate(price_text))
+
+
+class working1(MovingCameraScene):
+    def construct(self):
+        self.add(NumberPlane())
+        self.camera.frame.save_state()
+
+        circle = Circle(radius=1)
+        x_label = DecimalNumber(33333).next_to(circle, D)
+        y_label = DecimalNumber(45645).next_to(circle, L)
+
+        self.play(Create(circle),
+                  Create(x_label),
+                  Create(y_label))
+        self.wait(q)
+
+        scaler = 0.3
+        # dist = np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2)
+
+        circle.add_updater(
+            lambda mob: mob.scale_to_fit_height(2 + np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2) * scaler).set_color(
+                Color(hue=1, saturation=np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2) / 9.17, luminance=0.5)))
+        x_label.add_updater(lambda mob: mob.become(DecimalNumber(circle.get_x()).next_to(circle, D)))
+        y_label.add_updater(lambda mob: mob.become(DecimalNumber(circle.get_y()).next_to(circle, L)))
+
+        self.play(circle.animate.shift(L * 3))
+        self.play(circle.animate.shift(D * 3))
+        self.play(circle.animate.shift(U * 3))
+        self.play(circle.animate.shift(R * 3))
+
+        self.play(Uncreate(circle))
+        ax = Axes(
+            x_range=[ 0, 10, 1 ],
+            y_range=[ 0, 10, 1 ],
+            x_length=5,
+            y_length=5
+        )
+        tracker = ValueTracker(1)
+
+        k_var = Variable(1, 'k', var_type=DecimalNumber, num_decimal_places=2).to_edge(U)
+        k_tracker = k_var.tracker
+        self.play(Create(k_var))
+
+        x_var = Variable(1, 'x', var_type=DecimalNumber, num_decimal_places=2).to_edge(UR)
+        x_tracker = x_var.tracker
+        self.play(Create(x_var))
+
+        graph = ax.plot(lambda x: k_tracker.get_value() / x, x_range=[ 0.0001, 10 ], use_smoothing=False)
+        graph.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: k_tracker.get_value() / x, x_range=[ k_tracker.get_value() / 10, 10 ], use_smoothing=False)))
+        # x_range = [ k_tracker.get_value() / 6000, 16 ]
+        self.play(Create(ax),
+                  Create(graph))
+
+        dot = Dot().move_to(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())))
+        dot.add_updater(lambda dot: dot.move_to(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value()))))
+        dot_label = Tex(rf'({x_tracker.get_value():.2f},{graph.underlying_function(x_tracker.get_value()):.2f})').next_to(dot, UR)
+        dot_label.add_updater(lambda jot: jot.become(
+            Tex(rf'({x_tracker.get_value():.2f},{graph.underlying_function(x_tracker.get_value()):.2f})').next_to(dot, UR)))
+        self.play(Create(dot),
+                  Create(dot_label))
+
+        self.play(k_tracker.animate.set_value(3),
+                  x_tracker.animate.set_value(8))
+        self.play(k_tracker.animate.set_value(1))
+        # graph.clear_updaters()
+        self.play(k_tracker.animate.set_value(5))
+        self.play(k_tracker.animate.set_value(5))
+        # self.play(k_tracker.animate.set_value(8)
+        #
+        # def update_curve(mob):
+        #     mob.move_to(moving_dot.get_center())
+        #
+        # self.camera.frame.add_updater(update_curve)
+        #
+
+
+
+        moving_dummy_tracker = ValueTracker(k_tracker.get_value() / 10)
+        # moving_dummy = Dot(color=RED).move_to(ax.c2p(0.5, graph.underlying_function(0.5)))
+        moving_dummy = Dot(color=RED).move_to(graph.get_start())
+        moving_dummy.add_updater(
+            lambda dot: dot.move_to(ax.c2p(moving_dummy_tracker.get_value(), graph.underlying_function(moving_dummy_tracker.get_value()))))
+        self.play(Create(moving_dummy))
+
+        # self.play(self.camera.frame.animate.move_to(ORIGIN))
+        # def update_curve(mob):
+        #     mob.move_to(moving_dummy.get_center())
+
+        self.play(self.camera.frame.animate.scale(0.5).move_to(moving_dummy),run_time=5)
+
+        self.camera.frame.add_updater(lambda camera: camera.move_to(moving_dummy.get_center()))
+        # self.camera.frame.add_updater(update_curve)
+
+        # self.play(MoveAlongPath(moving_dummy, graph, rate_func=linear),run_time=5)
+
+
+        self.play(moving_dummy_tracker.animate.set_value(10),run_time=8)
+        # self.play(self.camera.frame.scale(0.5).move_to(tick))
+        # circles = VGroup(*[ Circle() for i in range(4) ]).arrange_in_grid(rows=2, cols=2, buff=0)
+
+        # self.play(Create(circle),
+        #           Create(circles))
+        # self.add(index_labels(circles))
+        # self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
+        self.wait(20)
