@@ -708,3 +708,182 @@ class working1(MovingCameraScene):
         self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
 
         self.wait(5)
+class working1(MovingCameraScene):
+    def construct(self):
+        self.add(NumberPlane())
+        # self.camera.frame.save_state()
+        #
+        # circle = Circle(radius=1)
+        # x_label = DecimalNumber(33333).next_to(circle, D)
+        # y_label = DecimalNumber(45645).next_to(circle, L)
+        #
+        # self.play(Create(circle),
+        #           Create(x_label),
+        #           Create(y_label))
+        # self.wait(q)
+        #
+        # scaler = 0.3
+        # # dist = np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2)
+        #
+        # circle.add_updater(
+        #     lambda mob: mob.scale_to_fit_height(2 + np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2) * scaler).set_color(
+        #         Color(hue=1, saturation=np.sqrt(circle.get_x() ** 2 + circle.get_y() ** 2) / 9.17, luminance=0.5)))
+        # x_label.add_updater(lambda mob: mob.become(DecimalNumber(circle.get_x()).next_to(circle, D)))
+        # y_label.add_updater(lambda mob: mob.become(DecimalNumber(circle.get_y()).next_to(circle, L)))
+        #
+        # self.play(circle.animate.shift(L * 3))
+        # self.play(circle.animate.shift(D * 3))
+        # self.play(circle.animate.shift(U * 3))
+        # self.play(circle.animate.shift(R * 3))
+        #
+        # self.play(Uncreate(circle))
+        # ax = Axes(
+        #     x_range=[ 0, 10, 1 ],
+        #     y_range=[ 0, 10, 1 ],
+        #     x_length=8,
+        #     y_length=8
+        # )
+        # tracker = ValueTracker(1)
+        #
+        # k_var = Variable(1, 'k', var_type=DecimalNumber, num_decimal_places=2).to_edge(U)
+        # k_tracker = k_var.tracker
+        # self.play(Create(k_var))
+        #
+        # x_var = Variable(1, 'x', var_type=DecimalNumber, num_decimal_places=2).to_edge(UR)
+        # x_tracker = x_var.tracker
+        # self.play(Create(x_var))
+        #
+        # graph = ax.plot(lambda x: k_tracker.get_value() / x, x_range=[ 0.0001, 10 ], use_smoothing=False)
+        # graph.add_updater(lambda graph: graph.become(
+        #     ax.plot(lambda x: k_tracker.get_value() / x, x_range=[ k_tracker.get_value() / 10, 10 ], use_smoothing=False)))
+        # # x_range = [ k_tracker.get_value() / 6000, 16 ]
+        # self.play(Create(ax),
+        #           Create(graph))
+        #
+        # dot = Dot().move_to(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())))
+        # dot.add_updater(lambda dot: dot.move_to(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value()))))
+        # dot_label = Tex(rf'({x_tracker.get_value():.2f},{graph.underlying_function(x_tracker.get_value()):.2f})').next_to(dot, UR)
+        # dot_label.add_updater(lambda jot: jot.become(
+        #     Tex(rf'({x_tracker.get_value():.2f},{graph.underlying_function(x_tracker.get_value()):.2f})').next_to(dot, UR)))
+        # dot_lines = ax.get_lines_to_point(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())))
+        # dot_lines.add_updater(lambda dot_line:dot_line.become(ax.get_lines_to_point(ax.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())))))
+        #
+        # self.play(Create(dot),
+        #           Create(dot_label),
+        #           Create(dot_lines))
+        #
+        # rectangle  = Rectangle(width=dot.get_x() - ax.get_origin()[ 0 ], height=dot.get_y() - ax.get_origin()[ 1 ], color =BLUE, fill_opacity=0.5, stroke_opacity=0).align_to(ax.get_origin(), DL)
+        #
+        # rectangle.add_updater(lambda x : x.become(Rectangle(width=dot.get_x() - ax.get_origin()[ 0 ], height=dot.get_y() - ax.get_origin()[ 1 ], color =BLUE, fill_opacity=0.5, stroke_opacity=0).align_to(ax.get_origin(), DL)))
+        #
+        # rect_text = Tex('Area').scale(0.7).move_to(rectangle)
+        # rect_text.add_updater(lambda x:x.move_to(rectangle))
+        # self.play(Create(rectangle))
+        # self.play(Create(rect_text))
+
+        # num_line = NumberLine(x_range=[0,10, 2],length=10, stroke_width=10,
+        #                       longer_tick_multiple=5,
+        #
+        #                       include_numbers=False,
+        #                       label_direction=U)
+        #
+        # num_line.add_labels({2:'2022-07-05',
+        #                      4:'2022-07-06',
+        #                      6:'2022-07-07',
+        #                      8:'2022-07-08',
+        #                      10:'2022-07-09',
+        #                      })
+        #
+        # for label in num_line[2]:
+        #     label.shift(R*(label.width/2)).rotate(45*DEGREES, about_point=label.get_left())
+        # self.add(index_labels(num_line))
+        # self.play(Create(num_line))
+
+        ax = Axes()
+        sin = ax.plot(lambda x: np.sin(x), stroke_color = [RED, GREEN])
+        label = ax.get_graph_label(
+            graph=sin,
+            label=MathTex(r"\frac{\pi}{2}"),
+            x_val=PI / 2,
+            dot=True,
+            direction=UR,
+        )
+
+        tangent_x_var = Variable(-4, 'tan x val', var_type=DecimalNumber).to_edge(U)
+        tan_x_tracker = tangent_x_var.tracker
+
+        tan_line_length = 3
+        slope = ax.plot(
+            lambda x: ax.slope_of_tangent(tan_x_tracker.get_value(), sin) * (x - tan_x_tracker.get_value()) + sin.underlying_function(
+                tan_x_tracker.get_value()),
+            x_range=[ tan_x_tracker.get_value() - tan_line_length / np.cos(ax.angle_of_tangent(tan_x_tracker.get_value(), sin)) / 2,
+                      tan_x_tracker.get_value() + tan_line_length / np.cos(ax.angle_of_tangent(tan_x_tracker.get_value(), sin)) / 2 ])
+        slope.add_updater(lambda slope: slope.become(ax.plot(
+            lambda x: ax.slope_of_tangent(tan_x_tracker.get_value(), sin) * (x - tan_x_tracker.get_value()) + sin.underlying_function(
+                tan_x_tracker.get_value()),
+            x_range=[ tan_x_tracker.get_value() - tan_line_length * np.cos(ax.angle_of_tangent(tan_x_tracker.get_value(), sin)) / 2,
+                      tan_x_tracker.get_value() + tan_line_length * np.cos(ax.angle_of_tangent(tan_x_tracker.get_value(), sin)) / 2 ])))
+        # slope = TangentLine(sin,10*1/16,length=3)
+
+
+        dashed_sin = DashedVMobject(sin, num_dashes=40, fill_color=[RED, GREEN]).shift(U*3)
+        self.play(Create(dashed_sin))
+
+        my_graph = ParametricFunction(lambda x: np.array([ x, np.sin(x), 0 ]), color=RED, t_range=np.array([ -9, 9, 0.01 ]))
+
+        self.add(ax, sin, slope, label)
+        self.play(Create(tangent_x_var))
+
+        self.play(tan_x_tracker.animate.set_value(4))
+
+        circle = Circle(fill_opacity=1, fill_color=RED, sheen_factor=-10, sheen_direction=DR)
+        # circle = Circle(fill_opacity=1, fill_color=RED).set_sheen.set_color_by_gradient([RED, BLUE])
+        self.play(Create(circle))
+
+        # self.play(num_line[2].animate.set_color(RED).scale(2))
+
+        # self.play(k_tracker.animate.set_value(3),
+        #           x_tracker.animate.set_value(5))
+        # self.play(k_tracker.animate.set_value(1))
+        # # graph.clear_updaters()
+        # self.play(k_tracker.animate.set_value(5))
+        # self.play(k_tracker.animate.set_value(5))
+        # self.play(k_tracker.animate.set_value(8)
+        #
+        # def update_curve(mob):
+        #     mob.move_to(moving_dot.get_center())
+        #
+        # self.camera.frame.add_updater(update_curve)
+        #
+
+        # moving_dummy_tracker = ValueTracker(k_tracker.get_value() / 10)
+        # # moving_dummy = Dot(color=RED).move_to(ax.c2p(0.5, graph.underlying_function(0.5)))
+        # moving_dummy = Dot(color=RED).move_to(graph.get_start())
+        # moving_dummy.add_updater(
+        #     lambda dot: dot.move_to(ax.c2p(moving_dummy_tracker.get_value(), graph.underlying_function(moving_dummy_tracker.get_value()))))
+        # self.play(Create(moving_dummy))
+        #
+        # # self.play(self.camera.frame.animate.move_to(ORIGIN))
+        # # def update_curve(mob):
+        # #     mob.move_to(moving_dummy.get_center())
+        #
+        # self.play(self.camera.frame.animate.scale(0.5).move_to(moving_dummy),run_time=5)
+        #
+        # self.camera.frame.add_updater(lambda camera: camera.move_to(moving_dummy.get_center()))
+        # # self.camera.frame.add_updater(update_curve)
+        #
+        # # self.play(MoveAlongPath(moving_dummy, graph, rate_func=linear),run_time=5)
+        #
+        #
+        # self.play(moving_dummy_tracker.animate.set_value(10),run_time=8)
+        # self.play(Restore(self.camera.frame))
+        #
+
+        # self.play(self.camera.frame.scale(0.5).move_to(tick))
+        # circles = VGroup(*[ Circle() for i in range(4) ]).arrange_in_grid(rows=2, cols=2, buff=0)
+
+        # self.play(Create(circle),
+        #           Create(circles))
+        # self.add(index_labels(circles))
+        # self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
+        self.wait(20)
