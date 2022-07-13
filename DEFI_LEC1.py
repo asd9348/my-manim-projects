@@ -309,7 +309,1003 @@ class L01S01(MovingCameraScene):
                   Create(b_spch))
         self.wait(20)
 
+class L01S02_bg_knowledge(MovingCameraScene):
+    def construct(self):
+        # self.add(NumberPlane().set_z_index(1))
 
+        speak(self, title='Scene2', txt=
+        '더 진행하기 전에 몇 가지 사전학습을 하고 가겠습니다#1'
+        '차례대로 스테이블 코인, 주문, 가격, 슬리피지, 페어에 대해 알아보고 가겠습니다#1'
+
+              , keep_pitch=True, update=0, speed=1.4)
+
+        bg_knowledge = Tex(r'Background\\Knowledge').scale(2)
+        stablecoin = Tex(r'Stablecoin').scale(1.5)
+        order = Tex(r'Order').scale(1.5)
+        price = Tex(r'Price').scale(1.5)
+        slippage = Tex(r'Slippage').scale(1.5)
+        pair = Tex(r'Pair').scale(1.5)
+        topics = VGroup(stablecoin, order, price, slippage, pair).arrange(D,buff= 0.3)
+        self.play(Create(bg_knowledge))
+        self.wait(1.5)
+        self.play(ReplacementTransform(bg_knowledge, topics))
+        self.wait(0.5)
+
+        self.play(ApplyWave(stablecoin),run_time=1.8)
+        self.play(ApplyWave(order),run_time=0.6)
+        self.play(ApplyWave(price),run_time=0.5)
+        self.play(ApplyWave(slippage),run_time=0.8)
+        self.play(ApplyWave(pair),run_time=0.6)
+        self.wait(10)
+
+class L01S03_flow(MovingCameraScene):
+    def construct(self):
+        # self.add(NumberPlane().set_z_index(1))
+
+        speak(self, title='Scene2', txt=
+        '중앙화 거래소가 어떻게 작동하는지 예를 보겠습니다. 우리가 관심있는 건 크립토니까 일반적인 크립토 거래소를 기준으로 설명하겠습니다#1'
+
+        '에이는 비트코인을 가지고 있습니다#1'
+        '비는 현금을 가지고 있습니다#1'
+        '에이는 비트코인을 현금으로 바꾸고 싶고, 비는 현금으로 비트코인을 구매하고 싶습니다#1'
+
+        '그리하여 에이와 비는 거래소로 자신의 자산인 비트코인과 현금을 각각 입금합니다#1'
+        '거래소는 현금을 받기위해 시중은행 계좌나 결제시스템을 통하고 입금을 확인한 뒤 자신의 데이터베이스에 기록합니다#1'
+        '거래소 데이터베이스에 비의 현금 보유액이 업데이트 됐습니다#1'
+        '그리고 비트코인을 입금받기 위해서는 에이에게서 비트코인을 받기위한 주소를 에이에게 알려주고 에이가 그 주소로 비트코인을 전송하면 확인한 뒤 거래소의 데이터베이스에 기록합니다#1'
+        '거래소 데이터 베이스에 에이의 비트코인 보유액이 업데이트 됐습니다#1'
+        '참고로 지갑은 A의 지갑이지만 실제로 이 지갑은 거래소의 하위지갑입니다#1'  #####################################
+        '그래서 A는 거래소의 허락없이는 마음대로 다시 코인을 뺄 수 없습니다#1'
+
+        '거래소 앱에서 자신의 재산을 확인한 에이와 비는 이제 거래할 준비가 됐습니다. 이제 둘은 페어로 갑니다#1'
+
+        '이제 실제 에이비가 주문을 넣는것으로 더 자세히 알아보겠습니다#1'
+        '에이는 비트코인을 비싸게 팔고 싶어하고, 비는 비트코인을 싸게 사고 싶어합니다#1'
+        '현재 거래쌍에 보이는 가격은 100달러이지만 호가창이 그냥 텅 비어있고 실제 시장참여자는 에이와 비만 있다고 가정하겠습니다#1'
+        '그래서 에이는 비트코인을 110달러에 판매하는 매도 지정가주문을 넣고 삐는 90달러에 매수 주문을 넣습니다#1'
+        '그러나 가격이 지정가까지 올 생각을 안 하자 둘은 현재가에 더 가깝게 주문을 수정해 에이는 103테더에 매도, 비는 97테더에 매수 주문을 넣습니다#1'
+        '여전히 가격 안 움직이고 비트코인을 너무 팔고 싶었던 에이는 시장가 주문을 하면서 비에게 비트코인을 판매합니다#1'
+        '기분이 좋아진 비는 어디서 들었는지 개인지갑에 비트코인을 보관해야된다는 애기가 기억나 비트코인 지갑 어플을 받아 개인지갑을 만들고 거래소에 그 주소로 출금을 요청합니다#1'
+        '거래소는 비의 요청을 확인하고 거래소의 지갑에서 블록체인상으로 비의 요청 주소로 비트코인을 전송하고 거래소 데이터베이스에서 비의 비트코인 보유액을 차감합니다#1'
+        '에이는 비트코인을 팔아 마련한 달러로 테슬라를 사기위해 출금을 하려합니다#1'
+        '마찬가지로 거래소에 출금을 요청하고 거래소는 에이가 등록한 은행 계좌로 달러를 송금하고 은행 데이터베이스는 새로 업데이트 됩니다. 에이는 이제 은행에서 현금을 출금합니다#1'
+
+              , keep_pitch=True, update=0, speed=1.4)
+
+        # TODO 8.444 secs중앙화 거래소가 어떻게 작동하는지 예를 보겠습니다.
+        #  우리가 관심있는 건 크립토니까 일반적인 크립토 거래소를 기준으로 설명하겠습니다
+        # TODO 0:00:00.000  ~  0:00:08.444
+        # TODO 1.0secs pause
+        # TODO 0:00:08.444  ~  0:00:09.444
+
+        cent_ex_text = Tex('Centralized Exchange').scale(2)
+        crypto_text = Tex('Crypto').scale(2)
+
+        self.play(Create(cent_ex_text))
+        self.wait(3)
+
+        self.play(cent_ex_text.animate.shift(D * 0.5))
+        crypto_text.next_to(cent_ex_text, U)
+        self.play(Create(crypto_text))
+
+        self.wait(2)
+        self.play(Unwrite(VGroup(crypto_text, cent_ex_text)), run_time=1)
+        self.wait(0.444)
+
+        # TODO 2.127 secs에이는 비트코인을 가지고 있습니다
+        # TODO 0:00:09.444  ~  0:00:11.571
+        # TODO 1.0secs pause
+        # TODO 0:00:11.571  ~  0:00:12.571
+        A = create_entity("A", 0.5, WHITE, "1 BTC", C_BTC, 0.7, 0.3, asset_text_color=WHITE).shift(RIGHT * 4 + UP * 1)
+        self.play(Create(A), run_time=2)
+        self.wait(1.127)
+
+        # TODO 1.861 secs비는 현금을 가지고 있습니다
+        # TODO 0:00:12.571  ~  0:00:14.432
+        # TODO 1.0secs pause
+        # TODO 0:00:14.432  ~  0:00:15.432
+
+        B = create_entity("B", 0.5, WHITE, "100 $", C1275, 0.7, 0.3, asset_text_color=WHITE).shift(RIGHT * 4 + DOWN * 1)
+        self.play(Create(B), run_time=1)
+        self.wait(1.861)
+
+        A_asset_btc = A[ 1 ]
+        B_asset_usd = B[ 1 ]
+
+        A_asset_btc.set_z_index(3)
+        B_asset_usd.set_z_index(3)
+
+        A_asset_pos = A_asset_btc.get_center()
+        B_asset_pos = B_asset_usd.get_center()
+
+        # TODO 5.605 secs에이는 비트코인을 현금으로 바꾸고 싶고, 비는 현금으로 비트코인을 구매하고 싶습니다
+        # TODO 0:00:15.432  ~  0:00:21.037
+        # TODO 1.0secs pause
+        # TODO 0:00:21.037  ~  0:00:22.037
+
+        A_spch = Tex("I want USD").next_to(A, LEFT)
+        B_spch = Tex("I want BTC").next_to(B, LEFT)
+
+        self.play(AnimationGroup(Write(A_spch),
+                                 Write(B_spch),
+                                 lag_ratio=1,
+                                 run_time=2))
+
+        self.wait(2.605)
+
+        self.play(AnimationGroup(Unwrite(A_spch),
+                                 Unwrite(B_spch),
+                                 lag_ratio=1,
+                                 run_time=2))
+
+        # TODO 5.352 secs그리하여 에이와 비는 거래소로 자신의 자산인 비트코인과 현금을 각각 입금합니다
+        # TODO 0:00:22.037  ~  0:00:27.389
+        # TODO 1.0secs pause
+        # TODO 0:00:27.389  ~  0:00:28.389
+
+        ex_rect = RoundedRectangle(corner_radius=0.5, height=8, width=6)
+        ex_rect_text = Tex("Exchange").next_to(ex_rect, UP, buff=0.2).scale(0.8)
+        ex = VGroup(ex_rect, ex_rect_text).move_to(ORIGIN).to_edge(LEFT)
+
+        ex_server_rect = RoundedRectangle(width=1.2, height=0.5, corner_radius=0.1)
+        ex_server_led_1 = Dot(radius=0.05, fill_color=GREEN).shift(RIGHT * 0.2)
+        ex_server_led_2 = Dot(radius=0.05, fill_color=GREEN).shift(RIGHT * 0.4)
+
+        ex_server = VGroup(ex_server_rect, ex_server_led_1, ex_server_led_2).next_to(ex_rect, UP, aligned_edge=UP, buff=-0.5).shift(
+            LEFT * 1.5)
+
+        self.play(Create(ex), run_time=0.5)
+
+        self.play(Create(ex_server), run_time=0.5)
+
+        ex_ledger = MathTable(
+            [ [ "Ex", r"a " ],
+              [ "A", r"aaaaaa " ],
+              [ "B", r"a " ] ],
+            include_outer_lines=True).scale(0.4).next_to(ex_server, RIGHT).align_to(ex_server, UP).shift(RIGHT)
+
+        ex_ledger[ 0 ][ 5 ].set_color(BLACK)
+        ex_ledger[ 0 ][ 1 ].set_color(BLACK)
+        ex_ledger[ 0 ][ 3 ].set_color(BLACK)
+        ex_ex_ledger = ex_ledger[ 0 ][ 1 ]
+        A_ex_ledger = ex_ledger[ 0 ][ 3 ]
+        B_ex_ledger = ex_ledger[ 0 ][ 5 ]
+
+        self.play(Create(ex_ledger), run_time=0.5)
+
+        A_wallet_rect = RoundedRectangle(0.1, width=1, height=1)
+        A_wallet_text = Tex(r"A wallet").next_to(A_wallet_rect, UP, buff=0.2).scale(0.6)
+        A_wallet = VGroup(A_wallet_rect, A_wallet_text)
+
+        B_wallet_rect = RoundedRectangle(0.1, width=1, height=1)
+        B_wallet_text = Tex("B wallet").next_to(B_wallet_rect, UP, buff=0.2).scale(0.6)
+        B_wallet = VGroup(B_wallet_rect, B_wallet_text)
+
+        ex_wallet_rect = RoundedRectangle(0.1, width=1, height=1)
+        ex_wallet_text = Tex("Ex wallet").next_to(ex_wallet_rect, UP, buff=0.2).scale(0.6)
+        ex_wallet = VGroup(ex_wallet_rect, ex_wallet_text)
+
+        wallets = VGroup(ex_wallet, A_wallet, B_wallet).arrange(DOWN).next_to(ex_rect, RIGHT, aligned_edge=RIGHT, buff=-1).shift(DOWN)
+
+        self.play(Create(wallets), run_time=0.5)
+
+        # wallet_expl = Text("Wallet means a group of wallets and bank account. it is better to say it is an account")
+
+        bank_rect = RoundedRectangle(corner_radius=0.2, height=1.8, width=4)
+        bank_rect_text = Tex("Bank").next_to(bank_rect, UP, buff=0.1).scale(0.8)
+        bank_server = ex_server.copy().next_to(bank_rect, UP, aligned_edge=UP, buff=-0.5).shift(LEFT)
+        bank = VGroup(bank_rect, bank_rect_text, bank_server).to_edge(UP).shift(RIGHT)
+
+        # B_bank_bal_tracker = ValueTracker(0)
+
+        bank_ledger = MathTable(
+            [ [ "Ex", r"a " ],
+              [ "A", r"aaaaaa " ],
+              [ "B", r"a " ] ],
+            include_outer_lines=True).scale(0.4).next_to(bank_server, RIGHT).align_to(bank_server, UP)
+
+        bank_ledger[ 0 ][ 5 ].set_color(BLACK)
+        bank_ledger[ 0 ][ 1 ].set_color(BLACK)
+        bank_ledger[ 0 ][ 3 ].set_color(BLACK)
+
+        ex_bank_ledger = bank_ledger[ 0 ][ 1 ]
+        A_bank_ledger = bank_ledger[ 0 ][ 3 ]
+        B_bank_ledger = bank_ledger[ 0 ][ 5 ]
+
+        # self.play(B_bank_bal_tracker.animate.set_value(35))
+
+        self.play(Create(bank), run_time=0.5)
+        self.play(Create(bank_ledger), run_time=0.5)
+
+        self.wait(3.352)
+
+        # TODO 7.345 secs거래소는 현금을 받기위해 시중은행 계좌나 결제시스템을 통하고 입금을 확인한 뒤 자신의 데이터베이스에 기록합니다
+        # TODO 0:00:28.389  ~  0:00:35.734
+        # TODO 1.0secs pause
+        # TODO 0:00:35.734  ~  0:00:36.734
+
+        B_100usd_bank = create_entity("B", 0.5, GRAY, "100 $", WHITE, 0.7, 0.3)[ 1 ].move_to(B_bank_ledger)
+        B_100usd_ex = create_entity("B", 0.5, WHITE, "100 $", WHITE, 0.7, 0.3)[ 1 ].move_to(B_ex_ledger)
+
+        self.play(B_asset_usd.animate.next_to(bank_server, DOWN), run_time=1.5)
+        self.wait(1)
+        self.play(FadeIn(B_100usd_bank, target_position=bank_server, scale=0.2), run_time=1.5)
+        self.wait(1)
+        self.play(B_100usd_bank.animate.move_to(ex_bank_ledger), run_time=1.5)
+        self.play(FadeIn(B_100usd_ex, target_position=ex_server, scale=0.2), run_time=1.5)
+
+        self.wait(0.345)
+
+        # TODO 3.806 secs거래소 데이터베이스에 비의 현금 보유액이 업데이트 됐습니다
+        # TODO 0:00:36.734  ~  0:00:40.540
+        # TODO 1.0secs pause
+        # TODO 0:00:40.540  ~  0:00:41.540
+
+        self.play(B_100usd_ex.animate.move_to(B_ex_ledger), run_time=3)
+        self.wait(1.806)
+
+        # TODO 10.679 secs그리고 비트코인을 입금받기 위해서는 에이에게서 비트코인을 받기위한 주소를 에이에게 알려주고 에이가 그 주소로 비트코인을 전송하면 확인한 뒤 거래소의 데이터베이스에 기록합니다
+
+        # TODO 0:00:41.540  ~  0:00:52.219
+
+        # TODO 1.0secs pause
+
+        # TODO 0:00:52.219  ~  0:00:53.219
+
+        btc_addr = Tex(r'BTC Address\\n2kQ5L2rdc5rspJvU\\VrN28fejZYhqakFPx').scale(0.7).move_to(ex_rect).shift(L * 0.6)
+        self.play(Create(btc_addr), run_time=2.5)
+        self.wait(1)
+
+        self.play(FadeOut(btc_addr, target_position=A[ 0 ]), run_time=2)
+        self.wait(1)
+
+        chain_elipse = RoundedRectangle(height=0.2, width=0.4, corner_radius=0.1)
+        chain_line = Line(ORIGIN, L * 0.4)
+        chain = VGroup()
+        for i in range(1):
+            chain.add(chain_line.copy())
+            chain.add(chain_elipse.copy())
+        chain.add(chain_line.copy())
+        chain.arrange(R, buff=-0.12).rotate(PI / 2)
+
+        blocks = VGroup()
+        for i in range(5):
+            blocks.add(Square(1.2, fill_color=BLACK, fill_opacity=1, stroke_color=WHITE))
+
+        blocks.arrange(D, buff=chain.height).to_edge(R)
+
+        block_nums = VGroup()
+
+        for i in range(len(blocks)):
+            block_nums.add(Tex(f"{format(i, '04b')}").move_to(blocks[ i ]).scale(0.6))
+
+        blockchain = VGroup()
+
+        for i in range(len(blocks)):
+            blockchain.add(blocks[ i ])
+            blockchain.add(block_nums[ i ])
+            blockchain.add(chain.copy().next_to(blocks[ i ], D, buff=0))
+
+        # blockchain_bar = DashedLine(start=blocks[ 0 ].get_top(), end=blocks[ 9 ].get_bottom(), dash_length=0.4, dashed_ratio=0.6,
+        #                             stroke_color=WHITE).shift(LEFT)
+        self.play(Create(blockchain),
+                  run_time=1)
+        self.wait(0.4)
+
+        self.play(A_asset_btc.animate.move_to(blocks[ 2 ]),
+                  run_time=1.5)
+        self.wait(0.5)
+
+        self.play(A_asset_btc.animate.move_to(A_wallet_rect),
+                  run_time=1.279)
+        self.wait(0.5)
+
+        # TODO 4.144 secs거래소 데이터 베이스에 에이의 비트코인 보유액이 업데이트 됐습니다
+        # TODO 0:00:54.440  ~  0:00:58.584
+        # TODO 1.0secs pause
+        # TODO 0:00:58.584  ~  0:00:59.584
+
+        A_1btc_ex = create_entity("B", 0.5, WHITE, "1 BTC", WHITE, 0.7, 0.3)[ 1 ].move_to(A_ex_ledger)
+        self.play(FadeIn(A_1btc_ex, target_position=ex_server, scale=0.2),
+                  run_time=3)
+        self.wait(2.144)
+
+        # TODO 4.82 secs참고로 지갑은 A의 지갑이지만 실제로 이 지갑은 거래소의 하위지갑입니다
+        # TODO 0:00:58.363  ~  0:01:03.183
+        # TODO 1.0secs pause
+        # TODO 0:01:03.183  ~  0:01:04.183
+        AB_wallet = VGroup(A_wallet, B_wallet)
+
+        ex_wallet_rect_incl = RoundedRectangle(0.1, width=1.3, height=4).move_to(AB_wallet)
+
+        self.play(Transform(ex_wallet_rect, ex_wallet_rect_incl),
+                  ex_wallet_text.animate.next_to(ex_wallet_rect_incl, UP, buff=0.1),
+                  run_time=2)
+
+        self.play(VGroup(wallets, A_asset_btc).animate.shift(UP * 0.8),
+                  run_time=2)
+        self.wait(1.82)
+
+        # TODO 4.421 secs그래서 A는 거래소의 허락없이는 마음대로 다시 코인을 뺄 수 없습니다
+        # TODO 0:01:05.067  ~  0:01:09.488
+        # TODO 1.0secs pause
+        # TODO 0:01:09.488  ~  0:01:10.488
+
+        A_withdrawal_spch = Tex('I want my BTC back!').scale(0.7).next_to(A[ 0 ], LEFT)
+        self.play(Create(A_withdrawal_spch))
+
+        self.play(A_asset_btc.animate(rate_func=there_and_back_with_pause, run_time=2).move_to(
+            get_halfway(A[ 0 ].get_center(), A[ 1 ].get_center())))
+
+        A_emotion = Tex(':(').rotate(-PI / 2).scale(2).next_to(A[ 0 ], LEFT)
+
+        self.play(ReplacementTransform(A_withdrawal_spch, A_emotion), run_time=0.5)
+        self.wait(0.921)
+        self.play(Uncreate(A_emotion))
+
+        # TODO 6.331 secs거래소 앱에서 자신의 재산을 확인한 에이와 비는 이제 거래할 준비가 됐습니다. 이제 둘은 페어로 갑니다
+
+        # TODO 0:01:09.604  ~  0:01:15.935
+
+        # TODO 1.0secs pause
+
+        # TODO 0:01:15.935  ~  0:01:16.935
+
+        # market_rect = RoundedRectangle(corner_radius=0.5, height=ex_rect.height - bank_rect.height - 1.5, width=bank_rect.width)
+        # market_rect_text = Tex("Market").next_to(market_rect, UP, buff=0.2).scale(0.8)
+        # market = VGroup(market_rect, market_rect_text).align_to(bank_rect, R).align_to(ex_rect, D)
+        #
+        # self.play(Create(market),
+        #           run_time=2)
+        #
+        # A[ 0 ].save_state()
+        # B[ 0 ].save_state()
+        # self.play(VGroup(A[ 0 ], B[ 0 ]).animate().arrange(R, buff=0.7).move_to(market_rect),
+        #           run_time=2)
+        # self.wait(1.397)
+        # self.play(A[ 0 ].animate.restore(),
+        #           B[ 0 ].animate.restore(), run_time=1.243)
+        # self.wait(2)
+
+        pair_rect = RoundedRectangle(corner_radius=0.1, height=ex_wallet_rect.height, width=3)
+        pair_rect_text_1 = Tex("BTC/USD").scale(0.5).next_to(pair_rect, UP, buff=0.1)
+        pair = VGroup(pair_rect, pair_rect_text_1).next_to(ex_rect, LEFT, aligned_edge=LEFT, buff=-2).align_to(ex_wallet_rect, DOWN)
+
+        # self.play(Create(pair, run_time=q))
+
+        self.play(
+            Create(pair),
+            run_time=3)
+
+        pair_rect_text_2 = Tex("BTC/USD Pair").scale(0.5).move_to(pair_rect_text_1)
+
+        self.play(ReplacementTransform(pair_rect_text_1, pair_rect_text_2),
+                  run_time=1.426)
+        self.wait(2.905)
+
+        # TODO 3.95 secs이제 실제 에이비가 주문을 넣는것으로 더 자세히 알아보겠습니다
+        # TODO 0:01:16.935  ~  0:01:20.885
+        # TODO 1.0secs pause
+        # TODO 0:01:20.885  ~  0:01:21.885
+        def create_personal_order_only(self, entity, place_or_cancel, buy_or_sell, px, qty, asset):
+            target_pos = ex_server
+            start_from = entity
+
+            order_paper = Rectangle(height=1.5, width=1.2)
+            order_text_1 = Tex(f"{place_or_cancel}").scale(0.4)
+            order_text_2 = Tex(rf"{buy_or_sell} ").scale(0.4)
+            order_text_3 = Tex(rf"{qty} {asset}").scale(0.4)
+            order_text_4 = Tex(rf"at {px}\$").scale(0.4)
+            order_text = VGroup(order_text_1, order_text_2, order_text_3, order_text_4).arrange(DOWN, buff=0.1).move_to(
+                order_paper)
+            order = VGroup(order_paper, order_text).scale(0.7).next_to(start_from[ 0 ], LEFT)
+
+            # self.play(Create(order))
+            # self.wait(q)
+            return order
+
+        init_sell_order = create_personal_order_only(self, A, "Place", 'SELL', r'110\$', 1, 'BTC')
+        init_buy_order = create_personal_order_only(self, B, "Place", 'BUY', r'90\$', 1, 'BTC')
+
+        self.play(Create(init_sell_order),
+                  run_time=1.5)
+        self.play(Create(init_buy_order),
+                  run_time=1.5)
+
+        self.wait(1.95)
+        # TODO 5.158 secs에이는 비트코인을 비싸게 팔고 싶어하고, 비는 비트코인을 싸게 사고 싶어합니다
+        # TODO 0:01:21.885  ~  0:01:27.043
+        # TODO 1.0secs pause
+        # TODO 0:01:27.043  ~  0:01:28.043
+
+        sell_at_higher = Tex('Sell BTC for more dollars').scale(0.6).next_to(init_sell_order, DL).align_to(init_sell_order, R)
+        buy_at_lower = Tex('Buy BTC with less dollars').scale(0.6).next_to(init_buy_order, DL).align_to(init_buy_order, R)
+
+        self.play(Write(sell_at_higher),
+                  run_time=1)
+        self.play(Write(buy_at_lower),
+                  run_time=1)
+        self.wait(3)
+        self.play(FadeOut(VGroup(sell_at_higher, buy_at_lower)),
+                  run_time=1.158)
+
+        # TODO 7.792 secs현재 거래쌍에 보이는 가격은 100달러이지만 호가창이 그냥 텅 비어있고 실제 시장참여자는 에이와 비만 있다고 가정하겠습니다
+        # TODO 0:01:28.043  ~  0:01:35.835
+        # TODO 1.0secs pause
+        # TODO 0:01:35.835  ~  0:01:36.835
+
+        curr_px = Integer(100, unit=r'\$')
+        self.play(Create(curr_px.move_to(pair_rect)),
+                  run_time=2)
+
+        self.wait(2)
+        self.play(Flash(A[ 0 ], flash_radius=0.5))
+        self.play(Flash(B[ 0 ], flash_radius=0.5))
+        self.wait(2.792)
+
+        # TODO 6.935 secs그래서 에이는 비트코인을 110달러에 판매하는 매도 지정가주문을 넣고 삐는 90달러에 매수 주문을 넣습니다
+        # TODO 0:01:36.835  ~  0:01:43.770
+        # TODO 1.0secs pause
+        # TODO 0:01:43.770  ~  0:01:44.770
+
+        def create_personal_order(self, entity, place_or_cancel, buy_or_sell, px, qty, asset):
+            target_pos = ex_server
+            start_from = entity
+
+            order_paper = Rectangle(height=1.5, width=1.2)
+            order_text_1 = Tex(f"{place_or_cancel}").scale(0.4)
+            order_text_2 = Tex(rf"{buy_or_sell} ").scale(0.4)
+            order_text_3 = Tex(rf"{qty} {asset}").scale(0.4)
+            order_text_4 = Tex(rf"at {px}\$").scale(0.4)
+            order_text = VGroup(order_text_1, order_text_2, order_text_3, order_text_4).arrange(DOWN, buff=0.1).move_to(
+                order_paper)
+            order = VGroup(order_paper, order_text).scale(0.7).next_to(start_from[ 0 ], LEFT)
+
+            self.play(Create(order))
+            self.wait(q)
+            return FadeOut(order, target_position=target_pos)
+            # change_waiting_order(self, target_pos, 3, 2, 1300, 1)
+
+        self.wait(1)
+        self.play(FadeOut(init_sell_order, target_position=ex_server),
+                  run_time=1)
+
+        self.wait(2)
+        self.play(FadeOut(init_buy_order, target_position=ex_server),
+                  run_time=1)
+
+        self.wait(1)
+        ask_val_track = ValueTracker(110)
+        bid_val_track = ValueTracker(90)
+
+        dummy = VGroup(A_1btc_ex, B_100usd_ex).copy().arrange(DOWN, buff=2).move_to(pair_rect).shift(LEFT * 0.5)
+        dummy_usd_pos = dummy[ 1 ].get_center()
+        dummy_btc_pos = dummy[ 0 ].get_center()
+        ask = Tex(rf'SELL at {int(ask_val_track.get_value())}\$').scale(0.4).next_to(A_1btc_ex, RIGHT).set_color(RED)
+        bid = Tex(rf'BUY at {int(bid_val_track.get_value())}\$').scale(0.4).next_to(dummy[ 1 ], RIGHT).set_color(GREEN)
+
+        B_10usd_ex = create_entity("B", 0.5, WHITE, "10 $", WHITE, 0.7, 0.3)[ 1 ].move_to(B_ex_ledger)
+        B_90usd_ex = create_entity("B", 0.5, WHITE, "90 $", WHITE, 0.7, 0.3)[ 1 ].next_to(B_ex_ledger, D, buff=0.5)
+        B_3usd_ex = create_entity("B", 0.5, WHITE, "3 $", WHITE, 0.7, 0.3)[ 1 ].move_to(B_ex_ledger)
+        B_97usd_ex = create_entity("B", 0.5, WHITE, "97 $", WHITE, 0.7, 0.3)[ 1 ].move_to(dummy_usd_pos)
+
+        # self.play(VGroup(A_1btc_ex, B_100usd_ex).animate.arrange(DOWN, buff=2).move_to(pair_rect).shift(LEFT * 0.5),
+        #           )
+        self.play(ReplacementTransform(B_100usd_ex, B_10usd_ex),
+                  FadeIn(B_90usd_ex, target_position=B_100usd_ex),
+                  run_time=0.5)
+
+        self.play(A_1btc_ex.animate.move_to(dummy_btc_pos),
+                  B_90usd_ex.animate.move_to(dummy_usd_pos),
+                  run_time=0.5)
+        self.play(FadeIn(VGroup(ask, bid)),
+                  run_time=1.935, rate_func=smooth)
+
+        ask.add_updater(
+            lambda ask: ask.become(Tex(rf'SELL at {int(ask_val_track.get_value())}\$').scale(0.4).set_color(RED).next_to(A_1btc_ex, RIGHT)))
+        bid.add_updater(lambda bid: bid.become(
+            Tex(rf'BUY at {int(bid_val_track.get_value())}\$').scale(0.4).set_color(GREEN).next_to(dummy[ 1 ], RIGHT)))
+        # TODO 9.628 secs그러나 가격이 지정가까지 올 생각을 안 하자 둘은 현재가에 더 가깝게 주문을 수정해 에이는 103테더에 매도, 비는 97테더에 매수 주문을 넣습니다
+        # TODO 0:01:44.770  ~  0:01:54.398
+        # TODO 1.0secs pause
+        # TODO 0:01:54.398  ~  0:01:55.398
+
+        self.play(create_personal_order(self, A, "Cancel", 'SELL', r'110\$', 1, 'BTC'),
+                  create_personal_order(self, B, "Cancel", 'BUY', r'90\$', 1, 'BTC'))
+        self.play(create_personal_order(self, A, "Place", 'SELL', r'103\$', 1, 'BTC'),
+                  create_personal_order(self, B, "Place", 'BUY', r'97\$', 1, 'BTC'))
+
+        self.play(ReplacementTransform(B_10usd_ex, B_3usd_ex),
+                  ReplacementTransform(B_90usd_ex, B_97usd_ex)
+                  )
+
+        self.play(ask_val_track.animate.set_value(103),
+                  bid_val_track.animate.set_value(97), rate_func=linear)
+
+        # self.play(create_personal_order(self, A, "Cancel", 'SELL', r'103\$', 1, 'BTC'),
+        #           create_personal_order(self, B, "Cancel", 'BUY', r'97\$', 1, 'BTC'))
+        # self.play(create_personal_order(self, A, "Place", 'SELL', r'101\$', 1, 'BTC'),
+        #           create_personal_order(self, B, "Place", 'BUY', r'100\$', 1, 'BTC'))
+
+        # self.play(ask_val_track.animate.set_value(97), rate_func=linear)
+
+        # ask.clear_updaters()
+        # bid.clear_updaters()
+
+        # self.play(Unwrite(VGroup(ask),VGroup(bid)))
+        # TODO 7.079 secs여전히 가격 안 움직이고 비트코인을 너무 팔고 싶었던 에이는 시장가 주문을 하면서 비에게 비트코인을 판매합니다
+        # TODO 0:01:55.398  ~  0:02:02.477
+        # TODO 1.0secs pause
+        # TODO 0:02:02.477  ~  0:02:03.477
+        self.play(create_personal_order(self, A, "Cancel", 'SELL', r'103\$', 1, 'BTC'), run_time=1)
+        self.play(create_personal_order(self, A, "Place", 'SELL', r'97\$', 1, 'BTC'), run_time=1)
+
+        curr_px_2 = Integer(97, unit=r'\$').move_to(pair_rect)
+
+        self.wait(1.579)
+        self.play(CyclicReplace(VGroup(A_1btc_ex), VGroup(B_97usd_ex)),
+                  Transform(curr_px, curr_px_2),
+                  Unwrite(ask),
+                  Unwrite(bid),
+                  run_time=2
+                  )
+        self.play(B_3usd_ex.animate.scale_to_fit_width(0.35).shift(L * (0.35 / 2 + 0.05)),
+                  run_time=1)
+        self.play(A_1btc_ex.animate.scale_to_fit_width(0.35).next_to(B_3usd_ex, R, buff=0.1),
+                  B_97usd_ex.animate.move_to(A_ex_ledger),
+                  run_time=1.5
+                  )
+        # TODO 10.692 secs기분이 좋아진 비는 어디서 들었는지 개인지갑에 비트코인을 보관해야된다는 애기가 기억나 비트코인 지갑 어플을 받아 개인지갑을 만들고 거래소에 그 주소로 출금을 요청합니다
+        # TODO 0:02:03.477  ~  0:02:14.169
+        # TODO 1.0secs pause
+        # TODO 0:02:14.169  ~  0:02:15.169
+
+        B_line = manim.Text("Give my BTC").next_to(B[ 0 ], LEFT).scale(0.6)
+
+        self.play(AnimationGroup(Write(B_line),
+                                 lag_ratio=1, run_time=3))
+        self.wait(5)
+        self.play(AnimationGroup(Unwrite(B_line),
+                                 lag_ratio=1, run_time=3))
+
+        self.wait(0.698)
+        # self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
+
+        # self.play(A_asset_btc.animate.move_to(blocks[ 2 ]))
+
+        ex_3usd_bank = create_entity("B", 0.5, WHITE, "3 $", WHITE, 0.7, 0.3)[ 1 ].move_to(ex_bank_ledger)
+        A_97usd_bank = create_entity("B", 0.5, WHITE, "97 $", WHITE, 0.7, 0.3)[ 1 ].move_to(A_bank_ledger)
+        ex_10usd_bank = create_entity("B", 0.5, WHITE, "10 $", WHITE, 0.7, 0.3)[ 1 ].move_to(B_ex_ledger)
+        # TODO 10.088 secs거래소는 비의 요청을 확인하고 거래소의 지갑에서 블록체인상으로 비의 요청 주소로 비트코인을 전송하고 거래소 데이터베이스에서 비의 비트코인 보유액을 차감합니다
+        # TODO 0:02:15.169  ~  0:02:25.257
+        # TODO 1.0secs pause
+        # TODO 0:02:25.257  ~  0:02:26.257
+
+        bs_btc_addr = Tex(r"B's BTC Address\\mg9Jh463xCXLmsYCG\\LnBbsQYtdVxJt8y6T").scale(0.7).next_to(B[ 0 ], L, buff=0.5)
+        self.play(Create(bs_btc_addr), run_time=1.5)
+        self.play(FadeOut(bs_btc_addr, target_position=ex_server), run_time=2)
+        # self.play(A_asset_btc.animate.move_to(ex_server),run_time=1.5)
+        self.wait(1)
+        self.play(A_asset_btc.animate.move_to(blocks[ 3 ]), run_time=2)
+        self.play(A_asset_btc.animate.move_to(B_asset_pos), run_time=2)
+        self.wait(1)
+        self.play(Uncreate(A_1btc_ex), run_time=1.5)
+        self.wait(0.588)
+
+        # TODO 4.434 secs에이는 비트코인을 팔아 마련한 달러로 테슬라를 사기위해 출금을 하려합니다
+        # TODO 0:02:26.257  ~  0:02:30.691
+        # TODO 1.0secs pause
+        # TODO 0:02:30.691  ~  0:02:31.691
+        A_line = manim.Text("Give my USD").next_to(A[ 0 ], LEFT).scale(0.6)
+        self.play(AnimationGroup(Write(A_line),
+                                 lag_ratio=1, run_time=1.5))
+        self.wait(2)
+        self.play(AnimationGroup(Unwrite(A_line),
+                                 lag_ratio=1, run_time=1))
+
+        # self.play(B_100usd_bank.animate.move_to(A_bank_ledger))
+        # self.play(Uncreate(B_100usd_ex))
+        # self.play(Uncreate(B_100usd_bank))
+        # self.play(B_asset_usd.animate.move_to(A_asset_pos))
+        # self.play(A_asset_btc.animate.move_to(B_asset_pos))
+
+        self.wait(0.934)
+
+        # TODO 10.884 secs마찬가지로 거래소에 출금을 요청하고 거래소는 에이가 등록한 은행 계좌로 달러를 송금하고 은행 데이터베이스는 새로 업데이트 됩니다. 에이는 이제 은행에서 현금을 출금합니다
+
+        # TODO 0:02:31.691  ~  0:02:42.575
+
+        # TODO 1.0secs pause
+
+        # TODO 0:02:42.575  ~  0:02:43.575
+
+        self.wait(3)
+        self.play(ReplacementTransform(B_100usd_bank, ex_3usd_bank),
+                  FadeIn(A_97usd_bank, target_position=B_100usd_bank), run_time=1.5)
+
+        cash_3 = create_entity("B", 0.5, WHITE, "3 $", C1275, 0.7, 0.3, asset_text_color=WHITE)[ 1 ].move_to(B_asset_usd)
+        cash_97 = create_entity("B", 0.5, WHITE, "97 $", C1275, 0.7, 0.3, asset_text_color=WHITE)[ 1 ].next_to(B_asset_usd, D, buff=1)
+
+        self.play(ReplacementTransform(B_asset_usd, cash_3),
+                  FadeIn(cash_97, target_position=B_asset_usd), run_time=1.5)
+
+        self.play(cash_97.animate.move_to(A_asset_pos),
+                  FadeOut(A_97usd_bank), run_time=1.5)
+        self.wait(4.691)
+
+        self.wait(20)
+
+class L01S04_stablecoin(MovingCameraScene):
+    def construct(self):
+        # self.add(NumberPlane().set_z_index(1))
+
+        speak(self, title='L01S01', txt=
+        '잠시 스테이블 코인에 대해서 알아보고 가겠습니다#1'
+        '일반적으로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다#1'
+        '스테이블 코인은 일반적으로 은행을 통해 실제 코인을 보증할 법정통화를 보내면 스테이블 코인 회사에서 발행합니다#1'
+        '이제 이 스테이블코인으로 해외 거래소나 탈중앙화 거래소를 마음대로 이용할 수 있습니다#1'
+        '스테이블 코인과 달러는 1대 1로 교환될 수 있습니다#1'
+        '이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다#1'
+        '그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다#1'
+        '가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 활용해 투자수익을 얻습니다#1'
+        '다시 1테더를 가져가면 1테더를 소각시키고 1달러를 돌려받을 수 있습니다#1'
+        '이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고 현금과 같은 가치를 지닌 자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다#1'
+              , keep_pitch=True, update=0, speed=1.4)
+
+        # TODO 3.08 secs잠시 스테이블 코인에 대해서 알아보고 가겠습니다
+        # TODO 0:00:00.000  ~  0:00:03.080
+        # TODO 1.0secs pause
+        # TODO 0:00:03.080  ~  0:00:04.080
+
+        stablecoin = Tex('Stablecoin').scale(2)
+
+        self.play(Create(stablecoin))
+
+        self.wait(2.08)
+        self.play(Uncreate(stablecoin))
+
+        # TODO 8.734 secs일반적으로 거래소에서 은행계좌가 연동됐다면 원화나 달러같은 법정통화를 사용하고 그렇지 못 하면, 보통 스테이블 코인을 사용하게 됩니다
+        # TODO 0:00:04.080  ~  0:00:12.814
+        # TODO 1.0secs pause
+        # TODO 0:00:12.814  ~  0:00:13.814
+        tether_company_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        tether_company_text = Tex('Stablecoin Company').next_to(tether_company_rect, UP).align_to(tether_company_rect, L)
+        tether_company = VGroup(tether_company_rect, tether_company_text).to_edge(UL, buff=0.5)
+        tether_company.set_z_index(1.5)
+
+        investment_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        investment_text = Tex('Investment').next_to(investment_rect, UP).align_to(investment_rect, L)
+        investment = VGroup(investment_rect, investment_text).to_edge(DL, buff=0.5)
+        investment.set_z_index(1.5)
+
+        exchange_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        exchange_text = Tex('Exchange').next_to(exchange_rect, UP).align_to(exchange_rect, L)
+        exchange = VGroup(exchange_rect, exchange_text).next_to(investment, R, buff=0.5)
+        exchange.set_z_index(1.5)
+
+        bank_rect = RoundedRectangle(height=3, width=4.5, corner_radius=0.5)
+        bank_text = Tex('Bank').next_to(bank_rect, UP).align_to(bank_rect, L)
+        bank = VGroup(bank_rect, bank_text).next_to(tether_company, R, buff=0.5)
+        bank.set_z_index(1.5)
+
+        # self.add(index_labels(tether_company[0]))
+        self.play(Create(VGroup(tether_company,
+                                bank,
+                                investment,
+                                exchange)))
+
+        def create_entity_tether(person_name, person_radius, person_color, asset_name, how_many, asset_color, asset_width, asset_height,
+                                 asset_text_color=WHITE):
+            person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
+
+            box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
+            text = manim.Text(asset_name, color=asset_text_color).scale(asset_height)
+
+            asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
+            assets = VGroup(asset)
+
+            assets = VGroup(*[ asset.copy() for i in range(how_many) ])
+            # for i in range(how_many):
+            #     VGroup.add(asset.copy())
+
+            assets.arrange(DOWN, buff=0.1).next_to(person, DOWN)
+
+            return VGroup(person, assets)
+
+        A = create_entity_tether("A", 0.5, WHITE, "USD", 20, '#9DC87B', 0.7, 0.3, asset_text_color='#2A5A25').shift(R * 5.5 + U * 3)
+        A[ 1 ].arrange_in_grid(rows=4, cols=5, buff=0.1).next_to(A[ 0 ], D)
+        self.play(Create(A))
+
+        bank2ex_bridge_arc_1 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).move_to(get_halfway(bank_rect, exchange_rect)).shift(
+            L * 0.5 + R * 1).set_z_index(2)
+        bank2ex_bridge_arc_2 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).flip(axis=U).move_to(
+            get_halfway(bank_rect, exchange_rect)).shift(R * 0.5 + R * 1).set_z_index(2)
+        usdts_moved2ex = A[ 1 ].copy().move_to(exchange_rect)
+        usdts_moved2bank = A[ 1 ].copy().move_to(bank_rect)
+        bank2ex_bridge = VGroup(bank2ex_bridge_arc_1, bank2ex_bridge_arc_2)
+
+        bank2ex_path = VMobject()
+
+        A_usdts_list = reversed([ *A[ 1 ] ])
+        # for name, age in zip(names, ages):
+        #     print(name, age)
+
+        # [ MoveAlongPath(A_usdts_list[ i ], VMobject().set_points_as_corners(
+        #     [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2bank[ index ].get_center ])) for
+        #   usdt, index in zip(A_usdts_list, range(len(usdts_moved2bank))) ]
+
+        # path_list = [ ]
+        # for usdt, index in zip(A_usdts_list, range(len(usdts_moved2bank))):
+        #     path_list.append(VMobject().set_points_as_corners(
+        #         [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2bank[ index ].get_center() ]))
+        #
+        #
+        # self.play(Create(VGroup(*path_list)))
+        # bank2ex_path.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5,-1, 0 ]),
+        #                                   last_anchor)
+        # bank2ex_path.set_style(stroke_width=10, stroke_color=RED)
+
+        self.play(Create(bank2ex_bridge_arc_1),
+                  Create(bank2ex_bridge_arc_2))
+
+        self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
+
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), bank2ex_bridge.get_top(), bank2ex_bridge.get_bottom(), usdts_moved2ex[ index ].get_center() ])) for
+                                    usdt, index in zip(reversed([ *A[ 1 ] ]), range(len(usdts_moved2ex))) ]
+                                 , lag_ratio=0.5), run_time=2)
+        self.wait(2)
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), bank2ex_bridge.get_bottom(), bank2ex_bridge.get_top(), usdts_moved2bank[ index ].get_center() ])) for
+                                    usdt, index in zip(list(A[ 1 ]), range(len(usdts_moved2bank))) ]
+                                 , lag_ratio=0.5), run_time=2)
+
+        self.wait(0.734)
+
+        # [ usdt.animate. for usdt in A_usdts_list ]
+
+        # A_usdts_list =list(A[1])
+
+        # A_usdts_list  =[]
+        # for i in range(len(A[1])):
+        #     A_usdts_list.append()
+
+        # TODO 7.079 secs스테이블 코인은 일반적으로 은행을 통해 실제 코인을 보증할 법정통화를 보내면 스테이블 코인 회사에서 발행합니다
+        # TODO 0:00:13.814  ~  0:00:20.893
+        # TODO 1.0secs pause
+        # TODO 0:00:20.893  ~  0:00:21.893
+
+        # bridge_arc_1 = ArcBetweenPoints(O, L*2.5)
+        bridge_arc_1 = ArcBetweenPoints(O, L * 2, radius=-3, color=DARK_GRAY).move_to(get_halfway(tether_company_rect, bank_rect)).shift(
+            U * 1).set_z_index(2)
+        bridge_arc_2 = ArcBetweenPoints(O, L * 2, radius=-3, color=DARK_GRAY).flip(axis=L).move_to(
+            get_halfway(tether_company_rect, bank_rect)).shift(D * 1).set_z_index(2)
+
+        self.play(Create(bridge_arc_1),
+                  Create(bridge_arc_2))
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        self.play(A[ 1 ].animate.move_to(tether_company_rect))
+        self.wait(1.079)
+
+        usdts = create_entity_tether("A", 0.5, WHITE, "USDT", 20, C_USDT, 0.7, 0.3)[ 1 ]
+
+        # tethers = VGroup([])
+        # for i in range(len(tether_1ea)):
+        #     tethers.add(tether_1ea[ i ])
+        usdts.arrange_in_grid(4, 5, buff=0.1).move_to(A[ 1 ])
+
+        self.play(Create(usdts))
+
+        last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        my_line = VMobject()
+        my_line.set_points_as_corners([ usdts.get_center(), [ usdts.get_x(), -1, 0 ], [ 2, -1, 0 ] ])
+        my_line.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]),
+                                          last_anchor)
+        my_line.set_style(stroke_width=10, stroke_color=RED)
+        # my_line.add_points_as_corners([ 2 * RIGHT + DOWN, 2 * RIGHT + 2 * DOWN ])
+
+        # self.add(my_line)
+
+        self.play(AnimationGroup(VGroup(exchange, investment).animate.shift(D * 2),
+                                 AnimationGroup(FadeOut(bank2ex_bridge_arc_1), FadeOut(bank2ex_bridge_arc_2)),
+                                 MoveAlongPath(usdts, path=my_line),
+                                 lag_ratio=0.5,
+                                 run_time=3
+                                 )
+                  )
+
+        self.play(VGroup(exchange, investment).animate.shift(U * 2),
+                  # AnimationGroup(FadeIn(bank2ex_bridge_arc_1), FadeIn(bank2ex_bridge_arc_2)),
+                  )
+
+        # TODO 5.014 secs이제 이 스테이블코인으로 해외 거래소나 탈중앙화 거래소를 마음대로 이용할 수 있습니다
+        # TODO 0:00:21.893  ~  0:00:26.907
+        # TODO 1.0secs pause
+        # TODO 0:00:26.907  ~  0:00:27.907
+
+        # self.play(usdts.animate.move_to(exchange_rect),run_time=2)
+        # self.wait(4.014)
+
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
+        usdts_moved2ex = A[ 1 ].copy().move_to(exchange_rect)
+        self.wait(1)
+        self.play(AnimationGroup(*[ usdt.animate.move_to(usdts_moved2ex[ index ].get_center()) for
+                                    usdt, index in zip([ *usdts[ 10: ] ], range(len(usdts_moved2ex))) ]
+                                 , lag_ratio=0.5), run_time=2)
+
+        profit_from_ex = Tex('Users earn Profit', font_size=40).next_to(usdts[ 17 ], D)
+        self.wait(1.014)
+        self.play(Create(profit_from_ex))
+        self.wait(1)
+
+        # TODO 3.383 secs스테이블 코인과 달러는 1대 1로 교환될 수 있습니다
+        # TODO 0:00:21.893  ~  0:00:25.276
+        # TODO 1.0secs pause
+        # TODO 0:00:25.276  ~  0:00:26.276
+
+        usd_1ea = create_entity_tether("A", 0.5, WHITE, "1 USD", 20, '#9DC87B', 1.2, 0.4, asset_text_color='#2A5A25')[ 1 ][ 0 ]
+        usdt_1ea = create_entity_tether("A", 0.5, WHITE, "1 USDT", 20, C_USDT, 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        arrow = MathTex(r'\Leftrightarrow')
+        # arrow = MathTex()
+
+        usd_equals_usdt = VGroup(usd_1ea, arrow, usdt_1ea).arrange(R)
+        usd_equals_usdt.move_to(get_moved_coor_based_submob(usd_equals_usdt, usd_equals_usdt.get_top(), [ 5.5, -1, 0 ]))
+
+        self.play(Create(usd_equals_usdt), run_time=3)
+        self.wait(1.383)
+
+        # TODO 7.901 secs이번에 큰 이슈가 된 테라나 코인을 담보로 스마트 컨트랙트로 발행되는 다이처럼 법정통화 없이도 스테이블 코인을 만들 수 있습니다
+        # TODO 0:00:26.276  ~  0:00:34.177
+        # TODO 1.0secs pause
+        # TODO 0:00:34.177  ~  0:00:35.177
+        eth_1ea = create_entity_tether("A", 0.5, WHITE, "ETH", 20, C_ETH, 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        luna_1ea = create_entity_tether("A", 0.5, WHITE, "LUNC", 20, '#071C4B', 1.2, 0.4, asset_text_color='#FEE834')[ 1 ][ 0 ]
+        dai_1ea = create_entity_tether("A", 0.5, WHITE, "DAI", 20, '#DFAF4B', 1.2, 0.4, asset_text_color=WHITE)[ 1 ][ 0 ]
+        ustc_1ea = create_entity_tether("A", 0.5, WHITE, "USTC", 20, '#528EED', 1.2, 0.4, asset_text_color='#0B389B')[ 1 ][ 0 ]
+
+        luna_equals_ustc = VGroup(luna_1ea, arrow.copy(), ustc_1ea).arrange(R).move_to([ 5, -2, 0 ]).next_to(usd_equals_usdt, D, buff=0.6)
+        eth_equals_dai = VGroup(eth_1ea, arrow.copy(), dai_1ea).arrange(R).move_to([ 5, -2, 0 ]).next_to(luna_equals_ustc, D, buff=0.6)
+
+        self.play(Create(luna_equals_ustc), run_time=2)
+        self.play(Create(eth_equals_dai), run_time=2)
+
+        self.wait(4.901)
+
+        # self.play(ReplacementTransform(usd_1ea, colla_1ea))
+
+        # other_stables_1eas = VGroup(dai_1ea,ustc_1ea).arrange(D).move_to(usdt_1ea)
+
+        # self.play(ReplacementTransform(usdt_1ea,other_stables_1eas))
+
+        # TODO 4.24 secs그러나 이번 영상의 범위를 벗어나기 때문에 나중에 따로 알아보겠습니다
+        # TODO 0:00:35.177  ~  0:00:39.417
+        # TODO 1.0secs pause
+        # TODO 0:00:39.417  ~  0:00:40.417
+
+        self.play(Uncreate(eth_equals_dai), run_time=1.5)
+        self.play(Uncreate(luna_equals_ustc), run_time=1.5)
+        self.wait(2.24)
+
+        # self.play(Uncreate())
+
+        # TODO 12.395 secs가장 유명한 테더를 예로 들자면 1테더를 발행하기 위해서는 1달러를 담보로 맡겨야하고 테더사는 언제든 사람들에게 돈을 돌려줄 수 있게 지급준비율을 유지하며 받은 달러 일부를 활용해 투자수익을 얻습니다
+
+        # TODO 0:00:46.431  ~  0:00:58.826
+
+        # TODO 1.0secs pause
+
+        # TODO 0:00:58.826  ~  0:00:59.826
+
+        self.play(Circumscribe(usd_equals_usdt), run_time=2)
+        self.wait(4)
+
+        # self.add(index_labels(A[1]))
+
+        comp2inv_bridge_arc_1 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).move_to(
+            get_halfway(tether_company_rect, investment_rect)).shift(
+            L * 0.5 + R * 1).set_z_index(2)
+        comp2inv_bridge_arc_2 = ArcBetweenPoints(O, D * 2, radius=-3, color=DARK_GRAY).flip(axis=U).move_to(
+            get_halfway(tether_company_rect, investment_rect)).shift(R * 0.5 + R * 1).set_z_index(2)
+        usdts_moved2inv = A[ 1 ].copy().move_to(investment_rect)
+        usdts_moved2comp = A[ 1 ].copy().move_to(tether_company_rect)
+        comp2inv_bridge = VGroup(comp2inv_bridge_arc_1, comp2inv_bridge_arc_2)
+
+        self.play(Create(comp2inv_bridge_arc_1),
+                  Create(comp2inv_bridge_arc_2))
+
+        # self.play(A[ 1 ].animate.move_to(bank_rect))
+        # self.play(A[ 1 ].animate(rate_func = there_and_back_with_pause).move_to(exchange_rect))
+
+        return2_pos = A[ 1 ][ 12 ].get_center()
+
+        self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+            [ usdt.get_center(), comp2inv_bridge.get_top(), comp2inv_bridge.get_bottom(), usdts_moved2inv[ index ].get_center() ])) for
+                                    usdt, index in zip(reversed([ *A[ 1 ][ -10: ] ]), range(len(usdts_moved2inv))) ]
+                                 , lag_ratio=0.5), run_time=3)
+
+        profit_from_inv = Tex('Companies earn Profit', font_size=40).next_to(A[ 1 ][ 12 ], D)
+        self.play(Create(profit_from_inv))
+        self.wait(2.395)
+        # self.play(AnimationGroup(*[ MoveAlongPath(usdt, VMobject().set_points_as_corners(
+        #     [ usdt.get_center(), comp2inv_bridge.get_bottom(), comp2inv_bridge.get_top(), usdts_moved2comp[ index ].get_center() ])) for
+        #                             usdt, index in zip(list(A[ 1 ]), range(len(usdts_moved2comp))) ]
+        #                          , lag_ratio=0.5), run_time=2)
+
+        # TODO 5.086 secs다시 1테더를 가져가면 1테더를 소각시키고 1달러를 돌려받을 수 있습니다
+        # TODO 0:00:59.826  ~  0:01:04.912
+        # TODO 1.0secs pause
+        # TODO 0:01:04.912  ~  0:01:05.912
+        # last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        # my_line = VMobject()
+        # my_line.set_points_as_corners( [usdts[7].get_center(),usdts[7].get_center()])
+        # my_line.add_cubic_bezier_curve_to
+        # my_line.add_points_as_corners([ [usdts[7].get_x(), -1, 0] , return2_pos])
+        # my_line.set_style(stroke_width=10, stroke_color=RED)
+
+        usdt_return_path = CubicBezier(usdts[ 7 ].get_center(), np.array([ usdts[ 7 ].get_x() - 0.5, -1, 0 ]),
+                                       np.array([ usdts[ 7 ].get_x() - 0.5, -1, 0 ]),
+                                       np.array([ 2, -1, 0 ]))
+
+        usdt_return_path.add_points_as_corners([ np.array([ A[ 1 ][ 7 ].get_x(), -1, 0 ]), return2_pos ])
+
+        # self.play(Create(bezier))
+
+        # self.play()
+
+        A_asset_row_2 = usdts[ 7 ].get_center()
+        # last_anchor = usdts.copy().next_to(A[ 0 ], D).get_center()
+        # my_line = VMobject()
+        # my_line.set_points_as_corners([ usdts.get_center(), [ usdts.get_x(), -1, 0 ], [ 2, -1, 0 ] ])
+        # my_line.add_cubic_bezier_curve_to(np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]), np.array([ last_anchor[ 0 ] - 0.5, -1, 0 ]),
+        #                                   last_anchor)
+        # my_line.set_style(stroke_width=10, stroke_color=RED)
+
+        # self.play(MoveAlongPath(usdts[5:10], VMobject().set_points_as_corners(
+        #     [ usdts[5:10].get_center(), comp2inv_bridge.get_top(), comp2inv_bridge.get_bottom(), A[1][7].get_bottom()+D*0.1]))
+
+        # self.play(AnimationGroup(VGroup(exchange, investment).animate.shift(D * 2),
+        #                          AnimationGroup(FadeOut(bank2ex_bridge_arc_1), FadeOut(bank2ex_bridge_arc_2)),
+        #                          MoveAlongPath(usdts, path=my_line),
+        #                          lag_ratio=0.5,
+        #                          run_time=3
+        #                          )
+        #           )
+        #
+        # self.play(VGroup(exchange, investment).animate.shift(U * 2),
+        #           # AnimationGroup(FadeIn(bank2ex_bridge_arc_1), FadeIn(bank2ex_bridge_arc_2)),
+        #           )
+
+        self.play(AnimationGroup(
+            VGroup(investment, exchange, usdts[ 10: ], A[ 1 ][ 10: ], profit_from_inv, profit_from_ex, usd_equals_usdt).animate.shift(
+                D * 2),
+            FadeOut(VGroup(comp2inv_bridge)),
+            MoveAlongPath(usdts[ 5:10 ], usdt_return_path),
+            lag_ratio=0.5,
+            run_time=2.086))
+        # self.play(MoveAlongPath(usdts[ 5:10 ], usdt_return_path))
+        self.play(Uncreate(usdts[ 5:10 ], reverse_rate_function=True))
+        self.play(A[ 1 ][ 5:10 ].animate.move_to([ bank_rect.get_x(), A[ 1 ][ 5 ].get_y(), 0 ]))
+        self.play(A[ 1 ][ 5:10 ].animate.move_to(A_asset_row_2))
+        self.play(VGroup(investment, exchange, usdts[ 10: ], A[ 1 ][ 10: ], profit_from_inv, profit_from_ex, usd_equals_usdt).animate.shift(
+            U * 2))
+
+        # TODO 13.132 secs이렇게 법정통화를 스테이블 코인으로 만들면 비트코인을 들고 있는 것처럼 변동성에도 노출이 안 되고
+        #  현금과 같은 가치를 지닌 자산을 어느나라 거래소든 지갑이든 국경을 자유롭게 이동할 수 있어 많이 사용합니다
+        # TODO 0:00:58.487  ~  0:01:11.619
+        # TODO 1.0secs pause
+        # TODO 0:01:11.619  ~  0:01:12.619
+        self.play(usd_equals_usdt.animate.shift(U*2),run_time=2)
+        no_vol = Tex('Free from volatility').scale(0.8).next_to(usd_equals_usdt,D*5).align_to(exchange_rect,U)
+        no_border = Tex('Money without borders').scale(0.8).next_to(no_vol,D)
+
+        self.play(Create(no_vol),run_time=3)
+        self.wait(2)
+        self.play(Create(no_border),run_time=3)
+
+
+        self.wait(20)
 
 class L01S02_pair(MovingCameraScene):
     def construct(self):
@@ -711,4 +1707,6 @@ class L01S02_pair(MovingCameraScene):
                                  ))
 
         self.wait(5)
+
+
 
