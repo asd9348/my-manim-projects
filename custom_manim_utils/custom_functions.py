@@ -168,11 +168,11 @@ def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fi
     return VGroup(circle, text)
 
 
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK):
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK,scaler=1):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
     box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = manim.Text(asset_name, color=asset_text_color).scale(asset_height)
+    text = manim.Text(asset_name, color=asset_text_color).scale(scaler*asset_height)
 
     asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
 

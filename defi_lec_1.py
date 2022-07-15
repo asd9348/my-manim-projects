@@ -358,25 +358,6 @@ class price(Scene):
 
         self.wait(q)
 
-        usdt = create_entity("A", 0.5, WHITE, "USDT", BLUE, 2, 1)[ 1 ]
-        usd = create_entity("A", 0.5, WHITE, "USD", GREEN, 2, 1)[ 1 ]
-        equal = MathTex(r'\neq').scale(2)
-
-        n_eq_form = VGroup(usd, equal, usdt).arrange(RIGHT, buff=0.5).scale(2)
-        # usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
-        # us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(DR, buff=0.5)
-        #
-        # backed_by_1 = Tex('Backed by').move_to(np.array([usdt.get_x(),0,0]))
-        # backed_by_2 = Tex('Backed by')
-        # backed_by_3 = Tex('Backed by').move_to(np.array([usg.get_x(),0,0]))
-
-        self.play(Create(n_eq_form))
-
-        self.play(Uncreate(n_eq_form))
-
-        price_of_usdt = Tex(r'Price of 1 "USDT" is \\normally 1.01 \textasciitilde \  0.99 "USD"').scale(1.5)
-
-        self.play(Create(price_of_usdt))
 
 
 class order_book_market_and_limit_order(Scene):
