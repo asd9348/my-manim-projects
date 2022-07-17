@@ -1,3 +1,4 @@
+import manim.utils.space_ops
 from manim import *
 
 import random as rd
@@ -24,6 +25,7 @@ class final(Scene):
 class working4(MovingCameraScene):
     def construct(self):
         #     self.add(NumberPlane())
+        self.camera.frame.save_state()
 
         speak(self, title='Scene2', txt=
 
@@ -38,7 +40,7 @@ class working4(MovingCameraScene):
         '테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다#1'
         '금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다#1'
         '지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다#1'
-              , keep_pitch=True, update=True, speed=1.4)
+              , keep_pitch=True, update=0, speed=1.4)
         # TODO 3.117 secs가격이라는 것에 대해 정확하게 정의하고 가겠습니다
         # TODO 0:00:00.000  ~  0:00:03.117
         # TODO 1.0secs pause
@@ -51,16 +53,17 @@ class working4(MovingCameraScene):
         # TODO 0:00:17.962  ~  0:00:18.962
         price = Tex('Price').scale(2)
 
-        self.play(Create(price))
+        self.play(Create(price), run_time=3.117)
 
         price_text = Tex(
-            r'A price is the (usually not negative) quantity of payment \\or compensation given by one party to another\\in return for goods or services.').next_to(
+            r'A price is the (usually not negative) quantity of payment \\'
+            r'or compensation given by one party to another\\in return for goods or services.').next_to(
             price, D)
-        self.play(Create(price_text))
+        self.play(Create(price_text), run_time=10)
+        self.wait(3)
 
         self.play(Uncreate(price),
-                  Uncreate(price_text))
-
+                  Uncreate(price_text), run_time=2.845)
 
         # TODO 6.584 secs비티씨 테더 페어에서 38000테더라고 적혀있다면 있다면 우리는 비티씨의 가격이 얼마라고 얘기합니까
         # TODO 0:00:18.962  ~  0:00:25.546
@@ -81,35 +84,45 @@ class working4(MovingCameraScene):
         pair_rect_text = Tex("BTCUSDT").next_to(pair_rect, UP, buff=0.2).scale(0.8)
         pair = VGroup(pair_rect, pair_rect_text)
 
-        self.play(Create(pair, run_time=1))
+        self.play(Create(pair),
+                  run_time=2)
 
-        curr_px_usdt= Tex('38000 USDT').move_to(pair_rect)
-        curr_px= Tex('38000').move_to(pair_rect)
-        curr_px_usd= Tex('38000 USD?').next_to(pair_rect,R)
+        curr_px_usdt = Tex('38000 USDT').move_to(pair_rect)
+        curr_px = Tex('38000').move_to(pair_rect)
+        curr_px_usd = Tex('38000 USD?').next_to(pair_rect, R)
 
-        self.play(Create(curr_px_usdt))
-        self.wait(q)
+        self.play(Create(curr_px_usdt),
+                  run_time=2)
+        self.wait(2)
 
-        self.play(Create(curr_px_usd))
+        self.play(Create(curr_px_usd),
+                  run_time=2)
 
-        curr_px_usd_cross = Cross(curr_px_usdt)
+        curr_px_usd_cross = Cross(curr_px_usd)
+        self.wait(1)
 
-        self.play(Create(curr_px_usd_cross))
+        self.play(Create(curr_px_usd_cross),
+                  run_time=1)
 
         circle_curr_px = Circle(color=GREEN, radius=1, stroke_width=25).rotate(PI / 2).move_to(curr_px_usdt)
-        self.wait(q)
+        self.wait(2)
 
+        usdt_1 = create_entity("A", 0.5, WHITE, "USDT", C_USDT, 2, 1, asset_text_color=WHITE, scaler=0.8)[ 1 ]
+        usd_1 = create_entity("A", 0.5, WHITE, "USD", '#9DC87B', 2, 1, asset_text_color='#2A5A25', scaler=0.8)[ 1 ]
+        equal = MathTex(r'\neq').scale(2)
+
+        n_eq_form = VGroup(usd_1, equal, usdt_1).arrange(RIGHT, buff=0.5)
+        # self.play(Create(n_eq_form))
+        #
+        #
         # not_equal= Tex(r'USD \neq USDT')
-        self.play(ReplacementTransform(VGroup(pair, curr_px_usdt, curr_px_usd_cross, curr_px_usd,circle_curr_px), not_equal))
+        self.play(ReplacementTransform(VGroup(pair, curr_px_usdt, curr_px_usd_cross, curr_px_usd, circle_curr_px), n_eq_form),
+                  run_time=3)
         # self.wait(q)
         #
         # self.play(Uncreate(not_equal))
         #
         #
-        usdt_1 = create_entity("A", 0.5, WHITE, "USDT",C_USDT, 2, 1,asset_text_color= WHITE,scaler=0.8)[ 1 ]
-        usd_1 = create_entity("A", 0.5, WHITE, "USD",  '#9DC87B', 2, 1,asset_text_color= '#2A5A25',scaler=0.8)[ 1 ]
-        equal = MathTex(r'\neq').scale(2)
-
         n_eq_form = VGroup(usd_1, equal, usdt_1).arrange(RIGHT, buff=0.5).scale(2)
         # usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
         # us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(DR, buff=0.5)
@@ -118,11 +131,9 @@ class working4(MovingCameraScene):
         # backed_by_2 = Tex('Backed by')
         # backed_by_3 = Tex('Backed by').move_to(np.array([usg.get_x(),0,0]))
 
-        self.play(Create(n_eq_form))
-
-        self.play(Uncreate(n_eq_form))
-
-
+        self.wait(2)
+        self.play(Uncreate(n_eq_form),
+                  run_time=1.814)
 
         # btc_equal_38000 = Tex('1 BTC = 38000')
         # cross = Cross(stroke_width=25).scale(3)
@@ -147,81 +158,136 @@ class working4(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:00:45.326  ~  0:00:46.326
 
-
-        usdt = create_entity("A", 0.5, WHITE, "USDT",C_USDT, 2, 1,asset_text_color= WHITE,scaler=0.8)[ 1 ].to_edge(UL, buff=1)
-        usd = create_entity("A", 0.5, WHITE, "USD",  '#9DC87B', 2, 1,asset_text_color= '#2A5A25',scaler=0.8)[ 1 ].to_edge(DL, buff=1)
-        usg = SVGMobject('svgs/government.svg',fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7)
-        us_people = SVGMobject('svgs/people.svg',fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7).to_edge(R, buff=1)
+        usdt = create_entity("A", 0.5, WHITE, "USDT", C_USDT, 2, 1, asset_text_color=WHITE, scaler=0.8)[ 1 ].to_edge(UL, buff=1)
+        usd = create_entity("A", 0.5, WHITE, "USD", '#9DC87B', 2, 1, asset_text_color='#2A5A25', scaler=0.8)[ 1 ].to_edge(DL, buff=1)
+        usg = SVGMobject('svgs/government.svg', fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7)
+        us_people = SVGMobject('svgs/people.svg', fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7).to_edge(R, buff=1)
 
         usd_copy = usd.copy().move_to(ORIGIN).to_edge(U, buff=1)
 
         usg_copy = usg.copy().move_to(ORIGIN).to_edge(U, buff=0.5).to_edge(R, buff=1)
-        us_people.move_to([usg_copy.get_x(),us_people.get_y(),0])
+        us_people.move_to([ usg_copy.get_x(), us_people.get_y(), 0 ])
 
         backed_by_1 = Tex('Backed by').move_to(np.array([ usdt.get_x(), 0, 0 ]))
         backed_by_2 = Tex('Backed by')
         backed_by_3 = Tex('Backed by').move_to(np.array([ us_people.get_x(), 0, 0 ]))
 
-        self.play(Create(usdt))
-        self.play(Create(backed_by_1))
-        self.play(Create(usd))
-        self.play(TransformFromCopy(usd, usd_copy))
-        self.play(Create(backed_by_2))
-        self.play(Create(usg))
-        self.play(TransformFromCopy(usg, usg_copy))
-        self.play(Create(backed_by_3))
-        self.play(Create(us_people))
+        self.play(Create(usdt), run_time=0.5)
+        self.play(Create(backed_by_1), run_time=0.5)
+        self.play(Create(usd), run_time=0.5)
+        self.play(TransformFromCopy(usd, usd_copy), run_time=0.5)
+        self.play(Create(backed_by_2), run_time=0.5)
+        self.play(Create(usg), run_time=0.5)
+        self.play(TransformFromCopy(usg, usg_copy), run_time=0.5)
+        self.play(Create(backed_by_3), run_time=0.5)
+        self.play(Create(us_people), run_time=0.5)
 
-        self.play(FadeOut(VGroup(usd, backed_by_1)))
-        self.play(Uncreate(usdt))
-        self.wait(q)
+        self.wait(2)
 
+        self.play(FadeOut(VGroup(usd, backed_by_1)), run_time=0.5)
+        self.wait(1)
+        self.play(Uncreate(usdt), run_time=0.55)
 
         # TODO 4.881 secs달러를 옹호하는 건 아닙니다. 미국정부가 망하면 달러는 종이 쓰레기가 됩니다
         # TODO 0:00:46.326  ~  0:00:51.207
         # TODO 1.0secs pause
         # TODO 0:00:51.207  ~  0:00:52.207
-        self.play(FadeOut(VGroup(usg, backed_by_2)))
-        self.play(Uncreate(usd_copy))
-        self.wait(q)
+        self.play(FadeOut(VGroup(usg, backed_by_2)),
+                  run_time=1.881)
+        self.wait(1.5)
+        self.play(Uncreate(usd_copy),
+                  run_time=1)
+        self.wait(1.5)
 
         # TODO 3.165 secs그리고 국민이 없다면 정부는 존재할 수 없습니다
         # TODO 0:00:52.207  ~  0:00:55.372
         # TODO 1.0secs pause
         # TODO 0:00:55.372  ~  0:00:56.37
-        self.play(FadeOut(VGroup(us_people, backed_by_3)))
-        self.play(Uncreate(usg_copy))
-        self.wait(q)
-
+        self.play(FadeOut(VGroup(us_people, backed_by_3)),
+                  run_time=1)
+        self.wait(1)
+        self.play(Uncreate(usg_copy),
+                  run_time=1.165)
+        self.wait(1)
 
         # TODO 5.98 secs테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다
         # TODO 0:00:56.372  ~  0:01:02.352
         # TODO 1.0secs pause
         # TODO 0:01:02.352  ~  0:01:03.352
 
-
         price_of_usdt = Tex(r'Price of 1 "USDT" is \\normally 1.01 \textasciitilde \  0.99 "USD"').scale(1.5)
 
-        self.play(Create(price_of_usdt))
-        self.wait(q)
-        self.play(Uncreate(price_of_usdt))
+        self.play(Create(price_of_usdt), run_time=2)
+        self.wait(2)
+        self.play(Uncreate(price_of_usdt), run_time=2.98)
 
         # TODO 8.263 secs금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다
         # TODO 0:01:03.352  ~  0:01:11.615
         # TODO 1.0secs pause
         # TODO 0:01:11.615  ~  0:01:12.615
 
+        plane = Axes(
+            x_range=(0, 20),
+            y_range=(0, 12),
+            x_length=15,
+            y_length=8,
+            axis_config={"include_numbers": False,
+                         'include_ticks': False},
+        )
+        x_list = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+        y_list = [ 5.5, 5, 6, 4, 5, 7, 5, 6, 5, 4, 5, 6, 5, 6, 7, 6, 5, 6, 7, 6.2 ]
+        # plane.center()
+        line_graph = plane.plot_line_graph(
+            x_values=x_list,
+            y_values=y_list,
+            line_color=C_USDT,
+            add_vertex_dots=0,
+            # vertex_dot_style=dict(stroke_width=1, fill_color=PURPLE),
+            stroke_width=10,
+        )
+
+        path = VMobject()
+        print(plane.c2p(1, 5), plane.c2p(1, 7))
+
+        print([ plane.c2p(x, y) for x, y in zip(x_list, y_list) ])
+        path.set_points_as_corners([ plane.c2p(x, y) for x, y in zip(x_list, y_list) ])
+        px = ValueTracker(1)
+        px.add_updater(lambda mob: mob.become(ValueTracker(self.camera.frame.get_y())))
+
+        label = Tex(rf'Price of USDT : {px.get_value()}')
+        label.add_updater(lambda mob: mob.become(
+            Tex(rf'Price of USDT\\{(1.015 - 0.985) * (self.camera.frame.get_y() - (-1 / 3)) / (1 / 3 - (-1 / 3)) + 0.985:.03f} USD').next_to(
+                self.camera.frame.get_center(), UR, buff=0.5)))
+        icon = SVGMobject('svgs/svg/color/usdt.svg')
+        icon.add_updater(
+            lambda mob: mob.become(SVGMobject('svgs/svg/color/usdt.svg').scale(0.65).next_to(self.camera.frame.get_center(), DR, buff=0.5)))
+
+        self.play(Create(plane),
+                  self.camera.frame.animate.scale(0.7).move_to(path.get_start()),
+                  run_time=4)
+
+        self.play(Create(label),
+                  Create(icon), run_time=2)
+        self.play(Create(line_graph),
+                  MoveAlongPath(self.camera.frame, path),
+                  run_time=6)
+
+        label.clear_updaters()
+        icon.clear_updaters()
+
+        self.wait(2)
+
+        self.play(Restore(self.camera.frame),
+                  label.animate.scale(1 / 0.7).move_to([ 2, 2.5, 0 ]),
+                  icon.animate.scale(1 / 0.7).move_to([ 2 - label.width / 2, 2.5, 0 ]).shift(L * 2),
+                  run_time=4)
+
         # TODO 8.686 secs지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다
         # TODO 0:01:12.615  ~  0:01:21.301
         # TODO 1.0secs pause
         # TODO 0:01:21.301  ~  0:01:22.301
 
-
-
-
         self.wait(10)
-
-
 
 
 class working2(MovingCameraScene):
@@ -248,6 +314,47 @@ class working2(MovingCameraScene):
         '매도 지정가 주문이면 빨간색 칸 어딘가에 주문을 넣습니다. 즉 지금가격보다 조금이라도 비싼 가격에 판매하려고 대기합니다#1'
               , keep_pitch=True, update=1, speed=1.4)
 
+        plane = NumberPlane(
+            x_range=(0, 20),
+            y_range=(0, 10),
+            x_length=16,
+            y_length=9,
+            axis_config={"include_numbers": False},
+        )
+        x_list = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+        y_list = [ 0, 1, 4, 2, 3, 7, 2, 6, 8, 6, 3, 2, 1, 2, 14, 7, 2, 6, 8, 6 ]
+        # plane.center()
+        line_graph = plane.plot_line_graph(
+            x_values=x_list,
+            y_values=y_list,
+            line_color=GOLD_E,
+            vertex_dot_style=dict(stroke_width=3, fill_color=PURPLE),
+            stroke_width=4,
+        )
+
+        path = VMobject()
+        # graph_1_subpath = axes.plot(lambda x: (x - 1) ** 2 + 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
+        # graph_1_subpath.reverse_points()
+        # path.add_subpath(graph_1_subpath.get_all_points())
+        # graph_2_subpath = axes.plot(lambda x: -(x - 1) ** 2 - 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
+        # dot_for_path = Dot(radius=0.3, color=GREEN).move_to(graph_1_b_dot)
+
+        # print()
+        # path.add_points_as_corners([ plane.c2p(x, y) for x, y in zip(x_list, y_list) ])
+        # path.add_points_as_corners(graph_2_subpath.get_all_points())
+
+        # self.play(MoveAlongPath(self.camera.frame, path), run_time=5)
+
+        dot = Dot().move_to(plane.c2p(5, 5))
+        self.play(Create(dot))
+        #           MoveAlongPath(self.camera.frame, line_graph), run_time=5)
+        # self.play(MoveAlongPath(self.camera.frame, path), run_time=5)
+
+        # dot_for_path = Dot()
+
+        # self.play(MoveAlongPath(dot_for_path, line_graph), run_time=5)
+
+        # self.play(self.camera.frame.animate.scale(0.5).move_to(dot_for_path))
 
 
 class working3(ThreeDScene):
@@ -377,12 +484,12 @@ class working1(MovingCameraScene):
             if x < 5:
                 y = np.log(x)
             elif 5 <= x <= 7:
-                y= x
+                y = x
             else:
-                y=-2*x+20
+                y = -2 * x + 20
             return y
 
-        graph = axes.plot(my_func,discontinuities=[5,7], x_range=[0.1, 8],color=BLUE,dt=0.01)
+        graph = axes.plot(my_func, discontinuities=[ 5, 7 ], x_range=[ 0.1, 8 ], color=BLUE, dt=0.01)
 
         def my_rate(t: float, pause_ratio: float = 0.2) -> float:
             a = 1.0 / pause_ratio
@@ -394,7 +501,7 @@ class working1(MovingCameraScene):
                 return smooth(a - a * t)
 
         circle = Circle(radius=3)
-        self.play(Create(circle), rate_func= there_and_back,run_time=8)
+        self.play(Create(circle), rate_func=there_and_back, run_time=8)
         # self.add(axes, graph)
 
         # x_tracker = ValueTracker(5)
@@ -567,3 +674,160 @@ class working1(MovingCameraScene):
 #         self.play(Restore(self.camera.frame))
 #
 #         self.wait(10)
+class working1(MovingCameraScene):
+    # config.background_color = GRAY
+
+    def construct(self):
+        # axes = Axes(x_range=[ 0, 16 ], y_range=[ 0, 9 ], x_length=16 * 0.9, y_length=9 * 0.9, )
+        #
+        # # circle = Circle(radius=3)
+        # # self.play(Create(circle), rate_func=there_and_back, run_time=8)
+        #
+        numberplane = NumberPlane()
+        self.add(numberplane)
+        #
+        # x_axis = Line(start=L * 15, end=R * 15, stroke_width=10, stroke_color=WHITE)
+        # b_radius_tracker = ValueTracker(1)
+        # a_radius = 2
+        #
+        # a_line = Line(start=O, end=U * a_radius * 2, color=BLUE).shift(L * a_radius)
+        # b_line = Line(start=O, color=GREEN, end=U * b_radius_tracker.get_value() * 2).shift(
+        #     L * a_radius + R * np.sqrt(a_radius * 2 * b_radius_tracker.get_value() * 2))
+        #
+        # a_l_arc = ArcBetweenPoints(color=BLUE, start=a_line.get_start(), end=a_line.get_end(), radius=a_radius)
+        # a_r_arc = ArcBetweenPoints(color=BLUE, start=a_line.get_end(), end=a_line.get_start(), radius=a_radius)
+        # b_l_arc = ArcBetweenPoints(start=b_line.get_start(), end=b_line.get_end(), radius=b_radius_tracker.get_value())
+        # b_r_arc = ArcBetweenPoints(start=b_line.get_end(), end=b_line.get_start(), radius=b_radius_tracker.get_value())
+        #
+        # b_line_start = b_line.get_start()
+        # b_line_end = b_line.get_end()
+        #
+        # b_r_arc.add_updater(lambda x: x.become(
+        #     ArcBetweenPoints(color=GREEN, start=b_line_start, end=b_line.get_start(), radius=b_radius_tracker.get_value())))
+        # b_l_arc.add_updater(
+        #     lambda x: x.become(ArcBetweenPoints(color=GREEN, start=b_line_end, end=b_line.get_end(), radius=1)))
+        #
+        # self.add(b_l_arc, b_r_arc)
+        # self.add(x_axis, a_line, b_line)
+        #
+        # self.play(Rotate(a_line, angle=PI),
+        #           Rotate(b_line, angle=PI),
+        #           Create(a_l_arc, angle=PI),
+        #           Create(a_r_arc, angle=PI),
+        #           rate_func=smooth,
+        #           run_time=1)
+        #
+        # a_circle = Circle(radius=a_radius, color=BLUE).move_to(a_line)
+        # b_circle = Circle(radius=b_radius_tracker.get_value(), color=GREEN).move_to(b_line)
+        #
+        # a = a_line.get_center()
+        # b = b_line.get_center()
+        #
+        # self.add(a_circle, b_circle)
+        # self.remove(b_r_arc, b_l_arc, a_l_arc, a_r_arc)
+        #
+        # a_dia_line = Line(start=a_circle.get_bottom(), end=a_circle.get_top(), color=BLUE)
+        # b_dia_line = Line(start=b_circle.get_bottom(), end=b_circle.get_top(), color=GREEN)
+        # a2b_line = Line(start=a_circle.get_center(), end=b_circle.get_center())
+        # a2b_line_horz = DashedLine(start=[ a_circle.get_x(), b_circle.get_y(), 0 ], end=b_line.get_center())
+        # a_vert_brace = BraceBetweenPoints(a_circle.get_center(), [ a_circle.get_x(), b_circle.get_y(), 0 ])
+        # a_horz_brace = BraceBetweenPoints(a_circle.get_bottom(), b_circle.get_bottom())
+        #
+        # a_dia_line.add_updater(lambda x: x.become(Line(start=a_circle.get_bottom(), end=a_circle.get_top(), color=BLUE)))
+        # b_dia_line.add_updater(lambda x: x.become(Line(start=b_circle.get_bottom(), end=b_circle.get_top(), color=GREEN)))
+        # a2b_line.add_updater(lambda x: x.become(Line(start=a_circle.get_center(), end=b_circle.get_center())))
+        # a2b_line_horz.add_updater(lambda x: x.become(DashedLine(start=[ a_circle.get_x(), b_circle.get_y(), 0 ], end=b_circle.get_center())))
+        #
+        # def vert_brace(x):
+        #     if a_circle.get_y()>b_circle.get_y():
+        #         x.become(BraceBetweenPoints(a_circle.get_center(), [ a_circle.get_x(), b_circle.get_y(), 0 ]))
+        #     else:
+        #         x.become(BraceBetweenPoints([ a_circle.get_x(), b_circle.get_y(), 0 ], a_circle.get_center()))
+        #
+        # a_vert_brace.add_updater(vert_brace)
+        #
+        # a_horz_brace.add_updater(lambda x: x.become(BraceBetweenPoints(a_circle.get_bottom(), b_circle.get_bottom())))
+        #
+        # b_circle.add_updater(lambda circle: circle.become(Circle(radius=b_radius_tracker.get_value(), color=GREEN)
+        #                                                   .move_to(
+        #     [ a_circle.get_x() + np.sqrt(a_radius * 2 * b_radius_tracker.get_value()*2), b_radius_tracker.get_value(), 0 ])))
+        #
+        # self.add(a_dia_line, b_dia_line)
+        # self.remove(a_line, b_line)
+        #
+        # self.add(a2b_line, a2b_line_horz, a_vert_brace, a_horz_brace)
+        #
+        # self.play(b_radius_tracker.animate.set_value(3), run_time=3)
+
+        # square = Square(4, color=GREEN, fill_opacity=0.5)
+        line = Line(start=[ -2, 2, 0 ], end=[ 3, 1, 0 ])
+        # poly = Polygram([[-2,2,0],[2,2,0]],
+        #                 [[2,2,0],[2,-2,0]],
+        #                 [[2,-2,0],[-2,-2,0]],
+        #                 [[-2,-2,0],[-2,2,0]],color = RED, fill_opacity=0.5)
+        poly = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5)
+
+        print(poly.get_end_anchors())
+
+        temp_line = Line(start=poly.get_end_anchors()[ 1 ], end=poly.get_end_anchors()[ 2 ])
+        # self.add(index_labels(poly.get_subpaths()))
+        print(line_intersection(([ -2, 2, 0 ], [ 3, -1, 0 ]), (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ])))
+
+        # alpha_half_base = line_intersection((A, alpha_half_point), (B, C))
+
+        intersect = line_intersection(
+            ([ -2, 2, 0 ], [ 3, 1, 0 ]),
+            (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ]))
+        dot = Dot(radius=0.5).move_to(line_intersection(
+            ([ -2, 2, 0 ], [ 3, 1, 0 ]),
+            (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ])))
+
+        fuck_line = Line(start= [-6, 4, 0], end= [-3, -2,0])
+        print(f'getvector is {fuck_line.get_vector()}')
+        fuck_vector = Arrow(start=O, end=fuck_line.get_vector(), buff=0)
+        print(f'unutvector is {fuck_line.get_unit_vector()}')
+        fuck_unit_vector = Arrow(start=O, end=fuck_line.get_unit_vector(),buff=0, color = RED)
+        # new_tri = Polygon
+        new_tri = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], intersect, color=BLUE, fill_opacity=1)
+
+        # print(angle_of_vector([1,1,0]))
+        # new_tri.align_to(O, UL)
+        # print(new_tri.get_end_anchors())
+        # print(angle_between_vectors([ 2, 2, 0 ],intersect))
+        # print(angle_between_vectors([ 4, -0.5, 0 ],[ 4, 0, 0 ]))
+
+        print('current angle is', angle_of_vector(fuck_line.get_unit_vector()))
+
+
+        unit_vector_1 =Line(start= [-2, 2, 0], end= [2, 2,0]).get_unit_vector()
+        unit_vector_2 =Line(start= [-2, 2, 0], end= [2, 1.2,0]).get_unit_vector()
+        unit_vector_1_arrow = Arrow(start=O, end=unit_vector_1, buff=0, color=RED)
+        unit_vector_2_arrow = Arrow(start=O, end=unit_vector_2, buff=0, color=BLUE)
+        angle = angle_between_vectors(unit_vector_1, unit_vector_2)
+        print(angle)
+
+        fuck_angle = angle_of_vector(fuck_line.get_unit_vector()) -(-angle)
+
+        new_tri_path = Line(start=new_tri.get_center(), end=new_tri.get_center() + R * new_tri.width + D * new_tri.height)
+        # self.add( line,
+        #          poly, dot,new_tri, new_rect,fuck_line,unit_vector_1_arrow,unit_vector_2_arrow
+        #          )
+
+        self.play(Create(poly))
+
+        self.play(Create(new_tri))
+        poly.become(Polygon([ -2, 2, 0 ], intersect, [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5))
+        # self.play(Create(poly))
+        # self.play(Create(poly))
+
+        self.play(Rotate(new_tri, angle=fuck_angle, about_point=new_tri.get_end_anchors()[-1]))
+
+        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri,new_tri.get_end_anchors()[-1] , [-6, 4, 0])))
+        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri,new_tri.get_end_anchors()[-2] , fuck_line.get_end())))
+
+
+
+        # new_fucking_temp_line = Line(start=midpoint(new_tri.get_end_anchors()[ -1 ],new_tri.get_end_anchors()[ -2 ], end=fuck_line.e)
+        # self.play(MoveAlongPath(new_tri, fuck_line))
+
+        self.wait(5)

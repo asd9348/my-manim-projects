@@ -1709,7 +1709,6 @@ class L01S02_pair(MovingCameraScene):
         self.wait(5)
 
 
-
 class L01S05_order(MovingCameraScene):
     def construct(self):
         # self.add(NumberPlane().set_z_index(1))

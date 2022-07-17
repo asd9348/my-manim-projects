@@ -19,4 +19,9 @@
 # # n=256
 # # print([ i * 256 / n for i in range(0, n) ])
 
-print('fuck')
+
+list =[]
+for i in range(21):
+    list.append(i)
+
+print(list)
