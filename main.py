@@ -678,88 +678,8 @@ class working1(MovingCameraScene):
     # config.background_color = GRAY
 
     def construct(self):
-        # axes = Axes(x_range=[ 0, 16 ], y_range=[ 0, 9 ], x_length=16 * 0.9, y_length=9 * 0.9, )
-        #
-        # # circle = Circle(radius=3)
-        # # self.play(Create(circle), rate_func=there_and_back, run_time=8)
-        #
         numberplane = NumberPlane()
         self.add(numberplane)
-        #
-        # x_axis = Line(start=L * 15, end=R * 15, stroke_width=10, stroke_color=WHITE)
-        # b_radius_tracker = ValueTracker(1)
-        # a_radius = 2
-        #
-        # a_line = Line(start=O, end=U * a_radius * 2, color=BLUE).shift(L * a_radius)
-        # b_line = Line(start=O, color=GREEN, end=U * b_radius_tracker.get_value() * 2).shift(
-        #     L * a_radius + R * np.sqrt(a_radius * 2 * b_radius_tracker.get_value() * 2))
-        #
-        # a_l_arc = ArcBetweenPoints(color=BLUE, start=a_line.get_start(), end=a_line.get_end(), radius=a_radius)
-        # a_r_arc = ArcBetweenPoints(color=BLUE, start=a_line.get_end(), end=a_line.get_start(), radius=a_radius)
-        # b_l_arc = ArcBetweenPoints(start=b_line.get_start(), end=b_line.get_end(), radius=b_radius_tracker.get_value())
-        # b_r_arc = ArcBetweenPoints(start=b_line.get_end(), end=b_line.get_start(), radius=b_radius_tracker.get_value())
-        #
-        # b_line_start = b_line.get_start()
-        # b_line_end = b_line.get_end()
-        #
-        # b_r_arc.add_updater(lambda x: x.become(
-        #     ArcBetweenPoints(color=GREEN, start=b_line_start, end=b_line.get_start(), radius=b_radius_tracker.get_value())))
-        # b_l_arc.add_updater(
-        #     lambda x: x.become(ArcBetweenPoints(color=GREEN, start=b_line_end, end=b_line.get_end(), radius=1)))
-        #
-        # self.add(b_l_arc, b_r_arc)
-        # self.add(x_axis, a_line, b_line)
-        #
-        # self.play(Rotate(a_line, angle=PI),
-        #           Rotate(b_line, angle=PI),
-        #           Create(a_l_arc, angle=PI),
-        #           Create(a_r_arc, angle=PI),
-        #           rate_func=smooth,
-        #           run_time=1)
-        #
-        # a_circle = Circle(radius=a_radius, color=BLUE).move_to(a_line)
-        # b_circle = Circle(radius=b_radius_tracker.get_value(), color=GREEN).move_to(b_line)
-        #
-        # a = a_line.get_center()
-        # b = b_line.get_center()
-        #
-        # self.add(a_circle, b_circle)
-        # self.remove(b_r_arc, b_l_arc, a_l_arc, a_r_arc)
-        #
-        # a_dia_line = Line(start=a_circle.get_bottom(), end=a_circle.get_top(), color=BLUE)
-        # b_dia_line = Line(start=b_circle.get_bottom(), end=b_circle.get_top(), color=GREEN)
-        # a2b_line = Line(start=a_circle.get_center(), end=b_circle.get_center())
-        # a2b_line_horz = DashedLine(start=[ a_circle.get_x(), b_circle.get_y(), 0 ], end=b_line.get_center())
-        # a_vert_brace = BraceBetweenPoints(a_circle.get_center(), [ a_circle.get_x(), b_circle.get_y(), 0 ])
-        # a_horz_brace = BraceBetweenPoints(a_circle.get_bottom(), b_circle.get_bottom())
-        #
-        # a_dia_line.add_updater(lambda x: x.become(Line(start=a_circle.get_bottom(), end=a_circle.get_top(), color=BLUE)))
-        # b_dia_line.add_updater(lambda x: x.become(Line(start=b_circle.get_bottom(), end=b_circle.get_top(), color=GREEN)))
-        # a2b_line.add_updater(lambda x: x.become(Line(start=a_circle.get_center(), end=b_circle.get_center())))
-        # a2b_line_horz.add_updater(lambda x: x.become(DashedLine(start=[ a_circle.get_x(), b_circle.get_y(), 0 ], end=b_circle.get_center())))
-        #
-        # def vert_brace(x):
-        #     if a_circle.get_y()>b_circle.get_y():
-        #         x.become(BraceBetweenPoints(a_circle.get_center(), [ a_circle.get_x(), b_circle.get_y(), 0 ]))
-        #     else:
-        #         x.become(BraceBetweenPoints([ a_circle.get_x(), b_circle.get_y(), 0 ], a_circle.get_center()))
-        #
-        # a_vert_brace.add_updater(vert_brace)
-        #
-        # a_horz_brace.add_updater(lambda x: x.become(BraceBetweenPoints(a_circle.get_bottom(), b_circle.get_bottom())))
-        #
-        # b_circle.add_updater(lambda circle: circle.become(Circle(radius=b_radius_tracker.get_value(), color=GREEN)
-        #                                                   .move_to(
-        #     [ a_circle.get_x() + np.sqrt(a_radius * 2 * b_radius_tracker.get_value()*2), b_radius_tracker.get_value(), 0 ])))
-        #
-        # self.add(a_dia_line, b_dia_line)
-        # self.remove(a_line, b_line)
-        #
-        # self.add(a2b_line, a2b_line_horz, a_vert_brace, a_horz_brace)
-        #
-        # self.play(b_radius_tracker.animate.set_value(3), run_time=3)
-
-        # square = Square(4, color=GREEN, fill_opacity=0.5)
         line = Line(start=[ -2, 2, 0 ], end=[ 3, 1, 0 ])
         # poly = Polygram([[-2,2,0],[2,2,0]],
         #                 [[2,2,0],[2,-2,0]],
@@ -782,11 +702,11 @@ class working1(MovingCameraScene):
             ([ -2, 2, 0 ], [ 3, 1, 0 ]),
             (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ])))
 
-        fuck_line = Line(start= [-6, 4, 0], end= [-3, -2,0])
+        fuck_line = Line(start=[ -6, 4, 0 ], end=[ -3, -2, 0 ])
         print(f'getvector is {fuck_line.get_vector()}')
         fuck_vector = Arrow(start=O, end=fuck_line.get_vector(), buff=0)
         print(f'unutvector is {fuck_line.get_unit_vector()}')
-        fuck_unit_vector = Arrow(start=O, end=fuck_line.get_unit_vector(),buff=0, color = RED)
+        fuck_unit_vector = Arrow(start=O, end=fuck_line.get_unit_vector(), buff=0, color=RED)
         # new_tri = Polygon
         new_tri = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], intersect, color=BLUE, fill_opacity=1)
 
@@ -798,15 +718,14 @@ class working1(MovingCameraScene):
 
         print('current angle is', angle_of_vector(fuck_line.get_unit_vector()))
 
-
-        unit_vector_1 =Line(start= [-2, 2, 0], end= [2, 2,0]).get_unit_vector()
-        unit_vector_2 =Line(start= [-2, 2, 0], end= [2, 1.2,0]).get_unit_vector()
+        unit_vector_1 = Line(start=[ -2, 2, 0 ], end=[ 2, 2, 0 ]).get_unit_vector()
+        unit_vector_2 = Line(start=[ -2, 2, 0 ], end=[ 2, 1.2, 0 ]).get_unit_vector()
         unit_vector_1_arrow = Arrow(start=O, end=unit_vector_1, buff=0, color=RED)
         unit_vector_2_arrow = Arrow(start=O, end=unit_vector_2, buff=0, color=BLUE)
         angle = angle_between_vectors(unit_vector_1, unit_vector_2)
         print(angle)
 
-        fuck_angle = angle_of_vector(fuck_line.get_unit_vector()) -(-angle)
+        fuck_angle = angle_of_vector(fuck_line.get_unit_vector()) - (-angle)
 
         new_tri_path = Line(start=new_tri.get_center(), end=new_tri.get_center() + R * new_tri.width + D * new_tri.height)
         # self.add( line,
@@ -820,14 +739,122 @@ class working1(MovingCameraScene):
         # self.play(Create(poly))
         # self.play(Create(poly))
 
-        self.play(Rotate(new_tri, angle=fuck_angle, about_point=new_tri.get_end_anchors()[-1]))
+        self.play(Rotate(new_tri, angle=fuck_angle, about_point=new_tri.get_end_anchors()[ -1 ]))
 
-        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri,new_tri.get_end_anchors()[-1] , [-6, 4, 0])))
-        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri,new_tri.get_end_anchors()[-2] , fuck_line.get_end())))
-
-
+        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri, new_tri.get_end_anchors()[ -1 ], [ -6, 4, 0 ])))
+        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri, new_tri.get_end_anchors()[ -2 ], fuck_line.get_end())))
 
         # new_fucking_temp_line = Line(start=midpoint(new_tri.get_end_anchors()[ -1 ],new_tri.get_end_anchors()[ -2 ], end=fuck_line.e)
         # self.play(MoveAlongPath(new_tri, fuck_line))
 
         self.wait(5)
+
+
+class working1(MovingCameraScene):
+    # config.background_color = GRAY
+
+    def construct(self):
+        numberplane = NumberPlane()
+        self.add(numberplane)
+
+        # start_dot = Dot(color=RED).move_to([ -2, 2, 0 ])
+
+        # line = Line(start=[ 3, -1, 0 ], end=[ 2, 2, 0 ])
+        # line = Arrow(start=[ 2, 2, 0 ], end=[ 3, -1, 0 ])
+
+        # tri_base_line = Arrow(color=BLUE, buff=0, start=[ 2, -1, 0 ], end=[ -2, -1, 0 ])
+        # tri_base_line = Line(color=BLUE, buff=0, start=[ -2, -1, 0 ], end=[ 2, -1, 0 ])
+        #
+        # unit_v = line.get_unit_vector()
+        # print(is_on_left(tri_base_line, np.array([0,-5,0])))
+
+        tri = Triangle().scale(2.5)
+        print(tri.get_end_anchors())
+
+        dot = Dot(color=RED).move_to(center_of_mass(tri.get_end_anchors()))
+
+        perp_line_left = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+            color=YELLOW).set_z_index(3)
+        perp_line_right = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+            color=PINK).set_z_index(3)
+        perp_line_bottom = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
+            color=GREEN).set_z_index(3)
+        perp_line_left.add_updater(lambda line: line.become(
+            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+                color=YELLOW).set_z_index(3)))
+        perp_line_right.add_updater(lambda line: line.become(
+            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+                color=PINK).set_z_index(3)))
+        perp_line_bottom.add_updater(lambda line: line.become(
+            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
+                color=GREEN).set_z_index(3)))
+
+        vertical_green = Line(stroke_width=13, start=[ 4, -4, 0 ], end=[ 4, -4, 0 ] + U * get_line_length(perp_line_bottom))
+        vertical_pink = Line(stroke_width=13, start=vertical_green.get_end(),
+                             end=vertical_green.get_end() + U * get_line_length(perp_line_right))
+        vertical_yellow = Line(stroke_width=13, start=vertical_green.get_end(), end=vertical_green.get_end() + U * perp_line_left.get_end())
+
+        my_scaler = 2
+        vertical_green.add_updater(lambda x: x.become(
+            Line(color=GREEN, stroke_width=13, start=O, end=U * get_line_length(perp_line_bottom) * my_scaler).next_to([ 4, -4, 0 ], U,
+                                                                                                                       buff=0)))
+        vertical_pink.add_updater(
+            lambda x: x.become(Line(color=PINK, stroke_width=13, start=O,
+                                    end=U * get_line_length(perp_line_right) * my_scaler).next_to(vertical_green, U, buff=-0.1)))
+        vertical_yellow.add_updater(
+            lambda x: x.become(Line(color=YELLOW, stroke_width=13, start=O,
+                                    end=U * get_line_length(perp_line_left) * my_scaler).next_to(vertical_pink, U, buff=-0.2)))
+
+        self.add(tri, dot, perp_line_left, perp_line_right, perp_line_bottom, vertical_green, vertical_yellow, vertical_pink)
+
+        self.play(dot.animate.shift(L * 1))
+        self.play(dot.animate.shift(R * 1))
+        self.play(dot.animate.shift(U * 1))
+        self.play(dot.animate.shift(D * 1))
+        self.play(dot.animate.shift(D * 0.5 + R * 0.5))
+
+        yellow_tri = Polygon(dot.get_center(), dot.get_center() + L * get_line_length(perp_line_left) / np.cos(30 * DEGREES),
+                             move_point_with_angle_and_length(dot.get_center(), 120 * DEGREES,
+                                                              get_line_length(perp_line_left) / np.cos(30 * DEGREES)), color=BLUE,
+                             fill_opacity=1).set_z_index(0.5)
+
+        pink_tri = Polygon(dot.get_center(), dot.get_center() + R * get_line_length(perp_line_right) / np.cos(30 * DEGREES),
+                           move_point_with_angle_and_length(dot.get_center(), 60 * DEGREES,
+                                                            get_line_length(perp_line_right) / np.cos(30 * DEGREES)), color=BLUE,
+                           fill_opacity=1).set_z_index(0.5)
+        green_tri = Polygon(dot.get_center(),
+                            dot.get_center() + np.array([ np.cos(-60 * DEGREES), np.sin(-60 * DEGREES), 0 ]) * get_line_length(
+                                perp_line_bottom) / np.cos(30 * DEGREES),
+                            move_point_with_angle_and_length(dot.get_center(), -120 * DEGREES,
+                                                             get_line_length(perp_line_bottom) / np.cos(30 * DEGREES)), color=BLUE,
+                            fill_opacity=1).set_z_index(0.5)
+
+        perp_line_left.clear_updaters()
+        perp_line_right.clear_updaters()
+        perp_line_bottom.clear_updaters()
+
+        self.add(yellow_tri, green_tri, pink_tri)
+
+        yellow_tri.add(perp_line_left)
+        pink_tri.add(perp_line_right)
+        green_tri.add(perp_line_bottom)
+
+        print('pink tri anchors', pink_tri.get_end_anchors())
+        print('yellow tri anchors', yellow_tri.get_end_anchors())
+        print('green tri anchors', green_tri.get_end_anchors())
+
+        big_tri = Polygon(yellow_tri.get_end_anchors()[ 0 ], pink_tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ], color=GRAY,
+                          fill_opacity=0.5, fill_color=GRAY).set_z_index(4)
+        self.play(Rotate(yellow_tri, angle=-120 * DEGREES, about_point=center_of_mass(yellow_tri.get_end_anchors())))
+
+        self.play(Create(big_tri))
+
+        big_tri.add(yellow_tri, pink_tri)
+        # self.play(Rotate(VGroup(big_tri, yellow_tri,pink_tri), angle=-120 * DEGREES, about_point=center_of_mass(big_tri.get_end_anchors())))
+        self.play(Rotate(big_tri, angle=-120 * DEGREES, about_point=center_of_mass(big_tri.get_end_anchors())))
+
+        self.wait(10)
+
+        # poly = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5)
+
+        # print(poly.get_end_anchors())

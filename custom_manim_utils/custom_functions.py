@@ -37,6 +37,63 @@ from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
+def get_perpendicular_line(point, line):
+    if type(line) is list:
+        temp_line = Line(start=line[ 0 ], end=line[ 1 ])
+    else:
+        temp_line = line
+
+    unit_v = temp_line.get_unit_vector()
+
+    if is_on_left(temp_line, point):
+        new_unit_v_angle = angle_of_vector(unit_v) + PI / 2
+    else:
+        new_unit_v_angle = angle_of_vector(unit_v) - PI / 2
+
+    new_unit_v = np.array([ np.cos(new_unit_v_angle), np.sin(new_unit_v_angle), 0 ])
+    hypotenuse = get_dist_btwn_points(point, temp_line.get_end())
+    theta = get_angle_ABC(temp_line.get_end(), point, point + new_unit_v)
+    perpendicular_length = np.cos(theta) * hypotenuse
+
+    return Line(start=point, end=point + new_unit_v * perpendicular_length)
+
+
+def is_on_left(line, point):
+    a = line.get_start()
+    b = line.get_end()
+    c = point
+    return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) > 0
+
+
+def get_line_length(line):
+    """라인 모브젝트를 넣으면 길이를 반환."""
+
+    start = line.get_start()
+    end = line.get_end()
+    length = np.linalg.norm(end - start)
+    return length
+
+
+def get_dist_btwn_points(a, b):
+    dist = np.linalg.norm(a - b)
+    return dist
+
+
+def move_point_with_angle_and_length(start, angle, length):
+    unit_v = np.array([ np.cos(angle), np.sin(angle), 0 ])
+    return start + unit_v * length
+
+
+def get_angle_ABC(a, b, c):
+    """점 abc를 넣으면 선분 ba 와 선분 bc사이의 각도를 반환."""
+    ba_unit_v = Line(start=b, end=a).get_unit_vector()
+    bc_unit_v = Line(start=b, end=c).get_unit_vector()
+
+    angle = angle_between_vectors(ba_unit_v, bc_unit_v)
+
+    return angle
+
+
 def get_halfway(A, B, z=0):
 
     if isinstance(A, np.ndarray):

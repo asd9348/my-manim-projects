@@ -20,8 +20,13 @@
 # # print([ i * 256 / n for i in range(0, n) ])
 
 
-list =[]
-for i in range(21):
-    list.append(i)
+list =[1,2]
+list2 = [2,2]
 
-print(list)
+list3= list+list2
+
+#
+# for i in range(21):
+#     list.append(i)
+
+print(list3)
