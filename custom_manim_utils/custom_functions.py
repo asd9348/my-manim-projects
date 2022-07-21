@@ -4,6 +4,7 @@ import pyttsx3
 import os
 import datetime
 import time
+import open3d as o3d
 
 from datetime import timedelta
 from gtts import gTTS
@@ -14,7 +15,7 @@ from pathlib import Path
 import shutil
 from pprint import pprint
 
-from custom_manim_utils.custom_consts import *
+# from custom_manim_utils.custom_consts import *
 from custom_manim_utils.custom_color_consts import *
 # from custom_manim_utils.custom_ import *
 
@@ -37,6 +38,32 @@ from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
+def get_slope_with_two_points(p1, p2):
+    slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
+
+    return slope
+
+
+def get_y_intersect_with_two_points(p1, p2):
+    slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
+
+    y_intersect = p1[ 1 ] - slope * p1[ 0 ]
+
+    return y_intersect
+
+
+def get_ply_file_triangles(file_name):
+    mesh = o3d.io.read_triangle_mesh(file_name)
+    # mesh.compute_vertex_normals()
+    return np.asarray(mesh.triangles)
+
+
+def get_ply_file_vertexs(file_name):
+    mesh = o3d.io.read_triangle_mesh(file_name)
+    # mesh.compute_vertex_normals()
+    return np.asarray(mesh.vertices)
+
+
 def coin(coin_ticker, type='color', radius=1):
     """type : black , color, icon, white
     coin ticker in lower case
@@ -48,6 +75,7 @@ def coin(coin_ticker, type='color', radius=1):
 
     return SVGMobject(svg_file).scale_to_fit_width(radius * 2)
 
+
 def redraw(func):
     mob = func()
     mob.add_updater(lambda m: mob.become(func()))
@@ -55,7 +83,7 @@ def redraw(func):
 
 
 def get_unit_v_by_angle(angle):
-    unit_v = np.array([np.cos(angle), np.sin(angle), 0])
+    unit_v = np.array([ np.cos(angle), np.sin(angle), 0 ])
 
     return unit_v
 
@@ -81,11 +109,45 @@ def get_perpendicular_line(point, line):
     return Line(start=point, end=point + new_unit_v * perpendicular_length)
 
 
-def is_on_left(line, point):
+def is_on_left(line, point, contain_border=False):
     a = line.get_start()
     b = line.get_end()
     c = point
-    return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) > 0
+    if contain_border == False:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) > 0
+    else:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) >= 0
+
+
+def is_on_right(line, point, contain_border=False):
+    a = line.get_start()
+    b = line.get_end()
+    c = point
+    if contain_border == False:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) > 0
+    else:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) >= 0
+
+
+def is_on_left_by_points(start, end, point, contain_border=False):
+    a = start
+    b = end
+    c = point
+    if contain_border == False:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) < 0
+    else:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) <= 0
+
+
+def is_on_right_by_points(start, end, point, contain_border=False):
+    a = start
+    b = end
+    c = point
+
+    if contain_border == False:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) < 0
+    else:
+        return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) <= 0
 
 
 def get_line_length(line):
@@ -118,7 +180,6 @@ def get_angle_ABC(a, b, c):
 
 
 def get_halfway(A, B, z=0):
-
     if isinstance(A, np.ndarray):
         point_A = A
     else:
@@ -129,7 +190,7 @@ def get_halfway(A, B, z=0):
     else:
         point_B = B.get_center()
 
-    if point_A[0] * point_B[ 0 ]>0:
+    if point_A[ 0 ] * point_B[ 0 ] > 0:
         x_dist = abs(point_A[ 0 ] - point_B[ 0 ]) / 2
         y_dist = abs(point_A[ 1 ] - point_B[ 1 ]) / 2
 
@@ -150,7 +211,7 @@ def get_halfway(A, B, z=0):
     return np.array([ x, y, z ])
 
 
-def get_moved_coor_based_submob(main_mob, point_inside_main_mob, point_goes_to):
+def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
     x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
     y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
 
@@ -159,6 +220,18 @@ def get_moved_coor_based_submob(main_mob, point_inside_main_mob, point_goes_to):
 
     return [ x, y, 0 ]
 
+#
+# def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
+#     x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
+#     y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
+#
+#     x = point_goes_to[ 0 ] + x_compen
+#     y = point_goes_to[ 1 ] + y_compen
+#
+#
+#
+#     return [ x, y, 0 ]
+#
 
 class LabeledRectangle(RoundedRectangle):
 
@@ -189,6 +262,7 @@ class LabeledRectangle(RoundedRectangle):
         super().__init__(width=width, height=height, corner_radius=corner_radius, **kwargs)
         rendered_label.next_to(self, direction)
         self.add(rendered_label)
+
 
 class BoxWithContent(RoundedRectangle):
 
@@ -225,7 +299,6 @@ class BoxWithContent(RoundedRectangle):
         obj.add(self)
 
 
-
 def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN):
     box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1)
     text = Text(text, color=BLACK).scale(height)
@@ -233,14 +306,19 @@ def create_asset_mob(text, width=0.5, height=0.3, fill_color=GREEN, stroke_color
     return VGroup(box, text)
 
 
-def create_box_asset(text,font_size, text_color=BLACK,width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN,stroke_width = 10,stroke_opacity = 0):
-    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_opacity=stroke_opacity)
+def create_box_asset(text, font_size, text_color=BLACK, width=0.5, height=0.3, fill_color=GREEN, stroke_color=GREEN, stroke_width=10,
+                     stroke_opacity=0):
+    box = Rectangle(width=width, height=height, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1,
+                    stroke_opacity=stroke_opacity)
     text = Tex(text, color=text_color, font_size=font_size)
 
     return VGroup(box, text)
 
-def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fill_color=GREEN, stroke_color=GREEN,stroke_width = 10,stroke_opacity = 0):
-    circle = Circle(radius=radius, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_width=stroke_width,stroke_opacity=stroke_opacity)
+
+def create_circle_asset(input_text, font_size=25, text_color=BLACK, radius=0.5, fill_color=GREEN, stroke_color=GREEN, stroke_width=10,
+                        stroke_opacity=0):
+    circle = Circle(radius=radius, fill_color=fill_color, stroke_color=stroke_color, fill_opacity=1, stroke_width=stroke_width,
+                    stroke_opacity=stroke_opacity)
     if type(input_text) is str:
         text = Tex(input_text, color=text_color, font_size=font_size)
     else:
@@ -248,11 +326,12 @@ def create_circle_asset(input_text,font_size=25, text_color=BLACK,radius=0.5, fi
     return VGroup(circle, text)
 
 
-def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height,asset_text_color=BLACK,scaler=1):
+def create_entity(person_name, person_radius, person_color, asset_name, asset_color, asset_width, asset_height, asset_text_color=BLACK,
+                  scaler=1):
     person = LabeledDot(person_name, radius=person_radius, fill_opacity=1.0, color=person_color)
 
     box = Rectangle(width=asset_width, height=asset_height, fill_color=asset_color, stroke_color=asset_color, fill_opacity=1)
-    text = manim.Text(asset_name, color=asset_text_color).scale(scaler*asset_height)
+    text = manim.Text(asset_name, color=asset_text_color).scale(scaler * asset_height)
 
     asset = VGroup(box, text).next_to(person, DOWN, buff=0.1)
 
@@ -291,15 +370,13 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
     pprint(cut_text_list)
 
     file_list = [ ]
-    audio_pos_end=0
+    audio_pos_end = 0
 
     missing_file_counter = 0
     for i in range(len(cut_text_list)):
         clip = cut_text_list[ i ]
 
         if type(clip) is str:
-
-
 
             file_path_obj = Path(rf".\audio_cache\{title}\{title + 'L' + str(i) + ' ' + clip}.mp3")
             file_path_text = rf".\audio_cache\{title}\{title + 'L' + str(i) + ' ' + clip}.mp3"
@@ -311,11 +388,11 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
 
                 gtts_file_path_text = file_path_text
                 new_audio_seg = AudioSegment.from_file(gtts_file_path_text)
-                new_audio_seg.export(file_path_text,bitrate='312k')
+                new_audio_seg.export(file_path_text, bitrate='312k')
                 file_list.append(new_audio_seg)
                 audio_pos_start = audio_pos_end
                 audio_pos_end += new_audio_seg.duration_seconds
-                output += f'# TODO {new_audio_seg.duration_seconds} secs ' + clip + '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}'
+                output += f'# TODO {new_audio_seg.duration_seconds} secs ' + clip + '\n' + rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}'
 
 
 
@@ -345,7 +422,7 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
                     file_list.append(new_audio_seg)
                     audio_pos_start = audio_pos_end
                     audio_pos_end += new_audio_seg.duration_seconds
-                    output += f'# TODO {new_audio_seg.duration_seconds} secs' + clip + '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' '\n'
+                    output += f'# TODO {new_audio_seg.duration_seconds} secs' + clip + '\n' + rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' '\n'
 
                 else:
                     print('it is empty text')
@@ -358,10 +435,9 @@ def speak(self, title='dummy title', txt='dummy text', speed=1.4, keep_pitch=Fal
             file_list.append(cut_muffled_pause_sound)
             audio_pos_start = audio_pos_end
             audio_pos_end += cut_muffled_pause_sound.duration_seconds
-            output += f'# TODO {cut_muffled_pause_sound.duration_seconds}secs' + ' pause'+ '\n' +rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' + '\n\n'
-    if missing_file_counter==1:
+            output += f'# TODO {cut_muffled_pause_sound.duration_seconds}secs' + ' pause' + '\n' + rf'# TODO {format_td(audio_pos_start)}  ~  {format_td(audio_pos_end)}' + '\n\n'
+    if missing_file_counter == 1:
         print('Creating concated file')
-
 
         concated_audio = AudioSegment.from_file(r'.\custom_manim_utils\dummy.mp3')[ :100 ] - 50
         for file in file_list:
@@ -464,28 +540,26 @@ class ThreeDVMobject(VMobject, metaclass=ConvertToOpenGL):
         super().__init__(shade_in_3d=shade_in_3d, **kwargs)
 
 
-
 class MySurface(VGroup, metaclass=ConvertToOpenGL):
 
-
     def __init__(
-        self,
-        func: Callable[[float, float], np.ndarray],
-        point1: np.ndarray = np.array([1,0,0]),
-        point2: np.ndarray =  np.array([-1,0,0]),
-        point3: np.ndarray =  np.array([0,1,0]),
-        u_range: Sequence[float] = [0, 1],
-        v_range: Sequence[float] = [0, 1],
-        resolution: Sequence[int] = 32,
-        surface_piece_config: dict = {},
-        fill_color: Color = BLUE_D,
-        fill_opacity: float = 1.0,
-        checkerboard_colors: Sequence[Color] = [BLUE_D, BLUE_E],
-        stroke_color: Color = LIGHT_GREY,
-        stroke_width: float = 0.5,
-        should_make_jagged: bool = False,
-        pre_function_handle_to_anchor_scale_factor: float = 0.00001,
-        **kwargs,
+            self,
+            func: Callable[ [ float, float ], np.ndarray ],
+            point1: np.ndarray = np.array([ 1, 0, 0 ]),
+            point2: np.ndarray = np.array([ -1, 0, 0 ]),
+            point3: np.ndarray = np.array([ 0, 1, 0 ]),
+            u_range: Sequence[ float ] = [ 0, 1 ],
+            v_range: Sequence[ float ] = [ 0, 1 ],
+            resolution: Sequence[ int ] = 32,
+            surface_piece_config: dict = {},
+            fill_color: Color = BLUE_D,
+            fill_opacity: float = 1.0,
+            checkerboard_colors: Sequence[ Color ] = [ BLUE_D, BLUE_E ],
+            stroke_color: Color = LIGHT_GREY,
+            stroke_width: float = 0.5,
+            should_make_jagged: bool = False,
+            pre_function_handle_to_anchor_scale_factor: float = 0.00001,
+            **kwargs,
     ) -> None:
         self.u_range = u_range
         self.v_range = v_range
@@ -503,15 +577,14 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
         )
         self.func = func
         self._setup_in_uv_space()
-        self.apply_function(lambda p: func(p[0], p[1]))
+        self.apply_function(lambda p: func(p[ 0 ], p[ 1 ]))
         if self.should_make_jagged:
             self.make_jagged()
 
     def _get_u_values_and_v_values(self):
 
-
-        u_values = [-1,0,1]
-        v_values =[0,1,0]
+        u_values = [ -1, 0, 1 ]
+        v_values = [ 0, 1, 0 ]
 
         return u_values, v_values
 
@@ -519,19 +592,18 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
         u_values, v_values = self._get_u_values_and_v_values()
         faces = VGroup()
         for i in range(len(u_values)):
-
-            u1=u_values[i ]
-            u2=u_values[i + 1]
-            v1=v_values[i ]
-            v2=v_values[i + 1]
+            u1 = u_values[ i ]
+            u2 = u_values[ i + 1 ]
+            v1 = v_values[ i ]
+            v2 = v_values[ i + 1 ]
             face = ThreeDVMobject()
             face.set_points_as_corners(
                 [
-                    [1, 0, 0],
-                    [1, 0, 5],
-                    [0, 1, 0],
-                    [0, 1, 5],
-                    [1, 0, 0],
+                    [ 1, 0, 0 ],
+                    [ 1, 0, 5 ],
+                    [ 0, 1, 0 ],
+                    [ 0, 1, 5 ],
+                    [ 1, 0, 0 ],
                 ],
             )
             faces.add(face)
@@ -555,14 +627,14 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
         n_colors = len(colors)
         for face in self:
             c_index = (face.u_index + face.v_index) % n_colors
-            face.set_fill(colors[c_index], opacity=opacity)
+            face.set_fill(colors[ c_index ], opacity=opacity)
         return self
 
     def set_fill_by_value(
-        self,
-        axes: Mobject,
-        colors: Union[Iterable[Color], Color],
-        axis: int = 2,
+            self,
+            axes: Mobject,
+            colors: Union[ Iterable[ Color ], Color ],
+            axis: int = 2,
     ):
         """Sets the color of each mobject of a parametric surface to a color relative to its axis-value
 
@@ -607,15 +679,15 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
                     self.add(axes, surface_plane)
         """
 
-        ranges = [axes.x_range, axes.y_range, axes.z_range]
+        ranges = [ axes.x_range, axes.y_range, axes.z_range ]
 
-        if type(colors[0]) is tuple:
-            new_colors, pivots = [[i for i, j in colors], [j for i, j in colors]]
+        if type(colors[ 0 ]) is tuple:
+            new_colors, pivots = [ [ i for i, j in colors ], [ j for i, j in colors ] ]
         else:
             new_colors = colors
 
-            pivot_min = ranges[axis][0]
-            pivot_max = ranges[axis][1]
+            pivot_min = ranges[ axis ][ 0 ]
+            pivot_max = ranges[ axis ][ 1 ]
             pivot_frequency = (pivot_max - pivot_min) / (len(new_colors) - 1)
             pivots = np.arange(
                 start=pivot_min,
@@ -624,21 +696,21 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
             )
 
         for mob in self.family_members_with_points():
-            axis_value = axes.point_to_coords(mob.get_midpoint())[axis]
-            if axis_value <= pivots[0]:
-                mob.set_color(new_colors[0])
-            elif axis_value >= pivots[-1]:
-                mob.set_color(new_colors[-1])
+            axis_value = axes.point_to_coords(mob.get_midpoint())[ axis ]
+            if axis_value <= pivots[ 0 ]:
+                mob.set_color(new_colors[ 0 ])
+            elif axis_value >= pivots[ -1 ]:
+                mob.set_color(new_colors[ -1 ])
             else:
                 for i, pivot in enumerate(pivots):
                     if pivot > axis_value:
-                        color_index = (axis_value - pivots[i - 1]) / (
-                            pivots[i] - pivots[i - 1]
+                        color_index = (axis_value - pivots[ i - 1 ]) / (
+                                pivots[ i ] - pivots[ i - 1 ]
                         )
                         color_index = min(color_index, 1)
                         mob_color = interpolate_color(
-                            new_colors[i - 1],
-                            new_colors[i],
+                            new_colors[ i - 1 ],
+                            new_colors[ i ],
                             color_index,
                         )
                         if config.renderer == "opengl":
@@ -649,8 +721,4 @@ class MySurface(VGroup, metaclass=ConvertToOpenGL):
 
         return self
 
-
-
 # Specific shapes
-
-

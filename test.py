@@ -1,4 +1,8 @@
-# import numpy as np
+import numpy as np
+
+from custom_manim_utils.custom_functions import *
+
+# import pandas as pd
 # from colour import Color
 #
 # print(type(Color(hsl=(0.33, 0.9,0.1)).get_hex()))
@@ -20,13 +24,110 @@
 # # print([ i * 256 / n for i in range(0, n) ])
 
 
-list =[1,2]
-list2 = [2,2]
+list = [ 1, 2 ]
+list2 = np.array([ 2, 2 ]) * 2
 
-list3= list+list2
+list3 = list + list2
+
+
+def func(p1, p2):
+    if p1 + p2 > 1:
+        p2 = p2 - (p1 + p2 - 1)
+    p3 = 1 - p1 - p2
+    z = p1 * (1 - p1) + p2 * (1 - p2) + p3 * (1 - p3)
+    return np.array([ p1, p2, z ])
+
+
+def func1(p1, p2):
+    if p1 + p2 > 1:
+        p2 = p2 - (p1 + p2 - 1)
+    p3 = 1 - p1 - p2
+    z = p1 * (1 - p1) + p2 * (1 - p2) + p3 * (1 - p3)
+    return [ p1, p2, z ]
+
+
+i = 0
+list = [ ]
+
+
+# for u in np.linspace(0., 1., 11):
+#     for v in np.linspace(0., 1., 11):
+#         print(func1(u, v))
+#
+#         list.append(func(u, v).tolist())
+#
+#         i +=1
+#
+
+def get_slope_with_two_points(p1, p2):
+    slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
+
+    return slope
+
+
+def get_y_intersect_with_two_points(p1, p2):
+    slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
+
+    y_intersect = p1[ 1 ] - slope * p1[ 0 ]
+
+    return y_intersect
+
+
+p1 = [ 1, 2 ]
+p2 = [ 1, 1 ]
+
+
+def is_in_triangle(point, A, B, C, contain_border=False):
+    COM = center_of_mass([ A, B, C ])
+    if is_on_left_by_points(A, B, COM) and \
+            is_on_left_by_points(B, C, COM) and \
+            is_on_left_by_points(C, A, COM):
+        print('we need to use left func')
+        if is_on_left_by_points(A, B, point, contain_border=contain_border) and \
+                is_on_left_by_points(B, C, point, contain_border=contain_border) and \
+                is_on_left_by_points(C, A, point, contain_border=contain_border):
+            print('we need to use left func, it is on left therefore in triangle')
+
+            return True
+        else:
+            print('we need to use left func, it is on right therefore not in triangle')
+            return False
+    else:
+        print('we need to use right func')
+        if is_on_right_by_points(A, B, point, contain_border=contain_border) and \
+                is_on_right_by_points(B, C, point, contain_border=contain_border) and \
+                is_on_right_by_points(C, A, point, contain_border=contain_border):
+            print('we need to use right func, it is on right therefore in triangle')
+            return True
+        else:
+            print('we need to use right func, it is on left therefore not in triangle')
+            return False
+
+
+# a=[1,1,0]
+# b=[2,1.5,0]
+# c=[1,2,0]
+#
+# a=[1,1,0]
+# b=[2,1.5,0]
+# c=[1,2,0]
+
+a = [ 1, 1, 0 ]
+b = [ 2, 1.5, 0 ]
+c = [ 1, 2, 0 ]
+point = [ 1, 1, 0 ]
+# print(is_on_left_by_points(a,c,[0,0,0]))
+
+print(is_in_triangle(point, a, b, c, contain_border=True))
+
+# print(get_slope_with_two_points(p1, p2))
+# print(get_y_intersect_with_two_points(p1, p2))
+
+# print('i is ', i)
+# print(list)
 
 #
 # for i in range(21):
 #     list.append(i)
 
-print(list3)
+# print(list2)

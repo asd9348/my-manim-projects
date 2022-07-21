@@ -9,10 +9,12 @@ from custom_manim_utils.custom_consts import *
 from custom_manim_utils.custom_color_consts import *
 from custom_manim_utils.custom_functions import *
 from custom_manim_utils.custom_mobs import *
+from custom_manim_utils.custom_mobs import *
 from manim_physics import *
 from manim_gearbox import *
 from manim_fontawesome import regular
 from pathlib import Path
+
 config.frame_width = 16
 config.frame_height = 9
 # background_color = W02
@@ -45,7 +47,7 @@ class working4(MovingCameraScene):
         '테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다#1'
         '금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다#1'
         '지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다#1'
-              
+
         '가격은 어떻게 움직일까요#1'
         '우리가 배우기로는 수요와 공급이 교차하는 지점에서 결정된다고 배웁니다#1'
         '그러나 거래소에서의 가격은 그 말보다는 인내심이 더 부족한 쪽에 의해 결정된다고 하는게 이해하기 쉬울겁니다#1'
@@ -302,17 +304,12 @@ class working4(MovingCameraScene):
         # TODO 1.0secs pause
         # TODO 0:01:21.301  ~  0:01:22.301
 
-
-        self.play(Uncreate(VGroup(icon, label, line_graph, plane),run_time=0.949))
-
-
-
+        self.play(Uncreate(VGroup(icon, label, line_graph, plane), run_time=0.949))
 
         # TODO 1.752 secs가격은 어떻게 움직일까요
         # TODO 0:00:00.000  ~  0:00:01.752
         # TODO 1.0secs pause
         # TODO 0:00:01.752  ~  0:00:02.752
-
 
         # TODO 4.578 secs우리가 배우기로는 수요와 공급이 교차하는 지점에서 결정된다고 배웁니다
         # TODO 0:00:02.752  ~  0:00:07.330
@@ -406,8 +403,7 @@ class working4(MovingCameraScene):
 
         supply_func = supply_graph.get_function()
 
-        self.play(Uncreate(VGroup(supply_graph,demand_graph,ax, axis_labels,cross_dot,cross_dot_text)))
-
+        self.play(Uncreate(VGroup(supply_graph, demand_graph, ax, axis_labels, cross_dot, cross_dot_text)))
 
         # new_dot = Dot(0.5, color=RED).move_to(ax.c2p(5, supply_graph.underlying_function(5)))
         #
@@ -415,7 +411,6 @@ class working4(MovingCameraScene):
         #
 
         # self.play(FadeOut(self.mobjects, shift=UP))
-
 
         # TODO 6.874 secs그러나 거래소에서의 가격은 그 말보다는 인내심이 더 부족한 쪽에 의해 결정된다고 하는게 이해하기 쉬울겁니다
         # TODO 0:00:08.330  ~  0:00:15.204
@@ -442,13 +437,11 @@ class working4(MovingCameraScene):
 
         self.play(Create(clock))
 
-
         self.play(AnimationGroup(AnimationGroup(clock_min_angle.animate.set_value(PI / 2 - 4 * 2 * PI),
-                                                clock_hour_angle.animate.set_value(PI / 2 - 4 * 2 * PI / 12)), rate_func= linear, run_time=6))
+                                                clock_hour_angle.animate.set_value(PI / 2 - 4 * 2 * PI / 12)), rate_func=linear,
+                                 run_time=6))
 
-        self.play(FadeOut(clock),run_time=0.874)
-
-
+        self.play(FadeOut(clock), run_time=0.874)
 
         # TODO 6.693 secs누구나 더 높은 가격에 팔고 더 낮은 가격에 사고 싶기 때문에 호가창에는 지정가 주문들이 쌓이기 시작합니다
         # TODO 0:00:16.204  ~  0:00:22.897
@@ -556,19 +549,45 @@ class working3(ThreeDScene):
         return np.array([ x, y, z ])
 
     def dollar_val_surface(self, u, v):
-        x = u
-        y = v
-        k = ((1 + x) / (1 + y)) - 1
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        # x = u
+        # y = v
+        k = ((1 + u) / (1 + v)) - 1
         z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-        hold_val = 0.5 * (1 + x) + 0.5 * (1 + y)
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
         curr_val = hold_val * (1 + z) - 1
 
-        return np.array([ x, y, curr_val ])
+        return np.array([ u, v, curr_val ])
+
+    def dollar_val_surface_circle(self, u, v):
+        if u ** 2 + v ** 2 < 0.5 ** 2:
+            # v=np.sqrt(0.5 ** 2-u ** 2)
+            # return np.array([ u, v, 0 ])
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+        else:
+
+            angle = angle_of_vector(np.array([ u, v, 0 ]))
+            u = np.cos(angle) * 0.5
+            v = np.sin(angle) * 0.5
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
+        # x = u
+        # y = v
 
     def construct(self):
         resolution_fa = 20
-        self.set_camera_orientation(phi=0 * DEGREES, theta=0 * DEGREES, gamma=0, zoom=1)
-        axes = ThreeDAxes(x_range=(-0.99, 3, 0.11), y_range=(-0.99, 3, 0.11), z_range=(-1, 3, 0.1),
+        # self.set_camera_orientation(phi=0 * DEGREES, theta=0 * DEGREES, gamma=0, zoom=1)
+        axes = ThreeDAxes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33), z_range=(-1, 3, 1 / 3),
                           x_length=5, y_length=5, z_length=5)
 
         lab_x = axes.get_x_axis_label(Tex("$x$-label"))
@@ -583,16 +602,28 @@ class working3(ThreeDScene):
             fill_color=PINK
         )
 
+        # sub_axes = ThreeDAxes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33), z_range=(-1, 3, 1/3),
+        #                   x_length=5, y_length=5, z_length=5).shift(IN*2)
+        sub_axes = Axes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33),
+                        x_length=5, y_length=5).shift(IN * 2)
+
+        some_graph = axes.plot(lambda x: 2 * x, x_range=[ -0.99, 2 ]).set_stroke(width=10, color=RED).set_shade_in_3d(True)
+
+        some_graph.set_z_index_by_z_coordinate()
+        entropy1 = ParametricFunction(lambda t: axes.c2p(t, t, 0), color=BLUE, stroke_width=6, t_range=[ -0.99, 3 ]).set_shade_in_3d(True)
         val_graph = Surface(
-            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
+            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v)),
             v_range=[ -0.99, 3 ],
             u_range=[ -0.99, 3 ],
-            resolution=50
+            resolution=30
             # checkerboard_colors=[C0177, C0134]
         )
 
-        val_graph.set_style(fill_opacity=0.8)
+        val_graph.set_style(fill_opacity=0.5)
         val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
+
+        # self.add(sub_axes[0:2],some_graph,entropy1)
+        self.add(some_graph, entropy1)
 
         # imp_loss_surface = Surface(
         #     lambda u, v: axes.c2p(u, v, imp_loss_surface(u, v)),
@@ -626,16 +657,42 @@ class working3(ThreeDScene):
         # face.set_fill(color=RED, opacity=0.5)
         # face.set_stroke(color=RED_E,width=3,opacity=0.7)
         #
+        three_d_wall = ThreeDVMobject().set_points_as_corners([ [ -0.5, -0.5, -0.5 ],
+                                                                [ 2, -0.5, -0.5 ],
+                                                                [ 2, -0.5, 1 ],
+                                                                [ -0.5, -0.5, 1 ],
+                                                                [ -0.5, -0.5, -0.5 ],
+                                                                ]).set_fill(color=BLUE, opacity=1).set_shade_in_3d(True)
 
         # surface_plane.set_style(fill_opacity=1)
         # surface_plane.set_fill_by_value(axes=axes, colors=[(RED, -0.5), (YELLOW, 0), (GREEN, 0.5)], axis=2)
         self.add(axes, labs)
         # self.add(imp_loss_graph)
         # self.play(Create(val_graph),run_time=5)
-        self.add(val_graph)
+        self.add(val_graph, three_d_wall)
         # self.play(Create(my_graph))
         # self.play(my_graph.animate.set_color_by_gradient([RED,BLUE,GREEN]),run_time=3)
         # self.play(my_graph.animate.set_color(RED),run_time=3)
+        # val_graph.get_z_index_reference_point()
+        # some_graph.get_z_index_reference_point()
+
+        # val_graph.set_z_index_by_z_coordinate()
+        # some_graph.set_z_index_by_z_coordinate()
+        # axes.set_z_index(5)
+        # val_graph.set_z_index(1)
+        # some_graph.set_z_index(3)
+        # entropy1.set_z_index(3)
+        # three_d_wall.set_z_index(8)
+        # some_graph.set_z_index_by_z_coordinate()
+
+        # some_graph.shift(IN * 3)
+
+        # print(val_graph.get_z_index_reference_point())
+        # print(some_graph.get_z_index_reference_point())
+        # print(val_graph.get_z())
+        # print(some_graph.get_z())
+        self.set_camera_orientation(theta=-90 * DEGREES, phi=45 * DEGREES, zoom=1)
+
         # self.set_camera_orientation(phi=2 * PI / 5, theta=PI / 5)
         # self.begin_ambient_camera_rotation(rate=0.2, about="theta",run_time=1)
         # self.move_camera(phi=45*DEGREES, about="phi",run_time=3)
@@ -645,223 +702,23 @@ class working3(ThreeDScene):
         self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
         self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
         self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
-        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        self.move_camera(phi=90 * DEGREES, about="phi", run_time=1)
-        self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        self.move_camera(phi=135 * DEGREES, about="phi", run_time=1)
-        self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=90 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=135 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
 
-class working1(MovingCameraScene):
-    # config.background_color = GRAY
-
-    def construct(self):
-        axes = Axes(x_range=[ 0, 10 ], y_range=[ 0, 20 ], x_length=14, y_length=7, )
-
-        def my_func(x):
-            if x < 5:
-                y = np.log(x)
-            elif 5 <= x <= 7:
-                y = x
-            else:
-                y = -2 * x + 20
-            return y
-
-        graph = axes.plot(my_func, discontinuities=[ 5, 7 ], x_range=[ 0.1, 8 ], color=BLUE, dt=0.01)
-
-        def my_rate(t: float, pause_ratio: float = 0.2) -> float:
-            a = 1.0 / pause_ratio
-            if t < 0.5 - pause_ratio / 2:
-                return smooth(a * t)
-            elif t < 0.5 + pause_ratio / 2:
-                return 1
-            else:
-                return smooth(a - a * t)
-
-        circle = Circle(radius=3)
-        self.play(Create(circle), rate_func=there_and_back, run_time=8)
-        # self.add(axes, graph)
-
-        # x_tracker = ValueTracker(5)
-        # z_tracker = ValueTracker(5.5)
-        # a = 3
-        # b = 7
-        #
-        # a_line = axes.get_lines_to_point(axes.c2p(a, graph.underlying_function(a)), color=RED)[ 1 ].set_stroke(width=5).set_z_index(2)
-        # x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())), color=RED)[
-        #     1 ].set_stroke(width=5).set_z_index(2)
-        # b_line = axes.get_lines_to_point(axes.c2p(b, graph.underlying_function(b)), color=RED)[ 1 ].set_stroke(width=5).set_z_index(2)
-        # z_line = axes.get_lines_to_point(axes.c2p(z_tracker.get_value(), graph.underlying_function(z_tracker.get_value())), color=RED)[
-        #     1 ].set_stroke(width=5).set_z_index(2)
-        #
-        # x_line.add_updater(lambda mob: mob.become(
-        #     axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())), color=RED)[
-        #         1 ].set_stroke(width=5).set_z_index(2)))
-        # z_line.add_updater(lambda mob: mob.become(
-        #     axes.get_lines_to_point(axes.c2p(z_tracker.get_value(), graph.underlying_function(z_tracker.get_value())), color=RED)[
-        #         1 ].set_stroke(width=5).set_z_index(2)))
-        #
-        # a2x_area = axes.get_area(graph, x_range=[ a, x_tracker.get_value() ], color=[ BLUE, WHITE ], opacity=0.5,
-        #                          stroke_opacity=0).set_sheen_direction(R)
-        # x2z_area = axes.get_area(graph, x_range=[ x_tracker.get_value(), z_tracker.get_value() ], color=YELLOW, opacity=1)
-        # z2b_area = axes.get_area(graph, x_range=[ x_tracker.get_value(), b ], color=GRAY, stroke_opacity=0).set_sheen(10, R)
-        #
-        # a2x_area.add_updater(lambda mob: mob.become(
-        #     axes.get_area(graph, x_range=[ a, x_tracker.get_value() ], color=[ BLUE, WHITE ], opacity=0.5).set_sheen_direction(R)))
-        # x2z_area.add_updater(
-        #     lambda mob: mob.become(axes.get_area(graph, x_range=[ x_tracker.get_value(), z_tracker.get_value() ], color=YELLOW, opacity=1)))
-        # z2b_area.add_updater(lambda mob: mob.become(
-        #     axes.get_area(graph, x_range=[ x_tracker.get_value(), b ], color=GRAY, stroke_opacity=0).set_sheen(10, R)))
-        #
-        # a2x_area_label = MathTex('F(x)').move_to(a2x_area)
-        # a2x_area_label.add_updater(lambda mob: mob.move_to(a2x_area))
-        #
-        # a_label = Tex(rf'a\\{a:.1f}').scale(0.7).next_to(a_line, D)
-        # x_label = Tex(rf'a\\{x_tracker.get_value():.1f}').scale(0.7).next_to(x_line, D)
-        # z_label = Tex(rf'a\\{z_tracker.get_value():.1f}').scale(0.7).next_to(z_line, D)
-        # b_label = Tex(rf'a\\{b:.1f}').scale(0.7).next_to(b_line, D)
-        #
-        # a_label.add_updater(lambda mob: mob.become(Tex(rf'a\\{a:.1f}').scale(0.7).next_to(a_line, D)))
-        # x_label.add_updater(lambda mob: mob.become(Tex(rf'x\\{x_tracker.get_value():.1f}').scale(0.7).next_to(x_line, D)))
-        # z_label.add_updater(lambda mob: mob.become(Tex(rf'z\\{z_tracker.get_value():.1f}').scale(0.7).next_to(z_line, D)))
-        # b_label.add_updater(lambda mob: mob.become(Tex(rf'b\\{b:.1f}').scale(0.7).next_to(b_line, D)))
-        #
-        # self.add(axes[ 0 ], graph, a_line, x_line, z_line, b_line, a2x_area, x2z_area, z2b_area, a2x_area_label, a_label, x_label, z_label,
-        #          b_label
-        #          )
-        #
-        # self.play(x_tracker.animate.set_value(4))
-        # self.play(x_tracker.animate.set_value(5))
-        # self.play(z_tracker.animate.set_value(6))
-        # self.play(x_tracker.animate.set_value(5.5))
-        #
-
-
-# class working1(MovingCameraScene):
-#     # config.background_color = GRAY
-#     def construct(self):
-#         axes = Axes(x_range=[ -5, 5 ], y_range=[ -8, 8 ], x_length=6, y_length=9, tips=False, axis_config={'include_numbers': 1})
-#         graph_1 = axes.plot(lambda x: (x - 1) ** 2 + 1, color=BLUE, x_range=[ -3, 5 ]).set_z_index(3)
-#         graph_2 = axes.plot(lambda x: -(x - 1) ** 2 - 1, color=RED, x_range=[ -3, 5 ]).set_z_index(3)
-#
-#         x_tracker = ValueTracker(2)
-#         a = 1
-#         b = 3
-#
-#         graph_2_a_dot = Dot(axes.c2p(a, graph_2.underlying_function(a)), color=RED_E).set_z_index(2)
-#         graph_2_x_dot = Dot(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
-#                             color=RED_E).set_z_index(2)
-#         graph_2_b_dot = Dot(axes.c2p(b, graph_2.underlying_function(b)), color=RED_E).set_z_index(2)
-#         graph_1_a_dot = Dot(axes.c2p(a, graph_1.underlying_function(a)), color=BLUE_E).set_z_index(2)
-#         graph_1_x_dot = Dot(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
-#                             color=BLUE_E).set_z_index(2)
-#         graph_1_b_dot = Dot(axes.c2p(b, graph_1.underlying_function(b)), color=BLUE_E).set_z_index(2)
-#
-#         graph_2_x_dot.add_updater(
-#             lambda mob: mob.become(Dot(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
-#                                        color=RED_E).set_z_index(2)))
-#         graph_1_x_dot.add_updater(
-#             lambda mob: mob.become(Dot(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
-#                                        color=BLUE_E).set_z_index(2)))
-#
-#         graph_1_x_dot_label = Tex(rf'({x_tracker.get_value():.1f},{graph_1.underlying_function(x_tracker.get_value()):.1f})').next_to(
-#             graph_1_x_dot, UL)
-#         graph_2_x_dot_label = Tex(rf'({x_tracker.get_value():.1f},{graph_2.underlying_function(x_tracker.get_value()):.1f})').next_to(
-#             graph_2_x_dot, DL)
-#         graph_1_x_dot_label.add_updater(
-#             lambda mob: mob.become(
-#                 Tex(rf'({x_tracker.get_value():.1f},{graph_1.underlying_function(x_tracker.get_value()):.1f})').scale(0.7).next_to(
-#                     graph_1_x_dot, UL, buff=0.05)))
-#         graph_2_x_dot_label.add_updater(
-#             lambda mob: mob.become(
-#                 Tex(rf'({x_tracker.get_value():.1f},{graph_2.underlying_function(x_tracker.get_value()):.1f})').scale(0.7).next_to(
-#                     graph_2_x_dot, DL, buff=0.05)
-#             ))
-#
-#         graph_2_a_line = axes.get_lines_to_point(axes.c2p(a, graph_2.underlying_function(a)), color=RED).set_stroke(width=5).set_z_index(2)
-#         graph_2_x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
-#                                                  color=RED).set_stroke(width=5).set_z_index(2)
-#         graph_2_b_line = axes.get_lines_to_point(axes.c2p(b, graph_2.underlying_function(b)), color=RED).set_stroke(width=5).set_z_index(2)
-#
-#         graph_1_a_line = axes.get_lines_to_point(axes.c2p(a, graph_1.underlying_function(a)), color=BLUE).set_stroke(width=5).set_z_index(2)
-#         graph_1_x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
-#                                                  color=BLUE).set_stroke(width=5).set_z_index(2)
-#         graph_1_b_line = axes.get_lines_to_point(axes.c2p(b, graph_1.underlying_function(b)), color=BLUE).set_stroke(width=5).set_z_index(2)
-#
-#         graph_2_x_line.add_updater(lambda mob: mob.become(
-#             axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
-#                                     color=RED).set_stroke(width=5).set_z_index(2)))
-#         graph_1_x_line.add_updater(lambda mob: mob.become(
-#             axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
-#                                     color=BLUE).set_stroke(width=5).set_z_index(2)))
-#
-#         graph_2_a2x_area = axes.get_area(graph_2, x_range=[ a, x_tracker.get_value() ], color=RED_A, opacity=0.3).set_sheen_direction(U)
-#         graph_1_x2b_area = axes.get_area(graph_1, x_range=[ x_tracker.get_value(), b ], color=BLUE_A, opacity=0.3).set_sheen_direction(D)
-#
-#         graph_1_x2b_area.add_updater(lambda mob: mob.become(
-#             axes.get_area(graph_1, x_range=[ x_tracker.get_value(), b ], color=BLUE_A, opacity=0.3).set_sheen_direction(D)))
-#         graph_2_a2x_area.add_updater(lambda mob: mob.become(
-#             axes.get_area(graph_2, x_range=[ a, x_tracker.get_value() ], color=RED_A, opacity=0.3).set_sheen_direction(U)))
-#
-#         graph_1_label = axes.get_graph_label(graph_1, label=MathTex(r'y=(x-1)^2+1'), x_val=b, direction=np.array([ 1., 0., 0. ]), buff=0.25,
-#                                              color=BLUE_E, dot=False, dot_config=None)
-#         graph_2_label = axes.get_graph_label(graph_2, label=MathTex(r'y=-(x-1)^2-1'), x_val=b, direction=np.array([ 1., 0., 0. ]),
-#                                              buff=0.25, color=RED_E, dot=False, dot_config=None)
-#         self.add(axes,
-#                  graph_1,
-#                  graph_2,
-#                  graph_1_label,
-#                  graph_2_label,
-#                  graph_2_a_line,
-#                  graph_2_x_line,
-#                  graph_2_b_line,
-#                  graph_1_a_line,
-#                  graph_1_x_line,
-#                  graph_1_b_line,
-#                  graph_2_a_dot,
-#                  graph_2_x_dot,
-#                  graph_2_b_dot,
-#                  graph_1_a_dot,
-#                  graph_1_x_dot,
-#                  graph_1_b_dot,
-#                  graph_1_x2b_area,
-#                  graph_2_a2x_area,
-#                  graph_2_x_dot_label,
-#                  graph_1_x_dot_label
-#                  )
-#
-#         self.play(x_tracker.animate.set_value(2.5), run_time=3)
-#         self.play(x_tracker.animate.set_value(1.5), run_time=3)
-#         self.play(x_tracker.animate.set_value(2), run_time=3)
-#
-#         self.camera.frame.save_state()
-#
-#         path = VMobject()
-#         graph_1_subpath = axes.plot(lambda x: (x - 1) ** 2 + 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
-#         graph_1_subpath.reverse_points()
-#         path.add_subpath(graph_1_subpath.get_all_points())
-#         graph_2_subpath = axes.plot(lambda x: -(x - 1) ** 2 - 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
-#         dot_for_path = Dot(radius=0.3, color=GREEN).move_to(graph_1_b_dot)
-#         path.add_points_as_corners([ axes.c2p(1, 1), axes.c2p(1, -1) ])
-#         path.add_points_as_corners(graph_2_subpath.get_all_points())
-#
-#         self.play(self.camera.frame.animate.scale(0.5).move_to(dot_for_path))
-#
-#         self.play(MoveAlongPath(self.camera.frame, path), run_time=5)
-#
-#         self.play(Restore(self.camera.frame))
-#
-#         self.wait(10)
 class working1(MovingCameraScene):
     # config.background_color = GRAY
 
@@ -929,8 +786,8 @@ class working1(MovingCameraScene):
 
         self.play(Rotate(new_tri, angle=fuck_angle, about_point=new_tri.get_end_anchors()[ -1 ]))
 
-        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri, new_tri.get_end_anchors()[ -1 ], [ -6, 4, 0 ])))
-        self.play(new_tri.animate.move_to(get_moved_coor_based_submob(new_tri, new_tri.get_end_anchors()[ -2 ], fuck_line.get_end())))
+        self.play(new_tri.animate.move_to(get_compensated_coor(new_tri, new_tri.get_end_anchors()[ -1 ], [ -6, 4, 0 ])))
+        self.play(new_tri.animate.move_to(get_compensated_coor(new_tri, new_tri.get_end_anchors()[ -2 ], fuck_line.get_end())))
 
         # new_fucking_temp_line = Line(start=midpoint(new_tri.get_end_anchors()[ -1 ],new_tri.get_end_anchors()[ -2 ], end=fuck_line.e)
         # self.play(MoveAlongPath(new_tri, fuck_line))
@@ -957,7 +814,7 @@ class working1(MovingCameraScene):
         # print(is_on_left(tri_base_line, np.array([0,-5,0])))
 
         tri = Triangle(fill_color=C2495, fill_opacity=1, stroke_color=C2498).scale(4)
-        tri.move_to(get_moved_coor_based_submob(tri, tri.get_bottom(), [ 0, -3, 0 ]))
+        tri.move_to(get_compensated_coor(tri, tri.get_bottom(), [ 0, -3, 0 ]))
         print(tri.get_end_anchors())
 
         dot = Dot(color=RED).move_to(center_of_mass(tri.get_end_anchors())).set_z_index(3.5)
@@ -997,12 +854,12 @@ class working1(MovingCameraScene):
 
         pink_var = Variable(0, 'PINK', DecimalNumber)
         pink_var[ 0 ][ 0 ].set_color(color=YELLOW)
-        pink_var.move_to(get_moved_coor_based_submob(pink_var, pink_var[ 0 ][ 1 ].get_center(), yellow_var[ 0 ][ 1 ].get_bottom() + D * 1))
+        pink_var.move_to(get_compensated_coor(pink_var, pink_var[ 0 ][ 1 ].get_center(), yellow_var[ 0 ][ 1 ].get_bottom() + D * 1))
         pink_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_right)).next_to(pink_var[ 0 ], R)))
 
         green_var = Variable(0, 'GREEN', DecimalNumber)
         green_var[ 0 ][ 0 ].set_color(color=YELLOW)
-        green_var.move_to(get_moved_coor_based_submob(green_var, green_var[ 0 ][ 1 ].get_center(), pink_var[ 0 ][ 1 ].get_bottom() + D * 1))
+        green_var.move_to(get_compensated_coor(green_var, green_var[ 0 ][ 1 ].get_center(), pink_var[ 0 ][ 1 ].get_bottom() + D * 1))
         green_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_bottom)).next_to(green_var[ 0 ], R)))
 
         vertical_green_braces = redraw(lambda: BraceBetweenPoints(vertical_green.get_start(), vertical_green.get_end()))
@@ -1030,7 +887,7 @@ class working1(MovingCameraScene):
 
         tri_path = Triangle(fill_color=BLUE_E, fill_opacity=1).scale(2.5)
         tri_path.move_to(
-            get_moved_coor_based_submob(tri_path, center_of_mass(tri_path.get_end_anchors()), center_of_mass(tri.get_end_anchors())))
+            get_compensated_coor(tri_path, center_of_mass(tri_path.get_end_anchors()), center_of_mass(tri.get_end_anchors())))
 
         self.play(dot.animate.move_to(tri_path.get_end_anchors()[ 2 ]), run_time=1)
         self.play(MoveAlongPath(dot, tri_path), run_time=7)
@@ -1082,168 +939,497 @@ class working1(MovingCameraScene):
         self.wait(10)
 
 
-class working1(MovingCameraScene):
+class working1(ThreeDScene):
     # config.background_color = GRAY
 
     def construct(self):
+        # self.add(coin('mana', type='color'))
 
-        self.add(coin('mana', type='color'))
+        # def _setup_faces(self):
+        # u_values, v_values = self._get_u_values_and_v_values()
+
+        axes = ThreeDAxes()
+
+        vertex_list = [ [ 0.0, 0.0, 0.0 ], [ 0.0, 0.1111111111111111, 0.1975308641975309 ], [ 0.0, 0.2222222222222222, 0.345679012345679 ],
+                        [ 0.0, 0.3333333333333333, 0.4444444444444444 ], [ 0.0, 0.4444444444444444, 0.49382716049382713 ],
+                        [ 0.0, 0.5555555555555556, 0.49382716049382713 ], [ 0.0, 0.6666666666666666, 0.4444444444444445 ],
+                        [ 0.0, 0.7777777777777777, 0.3456790123456791 ], [ 0.0, 0.8888888888888888, 0.19753086419753094 ],
+                        [ 0.0, 1.0, 0.0 ], [ 0.1111111111111111, 0.0, 0.1975308641975309 ],
+                        [ 0.1111111111111111, 0.1111111111111111, 0.3703703703703704 ],
+                        [ 0.1111111111111111, 0.2222222222222222, 0.49382716049382713 ],
+                        [ 0.1111111111111111, 0.3333333333333333, 0.5679012345679012 ],
+                        [ 0.1111111111111111, 0.4444444444444444, 0.5925925925925926 ],
+                        [ 0.1111111111111111, 0.5555555555555556, 0.5679012345679012 ],
+                        [ 0.1111111111111111, 0.6666666666666666, 0.49382716049382713 ],
+                        [ 0.1111111111111111, 0.7777777777777777, 0.37037037037037046 ],
+                        [ 0.1111111111111111, 0.8888888888888888, 0.1975308641975309 ],
+                        [ 0.1111111111111111, 0.8888888888888888, 0.1975308641975309 ], [ 0.2222222222222222, 0.0, 0.345679012345679 ],
+                        [ 0.2222222222222222, 0.1111111111111111, 0.49382716049382713 ],
+                        [ 0.2222222222222222, 0.2222222222222222, 0.5925925925925926 ],
+                        [ 0.2222222222222222, 0.3333333333333333, 0.6419753086419753 ],
+                        [ 0.2222222222222222, 0.4444444444444444, 0.6419753086419753 ],
+                        [ 0.2222222222222222, 0.5555555555555556, 0.5925925925925926 ],
+                        [ 0.2222222222222222, 0.6666666666666666, 0.4938271604938272 ],
+                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ],
+                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ],
+                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ], [ 0.3333333333333333, 0.0, 0.4444444444444444 ],
+                        [ 0.3333333333333333, 0.1111111111111111, 0.5679012345679012 ],
+                        [ 0.3333333333333333, 0.2222222222222222, 0.6419753086419753 ],
+                        [ 0.3333333333333333, 0.3333333333333333, 0.6666666666666667 ],
+                        [ 0.3333333333333333, 0.4444444444444444, 0.6419753086419753 ],
+                        [ 0.3333333333333333, 0.5555555555555556, 0.5679012345679012 ],
+                        [ 0.3333333333333333, 0.6666666666666666, 0.4444444444444446 ],
+                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ],
+                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ],
+                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ], [ 0.4444444444444444, 0.0, 0.49382716049382713 ],
+                        [ 0.4444444444444444, 0.1111111111111111, 0.5925925925925926 ],
+                        [ 0.4444444444444444, 0.2222222222222222, 0.6419753086419753 ],
+                        [ 0.4444444444444444, 0.3333333333333333, 0.6419753086419753 ],
+                        [ 0.4444444444444444, 0.4444444444444444, 0.5925925925925926 ],
+                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
+                        [ 0.4444444444444444, 0.5555555555555555, 0.49382716049382724 ],
+                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
+                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
+                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ], [ 0.5555555555555556, 0.0, 0.49382716049382713 ],
+                        [ 0.5555555555555556, 0.1111111111111111, 0.5679012345679012 ],
+                        [ 0.5555555555555556, 0.2222222222222222, 0.5925925925925926 ],
+                        [ 0.5555555555555556, 0.3333333333333333, 0.5679012345679012 ],
+                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
+                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
+                        [ 0.5555555555555556, 0.4444444444444443, 0.49382716049382724 ],
+                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
+                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
+                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ], [ 0.6666666666666666, 0.0, 0.4444444444444445 ],
+                        [ 0.6666666666666666, 0.1111111111111111, 0.49382716049382713 ],
+                        [ 0.6666666666666666, 0.2222222222222222, 0.4938271604938272 ],
+                        [ 0.6666666666666666, 0.3333333333333333, 0.44444444444444453 ],
+                        [ 0.6666666666666666, 0.33333333333333326, 0.44444444444444453 ],
+                        [ 0.6666666666666666, 0.33333333333333326, 0.44444444444444453 ],
+                        [ 0.6666666666666666, 0.33333333333333337, 0.4444444444444445 ],
+                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ],
+                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ],
+                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ], [ 0.7777777777777777, 0.0, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.1111111111111111, 0.3703703703703705 ],
+                        [ 0.7777777777777777, 0.2222222222222222, 0.34567901234567916 ],
+                        [ 0.7777777777777777, 0.22222222222222238, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222243, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
+                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ], [ 0.8888888888888888, 0.0, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.1111111111111111, 0.19753086419753096 ],
+                        [ 0.8888888888888888, 0.11111111111111105, 0.19753086419753096 ],
+                        [ 0.8888888888888888, 0.11111111111111122, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.11111111111111127, 0.1975308641975309 ],
+                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
+                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ], [ 1.0, 0.0, 0.0 ],
+                        [ 1.0, -5.551115123125783e-17, 0.0 ], [ 1.0, -1.1102230246251565e-16, -1.232595164407831e-32 ],
+                        [ 1.0, 5.551115123125783e-17, 0.0 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ],
+                        [ 1.0, 1.1102230246251565e-16, -1.232595164407831e-32 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ] ]
+
+        test_mob = PointCloudFromCustom(vertex_list,
+                                        fill_color=RED, fill_opacity=0.5,
+                                        stroke_width=1, stroke_opacity=0.5, scaler=3).scale_to_fit_width(4)
+        # .move_to(axes.c2p(0, 0, 0))
+        test_mob.set_fill_by_checkerboard(BLUE)
+        self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
+
+        self.add(axes, test_mob)
+
+        # for i in range(len(u_values) - 1):
+        #     for j in range(len(v_values) - 1):
+        #         u1, u2 = u_values[ i: i + 2 ]
+        #         v1, v2 = v_values[ j: j + 2 ]
+        #         face = ThreeDVMobject()
+        #         face.set_points_as_corners(
+        #             [
+        #                 [ u1, v1, 0 ],
+        #                 [ u2, v1, 0 ],
+        #                 [ u2, v2, 0 ],
+        #                 [ u1, v2, 0 ],
+        #                 [ u1, v1, 0 ],
+        #             ],
+        #         )
+        #         faces.add(face)
+        #         face.u_index = i
+        #         face.v_index = j
+        #         face.u1 = u1
+        #         face.u2 = u2
+        #         face.v1 = v1
+        #         face.v2 = v2
+        # faces.set_fill(color=self.fill_color, opacity=self.fill_opacity)
+        # faces.set_stroke(
+        #     color=self.stroke_color,
+        #     width=self.stroke_width,
+        #     opacity=self.stroke_opacity,
+        # )
+        # self.add(*faces)
+        # if self.checkerboard_colors:
+        #     self.set_fill_by_checkerboard(*self.checkerboard_colors)
+
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=90 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(phi=135 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
 
+class ParaSurface(ThreeDScene):
+    def func(self, p1, p2):
+        if p1 + p2 > 1:
+            p2 = p2 - (p1 + p2 - 1)
+        p3 = 1 - p1 - p2
+        z = p1 * (1 - p1) + p2 * (1 - p2) + p3 * (1 - p3)
+        return np.array([ p1, p2, z ])
 
-class test_1(Scene):
+    def dot_text(self, color, tracker):
+        dot = Dot(radius=0.15, color=color)
+        percent_text = Tex("\% = ", color=color).next_to(dot, RIGHT * 0.6)
+        static_group = VGroup(dot, percent_text).scale(0.65)
+        if isinstance(tracker, list):
+            percent_changer = Integer(number=int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).scale(0.65).set_color(
+                color)
+            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
+                perc.set_value(int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).set_color(color).next_to(static_group,
+                                                                                                                              RIGHT * 0.6)))
+        else:
+            percent_changer = Integer(number=int(tracker.get_value() * 100)).scale(0.65).set_color(color)
+            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
+                perc.set_value(tracker.get_value() * 100).set_color(color).next_to(static_group, RIGHT * 0.6)))
+        percent_changer.next_to(static_group, RIGHT * 0.6)
+        text_group = VGroup(static_group, percent_changer)
+        self.renderer.camera.add_fixed_in_frame_mobjects(static_group)
+        return text_group
+
     def construct(self):
-        charge1 = Charge(-4, LEFT*3.5 )
-        charge2 = Charge(2, RIGHT*4+ DOWN*2)
-        charge3_mag_tkr = ValueTracker(8)
-        charge3 = redraw(lambda: Charge(charge3_mag_tkr.get_value(), UP * 3))
-        charge4 = Charge(-1, RIGHT*7+ U*3.5)
-        charge5= Charge(-1,  DOWN*3.5)
-        charge6 = Charge(-1, RIGHT*7+ DOWN*2)
-        charge7 = Charge(-1, L*7+ DOWN*3)
-        field = redraw(lambda: ElectricField(charge1, charge2, charge3,charge4,charge5, charge6,charge7))
-        self.add(field,charge1, charge2, charge3,charge4,charge5, charge6,charge7)
-        # self.play(charge3.animate.shift(L * 4), run_time=2)
+        x = ValueTracker(0.0)
+        y = ValueTracker(0.0)
 
-        # self.play(charge3_mag_tkr.animate.set_value(15),
-        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
-        # self.play(charge3_mag_tkr.animate.set_value(1),
-        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
-        # self.wait(5)
+        blue_dot_tracker = self.dot_text(BLUE, x)
+        red_dot_tracker = self.dot_text(RED, y).next_to(blue_dot_tracker, RIGHT * 2)
+        green_dot_tracker = self.dot_text(GREEN, [ x, y ]).next_to(red_dot_tracker, RIGHT * 2)
 
+        dot_updater_text = VGroup(blue_dot_tracker, red_dot_tracker, green_dot_tracker).scale(1.5).shift(DOWN * 3 + LEFT * 2)
 
-class test_2(VectorScene):
-    def construct(self):
-        mag_tracker = ValueTracker(2)
-        current1 = Current(LEFT * 4)
+        x_vals = [ "0\%", "33\%", "66\%", "100\%" ]
+        x_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
+        x_dict = dict(zip(x_pos, x_vals))
+        x_label_dot = Sphere(radius=.15).set_color(BLUE)
+        x_label_perc = Tex("\%", color=BLUE).next_to(x_label_dot, RIGHT * 0.6)
+        x_label = VGroup(x_label_dot, x_label_perc)
 
-        # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
-        current2 = Current(RIGHT * 4, direction=IN, magnitude=mag_tracker.get_value())
-        def mag_change(current):
-            current.magnitude= mag_tracker.get_value()
-        current2.add_updater(mag_change)
-        magnet = BarMagnet().rotate(PI/4)
+        # y_vals = [Tex("0\%").rotate(PI/2,axis=IN).rotate(p),Tex("33\%").rotate(PI/2,axis=IN).rotate(p),Tex("66\%").rotate(PI/2,axis=IN).rotate(p),Tex("100\%").rotate(PI/2,axis=IN).rotate(p)]
+        y_vals = [ "0\%", "33\%", "66\%", "100\%" ]
+        y_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
+        y_dict = dict(zip(y_pos, y_vals))
+        y_label_dot = Sphere(radius=.15).set_color(RED)
+        y_label_perc = Tex("\%", color=RED).next_to(y_label_dot, RIGHT * 0.6)
+        y_label = VGroup(y_label_dot, y_label_perc)
 
-        field = redraw(lambda: MagneticField(current1, current2,magnet))
-        # field = MagneticField(current1, current2)
+        axes = ThreeDAxes(
+            x_range=[ 0, 1, .3333 ],
+            y_range=[ 0, 1, .3333 ],
+            z_range=[ 0, 1, .2 ],
+            axis_config={
+                "include_tip": False
+            }
+        ).add_coordinates(x_dict, y_dict)
 
-        # sources=[current1, current2]
-        # def field_update(field):
-        #     field.magnetic_sources = sources
-        #
-        # field.add_updater(field_update)
-        # field = MagneticField(current1, current2,magnet)
-        # field.add_updater(lambda x: x.become(MagneticField(current1, current2)))
+        cost_label = axes.get_z_axis_label('Gini')
 
-        # def field_fun(field):
-        #     updated_field = MagneticField(current1, current2)
-        #
-        #     return updated_field
-        # field.add_updater(field_update)
+        axes.background_line_style = {
+            "stroke_color": BLUE_D,
+            "stroke_width": 2,
+            "stroke_opacity": 1,
+        }
 
-        # def redraw(func):
-        #     mob = func()
-        #     mob.add_updater(lambda m: mob.become(func()))
-        #     return mob
-
-        # field = MagneticField(current1, current2)
-        # field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
-
-        # current2.magnitude=15
-        # print(current2.magnitude)
-
-        # print(self.mobjects)
-
-        # current(1)
-        # self.add(field,  magnet)
-        self.add(field, current1, current2, magnet)
-
-        # field.add_updater()
-        # self.wait(1)
-
-        # self.play(field.animate.shift(L*1))
-
-        # self.wait(5)
-
-        self.play(current1.animate.shift(L * 2))
-        # self.play(current2.animate.become(Current(U * 2.5, direction=IN, magnitude=10)))
-
-        self.play(mag_tracker.animate.set_value(10))
-
-        # self.play()
-        self.play(magnet.animate.rotate(PI/4))
-        # self.wait(5)
-
-
-class test_3(SpaceScene):
-    def construct(self):
-        circle = Circle().shift(UP)
-        circle.set_fill(RED, 1)
-        circle.shift(DOWN + RIGHT)
-
-        rect = Square().shift(UP)
-        rect.rotate(PI / 4)
-        rect.set_fill(YELLOW_A, 1)
-        rect.shift(UP * 2)
-        rect.scale(0.5)
-
-        ground = Line([ -4, -3.5, 0 ], [ 4, -3.5, 0 ])
-        wall1 = Line([ -4, -3.5, 0 ], [ -4, 3.5, 0 ])
-        wall2 = Line([ 4, -3.5, 0 ], [ 4, 3.5, 0 ])
-        walls = VGroup(ground, wall1, wall2)
-        self.add(walls)
-
-        self.play(
-            DrawBorderThenFill(circle),
-            DrawBorderThenFill(rect),
+        labels = axes.get_axis_labels(
+            x_label=x_label,
+            y_label=y_label
         )
-        self.make_rigid_body(rect, elasticity=2)  # Mobjects will move with gravity
-        self.make_rigid_body(circle, elasticity=0.3)  # Mobjects will move with gravity
-        self.make_static_body(walls)  # Mobjects will stay in place
-        self.wait(5)
+        axes.axis_labels[ 0 ].rotate(PI / 2, axis=RIGHT)
+        axes.axis_labels[ 0 ].shift(RIGHT)
+        axes.axis_labels[ 1 ].rotate(PI / 2, axis=RIGHT)
+        axes.axis_labels[ 1 ].rotate(PI / 2, axis=IN)
+        axes.axis_labels[ 1 ].shift(UP * 3)
+
+        surface = Surface(
+            lambda u, v: axes.c2p(*self.func(u, v)),
+            u_range=[ 0, 1 ],
+            v_range=[ 0, 1 ],
+            fill_opacity=0.5
+        )
+
+        line1 = Line(axes.c2p(1, 0, 0), axes.c2p(0, 0, 0), stroke_width=2).set_color(color=YELLOW)
+        line2 = Line(axes.c2p(0, 0, 0), axes.c2p(0, 1, 0), stroke_width=2).set_color(color=YELLOW)
+        line3 = Line(axes.c2p(0, 1, 0), axes.c2p(1, 0, 0), stroke_width=2).set_color(color=YELLOW)
+        triangle_perimeter = VGroup(line1, line2, line3)
+
+        def triangular_grid(x_min, x_max, dx, y_min, y_max, dy):
+            def get_line(s, e):
+                return Line(s, e, color=BLUE_D, stroke_width=1)
+
+            ctp = axes.coords_to_point
+            v_lines = VGroup(*[ get_line(ctp(x, y_min), ctp(x, y_max - x)) for x in np.arange(x_min, x_max + dx, dx) ])
+            h_lines = VGroup(*[ get_line(ctp(x_min, y), ctp(x_max - y, y)) for y in np.arange(y_min, y_max + dy, dy) ])
+
+            return VGroup(v_lines, h_lines)
+
+        plane = triangular_grid(0, 1, .05, 0, 1, 0.05).next_to(line1, UP, buff=0)
+
+        initial_point = [ axes.coords_to_point(*self.func(x.get_value(), y.get_value())) ]
+        sphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
+        xysphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
+        sphere.add_updater(lambda s: s.move_to(axes.coords_to_point(*self.func(x.get_value(), y.get_value()))))
+        xysphere.add_updater(lambda s: s.move_to(axes.coords_to_point(x.get_value(), y.get_value(), 0)))
+
+        entropy1 = ParametricFunction(lambda t: axes.c2p(t, 0, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+        entropy2 = ParametricFunction(lambda t: axes.c2p(0, t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 1 - t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+
+        self.set_camera_orientation(theta=-90 * DEGREES, phi=60 * DEGREES, zoom=0.5)
+        self.play(Create(axes), FadeIn(labels), FadeIn(cost_label))
+        # self.wait(0.3)
+        self.play(Create(triangle_perimeter))
+        self.play(Create(plane))
+        self.bring_to_back(plane)
+        self.play(triangle_perimeter.animate.set_color(BLUE_D))
+        self.bring_to_back(triangle_perimeter)
+        self.wait()
+        # self.move_camera(theta=-90 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=4)
+        # self.play(Create(entropy1), run_time=1.5)
+        # self.wait()
+        # self.renderer.camera.add_fixed_in_frame_mobjects(dot_updater_text)
+        # self.play(FadeIn(dot_updater_text))
+        # self.add_fixed_in_frame_mobjects(dot_updater_text)
+        # self.play(Create(xysphere))
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
+        # self.wait()
+        # self.move_camera(theta=-180 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
+        # self.wait()
+        # self.play(Create(entropy2), run_time=1.5)
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
+        # self.move_camera(theta=-315 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
+        # self.wait(0.3)
+        # self.play(
+        #     Create(entropy3),
+        #     x.animate.set_value(1.0),
+        #     y.animate.set_value(0.0),
+        #     run_time=1.5
+        # )
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
+        # self.wait()
+        # self.move_camera(theta=-420 * DEGREES, phi=75 * DEGREES, zoom=0.6, run_time=4)
+        # self.begin_ambient_camera_rotation(rate=-0.1)
+        # self.wait()
+        self.play(Create(surface))
+        self.play(
+            Uncreate(entropy1),
+            Uncreate(entropy2),
+            Uncreate(entropy3)
+        )
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.3), y.animate.set_value(0.3), run_time=1)
+        #
+        # x_line = DashedLine(axes.c2p(x.get_value(), 0, 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
+        # y_line = DashedLine(axes.c2p(0, y.get_value(), 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
+        # z_line = DashedLine(axes.c2p(x.get_value(), y.get_value(), 0), axes.c2p(*self.func(x.get_value(), y.get_value())), color=YELLOW)
+        #
+        # x_line.add_updater(lambda l: l.put_start_and_end_on(
+        #     axes.c2p(x.get_value(), 0, 0),
+        #     axes.c2p(x.get_value(), y.get_value(), 0)
+        # )
+        #                    )
+        #
+        # y_line.add_updater(lambda l: l.put_start_and_end_on(
+        #     axes.c2p(0, y.get_value(), 0),
+        #     axes.c2p(x.get_value(), y.get_value(), 0)
+        # )
+        #                    )
+        #
+        # z_line.add_updater(lambda l: l.put_start_and_end_on(
+        #     axes.c2p(x.get_value(), y.get_value(), 0),
+        #     axes.coords_to_point(*self.func(x.get_value(), y.get_value()))
+        # )
+        #                    )
+        #
+        # self.play(Create(x_line), Create(y_line), FadeOut(xysphere))
+        # self.play(Create(z_line))
+        # self.play(Create(sphere))
+        # self.wait(0.3)
+        # self.play(x.animate.set_value(0.1), y.animate.set_value(0.1), run_time=1.5)
+        # self.wait()
+        # self.play(x.animate.set_value(0.6), y.animate.set_value(0.3), run_time=1.5)
+        # self.wait()
+        # self.play(x.animate.set_value(0.4), y.animate.set_value(0.5), run_time=1.5)
+        # self.wait()
 
 
-class test_4(SpaceScene):
+class working3(ThreeDScene):
+    def imp_loss_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        # hold_val = 0.5*x+0.5*y
+        # z = np.sin(x) * np.cos(y)
+        return np.array([ x, y, z ])
+
+    def dollar_val_surface(self, u, v):
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        # x = u
+        # y = v
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
+    def dollar_val_surface_circle(self, u, v):
+        if u ** 2 + v ** 2 < 0.5 ** 2:
+            # v=np.sqrt(0.5 ** 2-u ** 2)
+            # return np.array([ u, v, 0 ])
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+        else:
+
+            angle = angle_of_vector(np.array([ u, v, 0 ]))
+            u = np.cos(angle) * 0.5
+            v = np.sin(angle) * 0.5
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+        return np.array([ u, v, curr_val ])
+
     def construct(self):
-        # smaller gear
-        gear1 = Gear(12, module=1, profile_shift=0.3, stroke_opacity=0, fill_color=WHITE, fill_opacity=1)
-        # larger gear with inner teeth
-        gear2 = Gear(36, module=1, inner_teeth=True, profile_shift=0.1, stroke_opacity=0, fill_color=RED, fill_opacity=1)
-        gear1.shift(gear1.rp * UP)
-        gear2.shift(gear2.rp * UP)
-        # mesh with 0.15*module larger distance than default
-        # positive_bias param is used to define left or right tooth flank shall engage if there is offset and play
-        gear2.mesh_to(gear1, offset=0.15, positive_bias=False)
+        resolution_fa = 20
+        # self.set_camera_orientation(phi=0 * DEGREES, theta=0 * DEGREES, gamma=0, zoom=1)
+        axes = ThreeDAxes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33), z_range=(-1, 3, 1 / 3),
+                          x_length=5, y_length=5, z_length=5)
 
-        self.play(Create(gear1))
-        self.play(Create(gear2))
-        # self.add(gear1)
-        # self.add(gear2)
-        # self.add(regular.angry)
-        self.play(Rotate(gear1, gear1.pitch_angle * 8, rate_func=linear),
-                  Rotate(gear2, gear2.pitch_angle * 8, rate_func=linear),
-                  run_time=10)
+        lab_x = axes.get_x_axis_label(Tex("$x$-label"))
+        lab_y = axes.get_y_axis_label(Tex("$y$-label"))
+        lab_z = axes.get_z_axis_label(Tex("$z$-label"))
+        labs = VGroup(lab_x, lab_y, lab_z)
+
+        # some_graph = axes.plot(lambda x: 2 * x, x_range=[ -0.99, 2 ]).set_stroke(width=10, color=RED).set_shade_in_3d(True)
+
+        # some_graph.set_z_index_by_z_coordinate()
+        # entropy1 = ParametricFunction(lambda t: axes.c2p(t, t, 0), color=BLUE, stroke_width=6, t_range=[ -0.99, 3 ]).set_shade_in_3d(True)
+
+        def is_in_triangle(point, A, B, C, contain_border=False):
+            COM = center_of_mass(A, B, C)
+            if is_on_left_by_points(A, B, COM) and \
+                    is_on_left_by_points(B, C, COM) and \
+                    is_on_left_by_points(C, A, COM):
+                if is_on_left_by_points(A, B, point, contain_border=contain_border) and \
+                        is_on_left_by_points(B, C, point, contain_border=contain_border) and \
+                        is_on_left_by_points(C, A, point, contain_border=contain_border):
+
+                    return True
+                else:
+                    return False
+
+            else:
+                if is_on_right_by_points(A, B, point, contain_border=contain_border) and \
+                        is_on_right_by_points(B, C, point, contain_border=contain_border) and \
+                        is_on_right_by_points(C, A, point, contain_border=contain_border):
+                    return True
+
+                else:
+                    return False
+
+        a = [ 1, 1, 0 ]
+        b = [ 2, 1.5, 0 ]
+        c = [ 1, 2, 0 ]
+
+        def dollar_val_surface_triangle(self, u, v):
+            if is_in_triangle([ u, v, 0 ], a, b, c):
+                k = ((1 + u) / (1 + v)) - 1
+                z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+                hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+                curr_val = hold_val * (1 + z) - 1
+            else:
+                pass
+            #
+            #     # if
+            #     angle = angle_of_vector(np.array([ u, v, 0 ]))
+            #     u = np.cos(angle) * 0.5
+            #     v = np.sin(angle) * 0.5
+            #     k = ((1 + u) / (1 + v)) - 1
+            #     z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            #     hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            #     curr_val = hold_val * (1 + z) - 1
+            # return np.array([ u, v, curr_val ])
+
+        val_graph = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99, 3 ],
+            resolution=30
+        )
+
+        val_graph.set_style(fill_opacity=0.5)
+        val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
+
+        # self.add(some_graph, entropy1)
+
+        my_graph = axes.plot(lambda x: x, x_range=[ -1, 5 ])
+        three_d_wall = ThreeDVMobject().set_points_as_corners([ [ -0.5, -0.5, -0.5 ],
+                                                                [ 2, -0.5, -0.5 ],
+                                                                [ 2, -0.5, 1 ],
+                                                                [ -0.5, -0.5, 1 ],
+                                                                [ -0.5, -0.5, -0.5 ],
+                                                                ]).set_fill(color=BLUE, opacity=1).set_shade_in_3d(True)
+
+        self.add(axes, labs)
+        self.add(val_graph, three_d_wall)
+        self.set_camera_orientation(theta=-90 * DEGREES, phi=45 * DEGREES, zoom=1)
+
+        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
+        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
 
 
-
-class test_4(Scene):
-    def construct(self):
-        lens_style = {"fill_opacity": 0.5, "color": BLUE}
-        a = Lens(-5, 1, **lens_style).shift(LEFT)
-        a2 = Lens(5, 1, **lens_style).shift(RIGHT)
-        b = [
-            Ray(LEFT * 5 + UP * i, RIGHT, 8, [a, a2], color=RED)
-            for i in np.linspace(-2, 2, 10)
-        ]
-        self.add(a, a2, *b)
-
-#
-#
-#
 # with tempconfig({"quality": "low_quality", "preview": True, 'fps': 7}):
-#     scene = working1()
-#     # scene = working2()
-#     # scene = working3()
-#     # scene = working4()
-#     # scene = working5()
+#     scene = working3()
+#     #     # scene = working2()
+#     #     # scene = working3()
+#     #     # scene = working4()
+#     #     # scene = working5()
 #     scene.render()
+

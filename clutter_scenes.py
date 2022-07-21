@@ -986,3 +986,303 @@ class test_2(VectorScene):
         # self.play()
         # self.play(mag_tracker.animate.set_value(2))
         # self.wait(5)
+class working1(MovingCameraScene):
+    # config.background_color = GRAY
+
+    def construct(self):
+        axes = Axes(x_range=[ 0, 10 ], y_range=[ 0, 20 ], x_length=14, y_length=7, )
+
+        def my_func(x):
+            if x < 5:
+                y = np.log(x)
+            elif 5 <= x <= 7:
+                y = x
+            else:
+                y = -2 * x + 20
+            return y
+
+        graph = axes.plot(my_func, discontinuities=[ 5, 7 ], x_range=[ 0.1, 8 ], color=BLUE, dt=0.01)
+
+        def my_rate(t: float, pause_ratio: float = 0.2) -> float:
+            a = 1.0 / pause_ratio
+            if t < 0.5 - pause_ratio / 2:
+                return smooth(a * t)
+            elif t < 0.5 + pause_ratio / 2:
+                return 1
+            else:
+                return smooth(a - a * t)
+
+        circle = Circle(radius=3)
+        self.play(Create(circle), rate_func=there_and_back, run_time=8)
+        # self.add(axes, graph)
+
+        # x_tracker = ValueTracker(5)
+        # z_tracker = ValueTracker(5.5)
+        # a = 3
+        # b = 7
+        #
+        # a_line = axes.get_lines_to_point(axes.c2p(a, graph.underlying_function(a)), color=RED)[ 1 ].set_stroke(width=5).set_z_index(2)
+        # x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())), color=RED)[
+        #     1 ].set_stroke(width=5).set_z_index(2)
+        # b_line = axes.get_lines_to_point(axes.c2p(b, graph.underlying_function(b)), color=RED)[ 1 ].set_stroke(width=5).set_z_index(2)
+        # z_line = axes.get_lines_to_point(axes.c2p(z_tracker.get_value(), graph.underlying_function(z_tracker.get_value())), color=RED)[
+        #     1 ].set_stroke(width=5).set_z_index(2)
+        #
+        # x_line.add_updater(lambda mob: mob.become(
+        #     axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph.underlying_function(x_tracker.get_value())), color=RED)[
+        #         1 ].set_stroke(width=5).set_z_index(2)))
+        # z_line.add_updater(lambda mob: mob.become(
+        #     axes.get_lines_to_point(axes.c2p(z_tracker.get_value(), graph.underlying_function(z_tracker.get_value())), color=RED)[
+        #         1 ].set_stroke(width=5).set_z_index(2)))
+        #
+        # a2x_area = axes.get_area(graph, x_range=[ a, x_tracker.get_value() ], color=[ BLUE, WHITE ], opacity=0.5,
+        #                          stroke_opacity=0).set_sheen_direction(R)
+        # x2z_area = axes.get_area(graph, x_range=[ x_tracker.get_value(), z_tracker.get_value() ], color=YELLOW, opacity=1)
+        # z2b_area = axes.get_area(graph, x_range=[ x_tracker.get_value(), b ], color=GRAY, stroke_opacity=0).set_sheen(10, R)
+        #
+        # a2x_area.add_updater(lambda mob: mob.become(
+        #     axes.get_area(graph, x_range=[ a, x_tracker.get_value() ], color=[ BLUE, WHITE ], opacity=0.5).set_sheen_direction(R)))
+        # x2z_area.add_updater(
+        #     lambda mob: mob.become(axes.get_area(graph, x_range=[ x_tracker.get_value(), z_tracker.get_value() ], color=YELLOW, opacity=1)))
+        # z2b_area.add_updater(lambda mob: mob.become(
+        #     axes.get_area(graph, x_range=[ x_tracker.get_value(), b ], color=GRAY, stroke_opacity=0).set_sheen(10, R)))
+        #
+        # a2x_area_label = MathTex('F(x)').move_to(a2x_area)
+        # a2x_area_label.add_updater(lambda mob: mob.move_to(a2x_area))
+        #
+        # a_label = Tex(rf'a\\{a:.1f}').scale(0.7).next_to(a_line, D)
+        # x_label = Tex(rf'a\\{x_tracker.get_value():.1f}').scale(0.7).next_to(x_line, D)
+        # z_label = Tex(rf'a\\{z_tracker.get_value():.1f}').scale(0.7).next_to(z_line, D)
+        # b_label = Tex(rf'a\\{b:.1f}').scale(0.7).next_to(b_line, D)
+        #
+        # a_label.add_updater(lambda mob: mob.become(Tex(rf'a\\{a:.1f}').scale(0.7).next_to(a_line, D)))
+        # x_label.add_updater(lambda mob: mob.become(Tex(rf'x\\{x_tracker.get_value():.1f}').scale(0.7).next_to(x_line, D)))
+        # z_label.add_updater(lambda mob: mob.become(Tex(rf'z\\{z_tracker.get_value():.1f}').scale(0.7).next_to(z_line, D)))
+        # b_label.add_updater(lambda mob: mob.become(Tex(rf'b\\{b:.1f}').scale(0.7).next_to(b_line, D)))
+        #
+        # self.add(axes[ 0 ], graph, a_line, x_line, z_line, b_line, a2x_area, x2z_area, z2b_area, a2x_area_label, a_label, x_label, z_label,
+        #          b_label
+        #          )
+        #
+        # self.play(x_tracker.animate.set_value(4))
+        # self.play(x_tracker.animate.set_value(5))
+        # self.play(z_tracker.animate.set_value(6))
+        # self.play(x_tracker.animate.set_value(5.5))
+        #
+
+
+# class working1(MovingCameraScene):
+#     # config.background_color = GRAY
+#     def construct(self):
+#         axes = Axes(x_range=[ -5, 5 ], y_range=[ -8, 8 ], x_length=6, y_length=9, tips=False, axis_config={'include_numbers': 1})
+#         graph_1 = axes.plot(lambda x: (x - 1) ** 2 + 1, color=BLUE, x_range=[ -3, 5 ]).set_z_index(3)
+#         graph_2 = axes.plot(lambda x: -(x - 1) ** 2 - 1, color=RED, x_range=[ -3, 5 ]).set_z_index(3)
+#
+#         x_tracker = ValueTracker(2)
+#         a = 1
+#         b = 3
+#
+#         graph_2_a_dot = Dot(axes.c2p(a, graph_2.underlying_function(a)), color=RED_E).set_z_index(2)
+#         graph_2_x_dot = Dot(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
+#                             color=RED_E).set_z_index(2)
+#         graph_2_b_dot = Dot(axes.c2p(b, graph_2.underlying_function(b)), color=RED_E).set_z_index(2)
+#         graph_1_a_dot = Dot(axes.c2p(a, graph_1.underlying_function(a)), color=BLUE_E).set_z_index(2)
+#         graph_1_x_dot = Dot(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
+#                             color=BLUE_E).set_z_index(2)
+#         graph_1_b_dot = Dot(axes.c2p(b, graph_1.underlying_function(b)), color=BLUE_E).set_z_index(2)
+#
+#         graph_2_x_dot.add_updater(
+#             lambda mob: mob.become(Dot(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
+#                                        color=RED_E).set_z_index(2)))
+#         graph_1_x_dot.add_updater(
+#             lambda mob: mob.become(Dot(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
+#                                        color=BLUE_E).set_z_index(2)))
+#
+#         graph_1_x_dot_label = Tex(rf'({x_tracker.get_value():.1f},{graph_1.underlying_function(x_tracker.get_value()):.1f})').next_to(
+#             graph_1_x_dot, UL)
+#         graph_2_x_dot_label = Tex(rf'({x_tracker.get_value():.1f},{graph_2.underlying_function(x_tracker.get_value()):.1f})').next_to(
+#             graph_2_x_dot, DL)
+#         graph_1_x_dot_label.add_updater(
+#             lambda mob: mob.become(
+#                 Tex(rf'({x_tracker.get_value():.1f},{graph_1.underlying_function(x_tracker.get_value()):.1f})').scale(0.7).next_to(
+#                     graph_1_x_dot, UL, buff=0.05)))
+#         graph_2_x_dot_label.add_updater(
+#             lambda mob: mob.become(
+#                 Tex(rf'({x_tracker.get_value():.1f},{graph_2.underlying_function(x_tracker.get_value()):.1f})').scale(0.7).next_to(
+#                     graph_2_x_dot, DL, buff=0.05)
+#             ))
+#
+#         graph_2_a_line = axes.get_lines_to_point(axes.c2p(a, graph_2.underlying_function(a)), color=RED).set_stroke(width=5).set_z_index(2)
+#         graph_2_x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
+#                                                  color=RED).set_stroke(width=5).set_z_index(2)
+#         graph_2_b_line = axes.get_lines_to_point(axes.c2p(b, graph_2.underlying_function(b)), color=RED).set_stroke(width=5).set_z_index(2)
+#
+#         graph_1_a_line = axes.get_lines_to_point(axes.c2p(a, graph_1.underlying_function(a)), color=BLUE).set_stroke(width=5).set_z_index(2)
+#         graph_1_x_line = axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
+#                                                  color=BLUE).set_stroke(width=5).set_z_index(2)
+#         graph_1_b_line = axes.get_lines_to_point(axes.c2p(b, graph_1.underlying_function(b)), color=BLUE).set_stroke(width=5).set_z_index(2)
+#
+#         graph_2_x_line.add_updater(lambda mob: mob.become(
+#             axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_2.underlying_function(x_tracker.get_value())),
+#                                     color=RED).set_stroke(width=5).set_z_index(2)))
+#         graph_1_x_line.add_updater(lambda mob: mob.become(
+#             axes.get_lines_to_point(axes.c2p(x_tracker.get_value(), graph_1.underlying_function(x_tracker.get_value())),
+#                                     color=BLUE).set_stroke(width=5).set_z_index(2)))
+#
+#         graph_2_a2x_area = axes.get_area(graph_2, x_range=[ a, x_tracker.get_value() ], color=RED_A, opacity=0.3).set_sheen_direction(U)
+#         graph_1_x2b_area = axes.get_area(graph_1, x_range=[ x_tracker.get_value(), b ], color=BLUE_A, opacity=0.3).set_sheen_direction(D)
+#
+#         graph_1_x2b_area.add_updater(lambda mob: mob.become(
+#             axes.get_area(graph_1, x_range=[ x_tracker.get_value(), b ], color=BLUE_A, opacity=0.3).set_sheen_direction(D)))
+#         graph_2_a2x_area.add_updater(lambda mob: mob.become(
+#             axes.get_area(graph_2, x_range=[ a, x_tracker.get_value() ], color=RED_A, opacity=0.3).set_sheen_direction(U)))
+#
+#         graph_1_label = axes.get_graph_label(graph_1, label=MathTex(r'y=(x-1)^2+1'), x_val=b, direction=np.array([ 1., 0., 0. ]), buff=0.25,
+#                                              color=BLUE_E, dot=False, dot_config=None)
+#         graph_2_label = axes.get_graph_label(graph_2, label=MathTex(r'y=-(x-1)^2-1'), x_val=b, direction=np.array([ 1., 0., 0. ]),
+#                                              buff=0.25, color=RED_E, dot=False, dot_config=None)
+#         self.add(axes,
+#                  graph_1,
+#                  graph_2,
+#                  graph_1_label,
+#                  graph_2_label,
+#                  graph_2_a_line,
+#                  graph_2_x_line,
+#                  graph_2_b_line,
+#                  graph_1_a_line,
+#                  graph_1_x_line,
+#                  graph_1_b_line,
+#                  graph_2_a_dot,
+#                  graph_2_x_dot,
+#                  graph_2_b_dot,
+#                  graph_1_a_dot,
+#                  graph_1_x_dot,
+#                  graph_1_b_dot,
+#                  graph_1_x2b_area,
+#                  graph_2_a2x_area,
+#                  graph_2_x_dot_label,
+#                  graph_1_x_dot_label
+#                  )
+#
+#         self.play(x_tracker.animate.set_value(2.5), run_time=3)
+#         self.play(x_tracker.animate.set_value(1.5), run_time=3)
+#         self.play(x_tracker.animate.set_value(2), run_time=3)
+#
+#         self.camera.frame.save_state()
+#
+#         path = VMobject()
+#         graph_1_subpath = axes.plot(lambda x: (x - 1) ** 2 + 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
+#         graph_1_subpath.reverse_points()
+#         path.add_subpath(graph_1_subpath.get_all_points())
+#         graph_2_subpath = axes.plot(lambda x: -(x - 1) ** 2 - 1, color=BLUE, x_range=[ 1, 3 ]).set_z_index(3)
+#         dot_for_path = Dot(radius=0.3, color=GREEN).move_to(graph_1_b_dot)
+#         path.add_points_as_corners([ axes.c2p(1, 1), axes.c2p(1, -1) ])
+#         path.add_points_as_corners(graph_2_subpath.get_all_points())
+#
+#         self.play(self.camera.frame.animate.scale(0.5).move_to(dot_for_path))
+#
+#         self.play(MoveAlongPath(self.camera.frame, path), run_time=5)
+#
+#         self.play(Restore(self.camera.frame))
+#
+#         self.wait(10)
+
+class working1(ThreeDScene):
+
+    def construct(self):
+        self.add(NumberPlane(faded_line_ratio=1, x_length=16, y_length=9))
+
+        sq_len_1 = Square(1, fill_color=BLUE, fill_opacity=1)
+        sq_len_list = [ sq_len_1 ]
+
+        for i in range(2, 7):
+            locals()[ 'sq_len_' + str(i) ] = VGroup(*[ Square(i, fill_color=BLUE, fill_opacity=1) for j in range(i) ]) \
+                .arrange(R, buff=0).next_to(locals()[ 'sq_len_' + str(i - 1) ].get_corner(DL), DR, buff=0)
+            sq_len_list.append(locals()[ 'sq_len_' + str(i) ])
+
+        scaler = 0.35
+        sq_len_group = VGroup(*sq_len_list)
+        self.play(Create(VGroup(*sq_len_list,
+                                Line(start=sq_len_list[ 5 ][ 5 ].get_corner(DR), end=sq_len_list[ 5 ][ 5 ].get_corner(DR) + R * 6))
+                         .scale(scaler).next_to([ -7, 4, 0 ], DR, buff=0)), run_time=5)
+
+        line = Line(start=sq_len_1.get_corner(UL), end=sq_len_list[ 5 ][ 5 ].get_corner(DR) + R * 6 * scaler)
+        angle = get_angle_ABC(line.get_end(), sq_len_1[ -1 ].get_corner(UL), sq_len_1[ -1 ].get_corner(UR))
+
+        triangles = VGroup()
+        last_rects = VGroup()
+        rects = VGroup()
+        triangle_ani_slide_list = [ ]
+
+        for sq_len in sq_len_list:
+            index = sq_len_list.index(sq_len)
+            hypotenuse = (index + 1) * scaler / np.cos(angle)
+
+            triangle = Polygon(sq_len[ -1 ].get_corner(UL),
+                               sq_len[ -1 ].get_corner(UR),
+                               sq_len[ -1 ].get_corner(UR) + D * np.sin(angle) * hypotenuse,
+                               fill_color=RED, fill_opacity=1, stroke_color=WHITE)
+
+            rect = Polygon(sq_len[ -1 ].get_corner(UL),
+
+                           sq_len[ -1 ].get_corner(DL),
+                           sq_len[ -1 ].get_corner(DR),
+                           sq_len[ -1 ].get_corner(UR) + D * np.sin(angle) * hypotenuse,
+                           fill_color=BLUE, fill_opacity=1, stroke_color=WHITE)
+
+            rects.add(rect)
+            triangles.add(triangle)
+            triangle_ani_slide_list.append(triangle.animate.move_to(
+                get_compensated_coor(triangle, triangle.get_start_anchors()[ 0 ], triangle.get_start_anchors()[ 2 ])))
+            last_rects.add(sq_len[ -1 ])
+
+        self.play(Create(line))
+        self.play(Create(triangles))
+
+        for rect, last_rect in zip(rects, last_rects):
+            last_rect.become(rect)
+
+        self.play(*triangle_ani_slide_list)
+
+        tri_ani_rotate_list = [ ]
+        for triangle in triangles:
+            about_point = midpoint(triangle.get_start_anchors()[ 0 ], triangle.get_start_anchors()[ 2 ])
+            tri_ani_rotate_list.append(Rotate(triangle, angle=-PI, about_point=about_point))
+
+        self.play(*tri_ani_rotate_list)
+
+        self.wait(5)
+
+
+
+class working1(ThreeDScene):
+
+    def construct(self):
+        ax = Axes(
+            x_range=[-10, 10, 1],
+            y_range=[-2, 6, 1],
+            tips=False,
+            axis_config={"include_numbers": True},
+
+        )
+
+        # x_min must be > 0 because log is undefined at 0.
+        graph = ax.plot(lambda x: x**3, x_range=[-10, 10], use_smoothing=False)
+        self.add(ax, graph)
+
+        x_tracker = ValueTracker(-10)
+
+        def special_text():
+            text= manim.Text('Fuck')
+            dummy_dot =Dot(fill_opacity=0).next_to(text,D,buff=0.2)
+            text.add(dummy_dot)
+            text.rotate(ax.angle_of_tangent(x_tracker.get_value(),graph))
+            return text.move_to(get_compensated_coor(text, dummy_dot.get_center(),ax.c2p(x_tracker.get_value(),graph.underlying_function(x_tracker.get_value()))))
+
+        text = redraw(special_text)
+
+        self.add(text)
+
+        self.play(x_tracker.animate.set_value(10),run_time=10)
+
+        self.wait(5)
