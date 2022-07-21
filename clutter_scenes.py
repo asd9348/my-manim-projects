@@ -887,3 +887,102 @@ class working1(MovingCameraScene):
         # self.add(index_labels(circles))
         # self.play(circles.animate.move_to(get_moved_coor_based_submob(circles, circles[ 1 ].get_center(), circle.get_center())))
         self.wait(20)
+
+
+class test_2(VectorScene):
+    def construct(self):
+        mag_tracker = ValueTracker(2)
+        current1 = Current(LEFT * 2.5)
+
+        # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
+        current2 = Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value())
+        # def mag_change(current):
+        #     current.magnitude= mag_tracker.get_value()
+        # current2.add_updater(mag_change)
+
+        # field = redraw(lambda: MagneticField(current1, current2))
+        field = MagneticField(current1, current2)
+
+        sources=[current1, current2]
+        def field_update(field):
+            field.magnetic_sources = sources
+
+        field.add_updater(field_update)
+
+        # field = MagneticField(current1, current2)
+        # field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
+
+        # current2.magnitude=15
+        # print(current2.magnitude)
+
+        # print(self.mobjects)
+
+        # current(1)
+        self.add(field, current1, current2, index_labels(current2))
+        self.wait(1)
+
+        # self.play(field.animate.shift(L*1))
+
+        # self.wait(5)
+class test_2(VectorScene):
+    def construct(self):
+        mag_tracker = ValueTracker(2)
+        current1 = Current(LEFT * 4)
+
+        # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
+        current2 = Current(RIGHT * 4, direction=IN, magnitude=mag_tracker.get_value())
+        # def mag_change(current):
+        #     current.magnitude= mag_tracker.get_value()
+        # current2.add_updater(mag_change)
+
+        # field = redraw(lambda: MagneticField(current1, current2))
+        field = MagneticField(current1, current2)
+
+        # sources=[current1, current2]
+        # def field_update(field):
+        #     field.magnetic_sources = sources
+        #
+        # field.add_updater(field_update)
+        magnet = BarMagnet().rotate(PI/4)
+        field = MagneticField(current1, current2,magnet)
+        field.add_updater(lambda x: x.become(MagneticField(current1, current2)))
+
+        # def field_fun(field):
+        #     updated_field = MagneticField(current1, current2)
+        #
+        #     return updated_field
+        # field.add_updater(field_update)
+
+        # def redraw(func):
+        #     mob = func()
+        #     mob.add_updater(lambda m: mob.become(func()))
+        #     return mob
+
+        # field = MagneticField(current1, current2)
+        # field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
+
+        # current2.magnitude=15
+        # print(current2.magnitude)
+
+        # print(self.mobjects)
+
+        # current(1)
+        # self.add(field,  magnet)
+        self.add(field, current1, current2, magnet)
+
+        # field.add_updater()
+        # self.wait(1)
+
+        # self.play(field.animate.shift(L*1))
+
+        # self.wait(5)
+
+        # self.play(current1.animate.shift(L * 4))
+        # self.play(current2.animate.become(Current(U * 2.5, direction=IN, magnitude=10)))
+
+        # self.play(mag_tracker.animate.set_value(10),
+        #           current2.animate.shift(L * 2))
+
+        # self.play()
+        # self.play(mag_tracker.animate.set_value(2))
+        # self.wait(5)

@@ -1707,6 +1707,274 @@ class L01S02_pair(MovingCameraScene):
                                  ))
 
         self.wait(5)
+class L01S06_price(MovingCameraScene):
+    def construct(self):
+        #     self.add(NumberPlane())
+        self.camera.frame.save_state()
+
+        speak(self, title='Scene2', txt=
+
+        '가격이라는 것에 대해 정확하게 정의하고 가겠습니다#1'
+        '가격은 경제,비즈니스면에서 물건,용역,자산의 금전적 수적가치를 따지는 것으로, 한 제품 및 서비스의 가격이란 소비자가 그 제품이나 서비스를 한 단위로 구매하기 위해 지불해야 하는 화폐의 양을 말한다#1'
+        '비티씨 테더 페어에서 38000테더라고 적혀있다면 있다면 우리는 비티씨의 가격이 얼마라고 얘기합니까#1'
+        '38000달러라고 부릅니다. 그러나 이는 엄밀하게 보면 틀린 표현입니다#1'
+        '비티씨의 가격은 38000테더입니다. 테더와 달러는 다른 것입니다 #1'
+        '달러는 달러 그자체이고 테더는 이 달러를 담보로 발행했기에 테더 회사가 지급불능이 된다면 테더는 디지털 쓰레기가 됩니다#1'
+        '달러를 옹호하는 건 아닙니다. 미국정부가 망하면 달러는 종이 쓰레기가 됩니다#1'
+        '그리고 국민이 없다면 정부는 존재할 수 없습니다#1'
+        '테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다#1'
+        '금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다#1'
+        '지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다#1'
+              , keep_pitch=True, update=0, speed=1.4)
+        # TODO 3.117 secs가격이라는 것에 대해 정확하게 정의하고 가겠습니다
+        # TODO 0:00:00.000  ~  0:00:03.117
+        # TODO 1.0secs pause
+        # TODO 0:00:03.117  ~  0:00:04.117
+
+        # TODO 13.845 secs가격은 경제,비즈니스면에서 물건,용역,자산의 금전적 수적가치를 따지는 것으로,
+        #  한 제품 및 서비스의 가격이란 소비자가 그 제품이나 서비스를 한 단위로 구매하기 위해 지불해야하는 화폐의양을말한다
+        # TODO 0:00:04.117  ~  0:00:17.962
+        # TODO 1.0secs pause
+        # TODO 0:00:17.962  ~  0:00:18.962
+        price = Tex('Price').scale(2)
+
+        self.play(Create(price), run_time=3.117)
+
+        price_text = Tex(
+            r'A price is the (usually not negative) quantity of payment \\'
+            r'or compensation given by one party to another\\in return for goods or services.').next_to(
+            price, D)
+        self.play(Create(price_text), run_time=10)
+        self.wait(3)
+
+        self.play(Uncreate(price),
+                  Uncreate(price_text), run_time=2.845)
+
+        # TODO 6.584 secs비티씨 테더 페어에서 38000테더라고 적혀있다면 있다면 우리는 비티씨의 가격이 얼마라고 얘기합니까
+        # TODO 0:00:18.962  ~  0:00:25.546
+        # TODO 1.0secs pause
+        # TODO 0:00:25.546  ~  0:00:26.546
+
+        # TODO 4.591 secs38000달러라고 부릅니다. 그러나 이는 엄밀하게 보면 틀린 표현입니다
+        # TODO 0:00:26.546  ~  0:00:31.137
+        # TODO 1.0secs pause
+        # TODO 0:00:31.137  ~  0:00:32.137
+
+        # TODO 4.639 secs비티씨의 가격은 38000테더입니다. 테더와 달러는 다른 것입니다
+        # TODO 0:00:32.137  ~  0:00:36.776
+        # TODO 1.0secs pause
+        # TODO 0:00:36.776  ~  0:00:37.776
+
+        pair_rect = RoundedRectangle(corner_radius=0.5, height=7, width=4)
+        pair_rect_text = Tex("BTCUSDT").next_to(pair_rect, UP, buff=0.2).scale(0.8)
+        pair = VGroup(pair_rect, pair_rect_text)
+
+        self.play(Create(pair),
+                  run_time=2)
+
+        curr_px_usdt = Tex('38000 USDT').move_to(pair_rect)
+        curr_px = Tex('38000').move_to(pair_rect)
+        curr_px_usd = Tex('38000 USD?').next_to(pair_rect, R)
+
+        self.play(Create(curr_px_usdt),
+                  run_time=2)
+        self.wait(2)
+
+        self.play(Create(curr_px_usd),
+                  run_time=2)
+
+        curr_px_usd_cross = Cross(curr_px_usd)
+        self.wait(1)
+
+        self.play(Create(curr_px_usd_cross),
+                  run_time=1)
+
+        circle_curr_px = Circle(color=GREEN, radius=1, stroke_width=25).rotate(PI / 2).move_to(curr_px_usdt)
+        self.wait(2)
+
+        usdt_1 = create_entity("A", 0.5, WHITE, "USDT", C_USDT, 2, 1, asset_text_color=WHITE, scaler=0.8)[ 1 ]
+        usd_1 = create_entity("A", 0.5, WHITE, "USD", '#9DC87B', 2, 1, asset_text_color='#2A5A25', scaler=0.8)[ 1 ]
+        equal = MathTex(r'\neq').scale(2)
+
+        n_eq_form = VGroup(usd_1, equal, usdt_1).arrange(RIGHT, buff=0.5)
+        # self.play(Create(n_eq_form))
+        #
+        #
+        # not_equal= Tex(r'USD \neq USDT')
+        self.play(ReplacementTransform(VGroup(pair, curr_px_usdt, curr_px_usd_cross, curr_px_usd, circle_curr_px), n_eq_form),
+                  run_time=3)
+        # self.wait(q)
+        #
+        # self.play(Uncreate(not_equal))
+        #
+        #
+        n_eq_form = VGroup(usd_1, equal, usdt_1).arrange(RIGHT, buff=0.5).scale(2)
+        # usg = LabeledDot(Tex(r'\emph{US\\Gov}',color=BLACK ), radius=1)[ 0].to_edge(D, buff=0.5)
+        # us_people = LabeledDot(Tex(r'\emph{US\\People}',color=BLACK), radius=1)[ 0].to_edge(DR, buff=0.5)
+        #
+        # backed_by_1 = Tex('Backed by').move_to(np.array([usdt.get_x(),0,0]))
+        # backed_by_2 = Tex('Backed by')
+        # backed_by_3 = Tex('Backed by').move_to(np.array([usg.get_x(),0,0]))
+
+        self.wait(2)
+        self.play(Uncreate(n_eq_form),
+                  run_time=1.814)
+
+        # btc_equal_38000 = Tex('1 BTC = 38000')
+        # cross = Cross(stroke_width=25).scale(3)
+        # btc_equal_38000dollars = Tex('1 BTC = 38000 USD')
+        # circle = Circle(color=GREEN, radius=3, stroke_width=25).rotate(PI / 2)
+        # self.play(Create(btc_equal_38000))
+        #
+        # self.play(Create(cross))
+        #
+        # self.play(FadeOut(cross))
+        # self.play(TransformMatchingShapes(btc_equal_38000, btc_equal_38000dollars))
+        #
+        # self.play(Create(circle))
+        #
+        # self.play(FadeOut(circle),
+        #           Uncreate(btc_equal_38000dollars))
+        #
+        # self.wait(q)
+
+        # TODO 7.55 secs달러는 달러 그자체이고 테더는 이 달러를 담보로 발행했기에 테더 회사가 지급불능이 된다면 테더는 디지털 쓰레기가 됩니다
+        # TODO 0:00:37.776  ~  0:00:45.326
+        # TODO 1.0secs pause
+        # TODO 0:00:45.326  ~  0:00:46.326
+
+        usdt = create_entity("A", 0.5, WHITE, "USDT", C_USDT, 2, 1, asset_text_color=WHITE, scaler=0.8)[ 1 ].to_edge(UL, buff=1)
+        usd = create_entity("A", 0.5, WHITE, "USD", '#9DC87B', 2, 1, asset_text_color='#2A5A25', scaler=0.8)[ 1 ].to_edge(DL, buff=1)
+        usg = SVGMobject('svgs/government.svg', fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7)
+        us_people = SVGMobject('svgs/people.svg', fill_color=WHITE).scale(0.85).to_edge(D, buff=0.7).to_edge(R, buff=1)
+
+        usd_copy = usd.copy().move_to(ORIGIN).to_edge(U, buff=1)
+
+        usg_copy = usg.copy().move_to(ORIGIN).to_edge(U, buff=0.5).to_edge(R, buff=1)
+        us_people.move_to([ usg_copy.get_x(), us_people.get_y(), 0 ])
+
+        backed_by_1 = Tex('Backed by').move_to(np.array([ usdt.get_x(), 0, 0 ]))
+        backed_by_2 = Tex('Backed by')
+        backed_by_3 = Tex('Backed by').move_to(np.array([ us_people.get_x(), 0, 0 ]))
+
+        self.play(Create(usdt), run_time=0.5)
+        self.play(Create(backed_by_1), run_time=0.5)
+        self.play(Create(usd), run_time=0.5)
+        self.play(TransformFromCopy(usd, usd_copy), run_time=0.5)
+        self.play(Create(backed_by_2), run_time=0.5)
+        self.play(Create(usg), run_time=0.5)
+        self.play(TransformFromCopy(usg, usg_copy), run_time=0.5)
+        self.play(Create(backed_by_3), run_time=0.5)
+        self.play(Create(us_people), run_time=0.5)
+
+        self.wait(2)
+
+        self.play(FadeOut(VGroup(usd, backed_by_1)), run_time=0.5)
+        self.wait(1)
+        self.play(Uncreate(usdt), run_time=0.55)
+
+        # TODO 4.881 secs달러를 옹호하는 건 아닙니다. 미국정부가 망하면 달러는 종이 쓰레기가 됩니다
+        # TODO 0:00:46.326  ~  0:00:51.207
+        # TODO 1.0secs pause
+        # TODO 0:00:51.207  ~  0:00:52.207
+        self.play(FadeOut(VGroup(usg, backed_by_2)),
+                  run_time=1.881)
+        self.wait(1.5)
+        self.play(Uncreate(usd_copy),
+                  run_time=1)
+        self.wait(1.5)
+
+        # TODO 3.165 secs그리고 국민이 없다면 정부는 존재할 수 없습니다
+        # TODO 0:00:52.207  ~  0:00:55.372
+        # TODO 1.0secs pause
+        # TODO 0:00:55.372  ~  0:00:56.37
+        self.play(FadeOut(VGroup(us_people, backed_by_3)),
+                  run_time=1)
+        self.wait(1)
+        self.play(Uncreate(usg_copy),
+                  run_time=1.165)
+        self.wait(1)
+
+        # TODO 5.98 secs테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다
+        # TODO 0:00:56.372  ~  0:01:02.352
+        # TODO 1.0secs pause
+        # TODO 0:01:02.352  ~  0:01:03.352
+
+        price_of_usdt = Tex(r'Price of 1 "USDT" is \\normally 1.01 \textasciitilde \  0.99 "USD"').scale(1.5)
+
+        self.play(Create(price_of_usdt), run_time=2)
+        self.wait(2)
+        self.play(Uncreate(price_of_usdt), run_time=2.98)
+
+        # TODO 8.263 secs금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다
+        # TODO 0:01:03.352  ~  0:01:11.615
+        # TODO 1.0secs pause
+        # TODO 0:01:11.615  ~  0:01:12.615
+
+        plane = Axes(
+            x_range=(0, 20),
+            y_range=(0, 12),
+            x_length=15,
+            y_length=8,
+            axis_config={"include_numbers": False,
+                         'include_ticks': False},
+        )
+        x_list = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+        y_list = [ 5.5, 5, 6, 4, 5, 7, 5, 6, 5, 4, 5, 6, 5, 6, 7, 6, 5, 6, 7, 6.2 ]
+        # plane.center()
+        line_graph = plane.plot_line_graph(
+            x_values=x_list,
+            y_values=y_list,
+            line_color=C_USDT,
+            add_vertex_dots=0,
+            # vertex_dot_style=dict(stroke_width=1, fill_color=PURPLE),
+            stroke_width=10,
+        )
+
+        path = VMobject()
+        print(plane.c2p(1, 5), plane.c2p(1, 7))
+
+        print([ plane.c2p(x, y) for x, y in zip(x_list, y_list) ])
+        path.set_points_as_corners([ plane.c2p(x, y) for x, y in zip(x_list, y_list) ])
+        px = ValueTracker(1)
+        px.add_updater(lambda mob: mob.become(ValueTracker(self.camera.frame.get_y())))
+
+        label = Tex(rf'Price of USDT : {px.get_value()}')
+        label.add_updater(lambda mob: mob.become(
+            Tex(rf'Price of USDT\\{(1.015 - 0.985) * (self.camera.frame.get_y() - (-1 / 3)) / (1 / 3 - (-1 / 3)) + 0.985:.03f} USD').next_to(
+                self.camera.frame.get_center(), UR, buff=0.5)))
+        icon = SVGMobject('svgs/svg/color/usdt.svg')
+        icon.add_updater(
+            lambda mob: mob.become(SVGMobject('svgs/svg/color/usdt.svg').scale(0.65).next_to(self.camera.frame.get_center(), DR, buff=0.5)))
+
+        self.play(Create(plane),
+                  self.camera.frame.animate.scale(0.7).move_to(path.get_start()),
+                  run_time=4)
+
+        self.play(Create(label),
+                  Create(icon), run_time=2)
+        self.play(Create(line_graph),
+                  MoveAlongPath(self.camera.frame, path),
+                  run_time=6)
+
+        label.clear_updaters()
+        icon.clear_updaters()
+
+        self.wait(2)
+
+        self.play(Restore(self.camera.frame),
+                  label.animate.scale(1 / 0.7).move_to([ 2, 2.5, 0 ]),
+                  icon.animate.scale(1 / 0.7).move_to([ 2 - label.width / 2, 2.5, 0 ]).shift(L * 2),
+                  run_time=4)
+
+        # TODO 8.686 secs지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다
+        # TODO 0:01:12.615  ~  0:01:21.301
+        # TODO 1.0secs pause
+        # TODO 0:01:21.301  ~  0:01:22.301
+
+        self.wait(10)
+
+
 
 
 class L01S05_order(MovingCameraScene):

@@ -37,6 +37,29 @@ from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
+def coin(coin_ticker, type='color', radius=1):
+    """type : black , color, icon, white
+    coin ticker in lower case
+    """
+
+    svg_folder = Path('./svgs')
+    svg_file = svg_folder / 'coin' / f'{type}' / f'{coin_ticker}.svg'
+    pprint(list(svg_folder.iterdir()))
+
+    return SVGMobject(svg_file).scale_to_fit_width(radius * 2)
+
+def redraw(func):
+    mob = func()
+    mob.add_updater(lambda m: mob.become(func()))
+    return mob
+
+
+def get_unit_v_by_angle(angle):
+    unit_v = np.array([np.cos(angle), np.sin(angle), 0])
+
+    return unit_v
+
+
 def get_perpendicular_line(point, line):
     if type(line) is list:
         temp_line = Line(start=line[ 0 ], end=line[ 1 ])

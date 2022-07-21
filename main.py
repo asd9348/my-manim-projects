@@ -9,7 +9,10 @@ from custom_manim_utils.custom_consts import *
 from custom_manim_utils.custom_color_consts import *
 from custom_manim_utils.custom_functions import *
 from custom_manim_utils.custom_mobs import *
-
+from manim_physics import *
+from manim_gearbox import *
+from manim_fontawesome import regular
+from pathlib import Path
 config.frame_width = 16
 config.frame_height = 9
 # background_color = W02
@@ -26,6 +29,8 @@ class working4(MovingCameraScene):
     def construct(self):
         #     self.add(NumberPlane())
         self.camera.frame.save_state()
+        #     self.add(NumberPlane())
+        self.camera.frame.save_state()
 
         speak(self, title='Scene2', txt=
 
@@ -40,7 +45,17 @@ class working4(MovingCameraScene):
         '테더는 실제로 거래해보면 보통 0.999에서 1.001 달러 사이를 움직이며 거래됩니다#1'
         '금본위제 시절에 달러가 금하고 바꿀 수 있는 종이였지 금이 아니듯 테더는 달러가 아니고 가치가 미세하지만 어쨌든 변동하는 자산입니다#1'
         '지금까지의 얘기는 무의식적으로 달러와 테더가 같다고 여겨지는 생각을 없애기 위함이고 이것은 나중에 논스테이블 페어를 이해하는데 도움이 됩니다#1'
-              , keep_pitch=True, update=0, speed=1.4)
+              
+        '가격은 어떻게 움직일까요#1'
+        '우리가 배우기로는 수요와 공급이 교차하는 지점에서 결정된다고 배웁니다#1'
+        '그러나 거래소에서의 가격은 그 말보다는 인내심이 더 부족한 쪽에 의해 결정된다고 하는게 이해하기 쉬울겁니다#1'
+        '누구나 더 높은 가격에 팔고 더 낮은 가격에 사고 싶기 때문에 호가창에는 지정가 주문들이 쌓이기 시작합니다#1'
+        '그렇게 지정가 주문들이 현재가 위 아래로 계속 쌓이기만 하면 가격은 움직이지 않습니다 #1'
+        '실제로 호가창에 100달러와 101달러가 맞닿아 있고 아무도 시장가 주문을 넣지 않으면 가격은 마지막 거래가 100원에서 매수였으면 100원, 101원에서 매도였으면 101원에 정지해있습니다#1'
+        '그러다가 누군가 기다림을 참지 못하고 시장가로 구매를 하면 호가창에 쌓여있던 물량이 시장가로 소화되면서 가격은 움직입니다 #1'
+        '잘 생각해보면 모든 사람이 지정가 주문만 넣으면 아무 일도 일어나지 않고 모두 기다리기만 합니다#1'
+
+              , keep_pitch=True, update=1, speed=1.4)
         # TODO 3.117 secs가격이라는 것에 대해 정확하게 정의하고 가겠습니다
         # TODO 0:00:00.000  ~  0:00:03.117
         # TODO 1.0secs pause
@@ -286,6 +301,179 @@ class working4(MovingCameraScene):
         # TODO 0:01:12.615  ~  0:01:21.301
         # TODO 1.0secs pause
         # TODO 0:01:21.301  ~  0:01:22.301
+
+
+        self.play(Uncreate(VGroup(icon, label, line_graph, plane),run_time=0.949))
+
+
+
+
+        # TODO 1.752 secs가격은 어떻게 움직일까요
+        # TODO 0:00:00.000  ~  0:00:01.752
+        # TODO 1.0secs pause
+        # TODO 0:00:01.752  ~  0:00:02.752
+
+
+        # TODO 4.578 secs우리가 배우기로는 수요와 공급이 교차하는 지점에서 결정된다고 배웁니다
+        # TODO 0:00:02.752  ~  0:00:07.330
+        # TODO 1.0secs pause
+        # TODO 0:00:07.330  ~  0:00:08.330
+        x_range = 20
+        ax = Axes(x_range=[ 0, x_range, x_range / 10 ],
+                  y_range=[ 0, 256, 25.6 ],
+                  x_length=6,
+                  y_length=6,
+
+                  tips=True,
+                  axis_config={"include_numbers": False}
+                  )
+
+        supply_val_tracker = ValueTracker(0)
+        demand_val_tracker = ValueTracker(0)
+        supply_graph = ax.plot(lambda x: (x - supply_val_tracker.get_value()) ** 2,
+                               x_range=[ x_range * 0.2 + supply_val_tracker.get_value(), x_range * 0.8 + supply_val_tracker.get_value() ],
+                               use_smoothing=False, color=BLUE)
+        demand_graph = ax.plot(lambda x: (x_range - (x - demand_val_tracker.get_value())) ** 2,
+                               x_range=[ x_range * 0.2 + demand_val_tracker.get_value(), x_range * 0.8 + demand_val_tracker.get_value() ],
+                               use_smoothing=False, color=RED)
+
+        supply_graph.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: (x - supply_val_tracker.get_value()) ** 2,
+                    x_range=[ x_range * 0.2 + supply_val_tracker.get_value(), x_range * 0.8 + supply_val_tracker.get_value() ],
+                    use_smoothing=False, color=BLUE)))
+        demand_graph.add_updater(lambda graph: graph.become(
+            ax.plot(lambda x: (x_range - (x - demand_val_tracker.get_value())) ** 2,
+                    x_range=[ x_range * 0.2 + demand_val_tracker.get_value(), x_range * 0.8 + demand_val_tracker.get_value() ],
+                    use_smoothing=False, color=RED)))
+
+        supply_graph_label = Tex('Supply').next_to(supply_graph, UR)
+        supply_graph_label.add_updater(lambda label: label.become(Tex('Supply').next_to(supply_graph, UR).shift(LEFT)))
+        demand_graph_label = Tex('Demand').next_to(demand_graph, DR)
+        demand_graph_label.add_updater(lambda label: label.become(Tex('Demand').next_to(demand_graph, UL).shift(RIGHT)))
+
+        labels = ax.get_axis_labels("Quantity", "Price")
+
+        x_label = ax.get_x_axis_label(
+            Tex("Quantity").scale(0.65), edge=DOWN, direction=DOWN, buff=0.5
+        )
+        y_label = ax.get_y_axis_label(
+            Tex('Price').scale(0.65).rotate(90 * DEGREES),
+            edge=LEFT,
+            direction=LEFT,
+            buff=0.3,
+        )
+
+        axis_labels = VGroup(x_label, y_label)
+
+        supply_graph.add(supply_graph_label)
+        demand_graph.add(demand_graph_label)
+
+        # label_rect = LabeledRectangle('Government',4,5)
+        self.play(Create(ax),
+                  Create(supply_graph),
+                  Create(demand_graph),
+                  Create(axis_labels))
+
+        self.wait(1.278)
+
+        lines = ax.get_lines_to_point(ax.c2p(1, 3))
+        lines.add_updater(lambda lines: lines.become(ax.get_lines_to_point(
+            ax.c2p((20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2,
+                   supply_graph.underlying_function((20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2)))))
+        self.add(lines)
+
+        # horizontal_line = ax.get_horizontal_line(supply_graph)
+        def reverse(t: float) -> float:
+            return -t + 1
+
+        # self.play(Create(lines[ 0 ]),
+        #           Create(lines[ 1 ]))
+        cross_dot = Dot(0.7).move_to(ax.c2p((20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2,
+                                            supply_graph.underlying_function(
+                                                (20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2)))
+        cross_dot_text = MathTex('Equalibrium')
+        cross_dot.add_updater(lambda x: x.move_to(ax.c2p((20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2,
+                                                         supply_graph.underlying_function(
+                                                             (20 + supply_val_tracker.get_value() + demand_val_tracker.get_value()) / 2))))
+        cross_dot_text.add_updater(lambda x: x.next_to(cross_dot, RIGHT))
+        self.play(Create(cross_dot),
+                  Write(cross_dot_text))
+
+        self.play(supply_val_tracker.animate.set_value(-3))
+        self.play(demand_val_tracker.animate.set_value(-3))
+        self.play(demand_val_tracker.animate.set_value(3))
+        self.play(supply_val_tracker.animate.set_value(3))
+
+        supply_func = supply_graph.get_function()
+
+        self.play(Uncreate(VGroup(supply_graph,demand_graph,ax, axis_labels,cross_dot,cross_dot_text)))
+
+
+        # new_dot = Dot(0.5, color=RED).move_to(ax.c2p(5, supply_graph.underlying_function(5)))
+        #
+        # self.play(Create(new_dot))
+        #
+
+        # self.play(FadeOut(self.mobjects, shift=UP))
+
+
+        # TODO 6.874 secs그러나 거래소에서의 가격은 그 말보다는 인내심이 더 부족한 쪽에 의해 결정된다고 하는게 이해하기 쉬울겁니다
+        # TODO 0:00:08.330  ~  0:00:15.204
+        # TODO 1.0secs pause
+        # TODO 0:00:15.204  ~  0:00:16.204
+
+        clock_min_angle = ValueTracker(PI / 2)
+        clock_hour_angle = ValueTracker(PI / 2)
+        clock_circle = Circle(color=WHITE).scale(2)
+        clock_center_dot = Dot(color=WHITE)
+        clock_min_handle = Arrow(start=clock_circle.get_center(), end=clock_circle.get_center() + np.array(
+            [ cos(clock_min_angle.get_value()) * 0.8, sin(clock_min_angle.get_value()) * 0.9, 0 ]), stroke_width=3, buff=0,
+                                 max_stroke_width_to_length_ratio=100)
+        clock_hour_handle = Arrow(start=clock_circle.get_center(), end=clock_circle.get_center() + np.array(
+            [ cos(clock_hour_angle.get_value()) * 0.5, sin(clock_hour_angle.get_value()) * 0.5, 0 ]), stroke_width=5, buff=0,
+                                  max_stroke_width_to_length_ratio=100, max_tip_length_to_length_ratio=0.4)
+        clock_min_handle.add_updater(lambda x: x.become(Arrow(start=clock_circle.get_center(), end=clock_circle.get_center() + np.array(
+            [ cos(clock_min_angle.get_value()) * 0.8, sin(clock_min_angle.get_value()) * 0.9, 0 ]), stroke_width=5, buff=0,
+                                                              max_stroke_width_to_length_ratio=100)))
+        clock_hour_handle.add_updater(lambda x: x.become(Arrow(start=clock_circle.get_center(), end=clock_circle.get_center() + np.array(
+            [ cos(clock_hour_angle.get_value()) * 0.5, sin(clock_hour_angle.get_value()) * 0.5, 0 ]), stroke_width=5, buff=0,
+                                                               max_stroke_width_to_length_ratio=100, max_tip_length_to_length_ratio=0.4)))
+        clock = VGroup(clock_circle, clock_center_dot, clock_min_handle, clock_hour_handle)
+
+        self.play(Create(clock))
+
+
+        self.play(AnimationGroup(AnimationGroup(clock_min_angle.animate.set_value(PI / 2 - 4 * 2 * PI),
+                                                clock_hour_angle.animate.set_value(PI / 2 - 4 * 2 * PI / 12)), rate_func= linear, run_time=6))
+
+        self.play(FadeOut(clock),run_time=0.874)
+
+
+
+        # TODO 6.693 secs누구나 더 높은 가격에 팔고 더 낮은 가격에 사고 싶기 때문에 호가창에는 지정가 주문들이 쌓이기 시작합니다
+        # TODO 0:00:16.204  ~  0:00:22.897
+        # TODO 1.0secs pause
+        # TODO 0:00:22.897  ~  0:00:23.897
+
+        # TODO 5.629 secs그렇게 지정가 주문들이 현재가 위 아래로 계속 쌓이기만 하면 가격은 움직이지 않습니다
+        # TODO 0:00:23.897  ~  0:00:29.526
+        # TODO 1.0secs pause
+        # TODO 0:00:29.526  ~  0:00:30.526
+
+        # TODO 11.573 secs실제로 호가창에 100달러와 101달러가 맞닿아 있고 아무도 시장가 주문을 넣지 않으면 가격은 마지막 거래가 100원에서 매수였으면 100원, 101원에서 매도였으면 101원에 정지해있습니다
+        # TODO 0:00:30.526  ~  0:00:42.099
+        # TODO 1.0secs pause
+        # TODO 0:00:42.099  ~  0:00:43.099
+
+        # TODO 8.106 secs그러다가 누군가 기다림을 참지 못하고 시장가로 구매를 하면 호가창에 쌓여있던 물량이 시장가로 소화되면서 가격은 움직입니다
+        # TODO 0:00:43.099  ~  0:00:51.205
+        # TODO 1.0secs pause
+        # TODO 0:00:51.205  ~  0:00:52.205
+
+        # TODO 6.233 secs잘 생각해보면 모든 사람이 지정가 주문만 넣으면 아무 일도 일어나지 않고 모두 기다리기만 합니다
+        # TODO 0:00:52.205  ~  0:00:58.438
+        # TODO 1.0secs pause
+        # TODO 0:00:58.438  ~  0:00:59.438
 
         self.wait(10)
 
@@ -755,7 +943,7 @@ class working1(MovingCameraScene):
 
     def construct(self):
         numberplane = NumberPlane()
-        self.add(numberplane)
+        # self.add(numberplane)
 
         # start_dot = Dot(color=RED).move_to([ -2, 2, 0 ])
 
@@ -768,93 +956,294 @@ class working1(MovingCameraScene):
         # unit_v = line.get_unit_vector()
         # print(is_on_left(tri_base_line, np.array([0,-5,0])))
 
-        tri = Triangle().scale(2.5)
+        tri = Triangle(fill_color=C2495, fill_opacity=1, stroke_color=C2498).scale(4)
+        tri.move_to(get_moved_coor_based_submob(tri, tri.get_bottom(), [ 0, -3, 0 ]))
         print(tri.get_end_anchors())
 
-        dot = Dot(color=RED).move_to(center_of_mass(tri.get_end_anchors()))
+        dot = Dot(color=RED).move_to(center_of_mass(tri.get_end_anchors())).set_z_index(3.5)
 
-        perp_line_left = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-            color=YELLOW).set_z_index(3)
-        perp_line_right = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-            color=PINK).set_z_index(3)
-        perp_line_bottom = get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
-            color=GREEN).set_z_index(3)
-        perp_line_left.add_updater(lambda line: line.become(
-            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-                color=YELLOW).set_z_index(3)))
-        perp_line_right.add_updater(lambda line: line.become(
-            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-                color=PINK).set_z_index(3)))
-        perp_line_bottom.add_updater(lambda line: line.become(
-            get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
-                color=GREEN).set_z_index(3)))
+        perp_line_left = redraw(
+            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+                color=YELLOW, width=7).set_z_index(3))
+        perp_line_right = redraw(
+            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
+                color=PINK, width=7).set_z_index(3))
+        perp_line_bottom = redraw(
+            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
+                color=GREEN, width=7).set_z_index(3))
 
-        vertical_green = Line(stroke_width=13, start=[ 4, -4, 0 ], end=[ 4, -4, 0 ] + U * get_line_length(perp_line_bottom))
-        vertical_pink = Line(stroke_width=13, start=vertical_green.get_end(),
-                             end=vertical_green.get_end() + U * get_line_length(perp_line_right))
-        vertical_yellow = Line(stroke_width=13, start=vertical_green.get_end(), end=vertical_green.get_end() + U * perp_line_left.get_end())
+        my_scaler = 1
 
-        my_scaler = 2
-        vertical_green.add_updater(lambda x: x.become(
-            Line(color=GREEN, stroke_width=13, start=O, end=U * get_line_length(perp_line_bottom) * my_scaler).next_to([ 4, -4, 0 ], U,
-                                                                                                                       buff=0)))
-        vertical_pink.add_updater(
-            lambda x: x.become(Line(color=PINK, stroke_width=13, start=O,
-                                    end=U * get_line_length(perp_line_right) * my_scaler).next_to(vertical_green, U, buff=-0.1)))
-        vertical_yellow.add_updater(
-            lambda x: x.become(Line(color=YELLOW, stroke_width=13, start=O,
-                                    end=U * get_line_length(perp_line_left) * my_scaler).next_to(vertical_pink, U, buff=-0.2)))
+        vertical_green = Line(color=GREEN, stroke_width=13, start=[ 4, -4, 0 ],
+                              end=[ 4, -4, 0 ] + U * get_line_length(perp_line_bottom)).set_z_index(4)
+        vertical_pink = Line(color=PINK, stroke_width=13, start=vertical_green.get_end(),
+                             end=vertical_green.get_end() + U * get_line_length(perp_line_right)).set_z_index(3)
+        vertical_yellow = Line(color=YELLOW, stroke_width=13, start=vertical_green.get_end(),
+                               end=vertical_green.get_end() + U * perp_line_left.get_end()).set_z_index(2)
 
-        self.add(tri, dot, perp_line_left, perp_line_right, perp_line_bottom, vertical_green, vertical_yellow, vertical_pink)
+        start = [ 4, -3, 0 ]
 
-        self.play(dot.animate.shift(L * 1))
-        self.play(dot.animate.shift(R * 1))
-        self.play(dot.animate.shift(U * 1))
-        self.play(dot.animate.shift(D * 1))
-        self.play(dot.animate.shift(D * 0.5 + R * 0.5))
+        vertical_green = redraw(
+            lambda: Line(color=GREEN, stroke_width=13, start=start, end=start + + U * get_line_length(perp_line_bottom)).set_z_index(4))
+        vertical_pink = redraw(lambda: Line(color=PINK, stroke_width=13, start=start, end=start + U * (
+                get_line_length(perp_line_right) + get_line_length(perp_line_bottom)) * my_scaler).set_z_index(3))
+        vertical_yellow = redraw(lambda: Line(color=YELLOW, stroke_width=13, start=start, end=start + U * (
+                get_line_length(perp_line_left) + get_line_length(perp_line_bottom) + get_line_length(
+            perp_line_right)) * my_scaler).set_z_index(2))
+
+        yellow_var = Variable(0, 'YELLOW', DecimalNumber).to_edge(UL, buff=1.5)
+        yellow_var[ 0 ][ 0 ].set_color(color=YELLOW)
+        yellow_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_left)).next_to(yellow_var[ 0 ], R)))
+
+        pink_var = Variable(0, 'PINK', DecimalNumber)
+        pink_var[ 0 ][ 0 ].set_color(color=YELLOW)
+        pink_var.move_to(get_moved_coor_based_submob(pink_var, pink_var[ 0 ][ 1 ].get_center(), yellow_var[ 0 ][ 1 ].get_bottom() + D * 1))
+        pink_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_right)).next_to(pink_var[ 0 ], R)))
+
+        green_var = Variable(0, 'GREEN', DecimalNumber)
+        green_var[ 0 ][ 0 ].set_color(color=YELLOW)
+        green_var.move_to(get_moved_coor_based_submob(green_var, green_var[ 0 ][ 1 ].get_center(), pink_var[ 0 ][ 1 ].get_bottom() + D * 1))
+        green_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_bottom)).next_to(green_var[ 0 ], R)))
+
+        vertical_green_braces = redraw(lambda: BraceBetweenPoints(vertical_green.get_start(), vertical_green.get_end()))
+        vertical_pink_braces = redraw(lambda: BraceBetweenPoints(vertical_green.get_end(), vertical_pink.get_end()))
+        vertical_yellow_braces = redraw(lambda: BraceBetweenPoints(vertical_pink.get_end(), vertical_yellow.get_end()))
+
+        vertical_green_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_bottom)).next_to(vertical_green_braces))
+        vertical_pink_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_right)).next_to(vertical_pink_braces))
+        vertical_yellow_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_left)).next_to(vertical_yellow_braces))
+
+        self.play(Create(tri))
+        self.play(Create(VGroup(yellow_var, pink_var, green_var)))
+        self.play(Create(dot))
+        self.play(Create(VGroup(perp_line_left, perp_line_right, perp_line_bottom)))
+        self.play(Create(VGroup(vertical_green, vertical_pink, vertical_yellow)))
+        self.play(Create(VGroup(vertical_green_braces, vertical_pink_braces, vertical_yellow_braces)))
+        print(vertical_green_braces_label.get_center())
+        self.play(Create(VGroup(vertical_green_braces_label, vertical_pink_braces_label, vertical_yellow_braces_label)))
+        # self.play(Create(vertical_green_braces_label))
+
+        self.play(dot.animate.shift(L * 1), run_time=1)
+        self.play(dot.animate.shift(R * 1), run_time=1)
+        self.play(dot.animate.shift(U * 1), run_time=1)
+        self.play(dot.animate.shift(D * 1), run_time=1)
+
+        tri_path = Triangle(fill_color=BLUE_E, fill_opacity=1).scale(2.5)
+        tri_path.move_to(
+            get_moved_coor_based_submob(tri_path, center_of_mass(tri_path.get_end_anchors()), center_of_mass(tri.get_end_anchors())))
+
+        self.play(dot.animate.move_to(tri_path.get_end_anchors()[ 2 ]), run_time=1)
+        self.play(MoveAlongPath(dot, tri_path), run_time=7)
+
+        self.play(dot.animate.move_to(center_of_mass(tri.get_end_anchors())), run_time=3)
+        self.play(dot.animate.shift(D * 0.5 + R * 0.5), run_time=3)
 
         yellow_tri = Polygon(dot.get_center(), dot.get_center() + L * get_line_length(perp_line_left) / np.cos(30 * DEGREES),
                              move_point_with_angle_and_length(dot.get_center(), 120 * DEGREES,
-                                                              get_line_length(perp_line_left) / np.cos(30 * DEGREES)), color=BLUE,
-                             fill_opacity=1).set_z_index(0.5)
+                                                              get_line_length(perp_line_left) / np.cos(30 * DEGREES)), color=C1995,
+                             fill_opacity=1, stroke_color=C1998).set_z_index(2)
 
         pink_tri = Polygon(dot.get_center(), dot.get_center() + R * get_line_length(perp_line_right) / np.cos(30 * DEGREES),
                            move_point_with_angle_and_length(dot.get_center(), 60 * DEGREES,
-                                                            get_line_length(perp_line_right) / np.cos(30 * DEGREES)), color=BLUE,
-                           fill_opacity=1).set_z_index(0.5)
+                                                            get_line_length(perp_line_right) / np.cos(30 * DEGREES)), color=C1995,
+                           fill_opacity=1, stroke_color=C1998).set_z_index(2)
         green_tri = Polygon(dot.get_center(),
                             dot.get_center() + np.array([ np.cos(-60 * DEGREES), np.sin(-60 * DEGREES), 0 ]) * get_line_length(
                                 perp_line_bottom) / np.cos(30 * DEGREES),
                             move_point_with_angle_and_length(dot.get_center(), -120 * DEGREES,
-                                                             get_line_length(perp_line_bottom) / np.cos(30 * DEGREES)), color=BLUE,
-                            fill_opacity=1).set_z_index(0.5)
+                                                             get_line_length(perp_line_bottom) / np.cos(30 * DEGREES)), color=C1995,
+                            fill_opacity=1, stroke_color=C1998).set_z_index(2)
 
         perp_line_left.clear_updaters()
         perp_line_right.clear_updaters()
         perp_line_bottom.clear_updaters()
 
-        self.add(yellow_tri, green_tri, pink_tri)
+        self.play(Create(VGroup(yellow_tri, green_tri, pink_tri)),
+                  FadeOut(dot))
 
         yellow_tri.add(perp_line_left)
         pink_tri.add(perp_line_right)
         green_tri.add(perp_line_bottom)
 
-        print('pink tri anchors', pink_tri.get_end_anchors())
-        print('yellow tri anchors', yellow_tri.get_end_anchors())
-        print('green tri anchors', green_tri.get_end_anchors())
+        big_tri = Polygon(yellow_tri.get_end_anchors()[ 0 ], pink_tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ], color=C2298,
+                          fill_opacity=1, fill_color=C2295).set_z_index(1.5)
 
-        big_tri = Polygon(yellow_tri.get_end_anchors()[ 0 ], pink_tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ], color=GRAY,
-                          fill_opacity=0.5, fill_color=GRAY).set_z_index(4)
         self.play(Rotate(yellow_tri, angle=-120 * DEGREES, about_point=center_of_mass(yellow_tri.get_end_anchors())))
 
         self.play(Create(big_tri))
 
         big_tri.add(yellow_tri, pink_tri)
-        # self.play(Rotate(VGroup(big_tri, yellow_tri,pink_tri), angle=-120 * DEGREES, about_point=center_of_mass(big_tri.get_end_anchors())))
+
         self.play(Rotate(big_tri, angle=-120 * DEGREES, about_point=center_of_mass(big_tri.get_end_anchors())))
+
+        self.play(pink_tri.animate.move_to([ 0, pink_tri.get_y(), 0 ]),
+                  green_tri.animate.move_to([ 0, green_tri.get_y(), 0 ]))
 
         self.wait(10)
 
-        # poly = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5)
 
-        # print(poly.get_end_anchors())
+class working1(MovingCameraScene):
+    # config.background_color = GRAY
+
+    def construct(self):
+
+        self.add(coin('mana', type='color'))
+
+
+
+class test_1(Scene):
+    def construct(self):
+        charge1 = Charge(-4, LEFT*3.5 )
+        charge2 = Charge(2, RIGHT*4+ DOWN*2)
+        charge3_mag_tkr = ValueTracker(8)
+        charge3 = redraw(lambda: Charge(charge3_mag_tkr.get_value(), UP * 3))
+        charge4 = Charge(-1, RIGHT*7+ U*3.5)
+        charge5= Charge(-1,  DOWN*3.5)
+        charge6 = Charge(-1, RIGHT*7+ DOWN*2)
+        charge7 = Charge(-1, L*7+ DOWN*3)
+        field = redraw(lambda: ElectricField(charge1, charge2, charge3,charge4,charge5, charge6,charge7))
+        self.add(field,charge1, charge2, charge3,charge4,charge5, charge6,charge7)
+        # self.play(charge3.animate.shift(L * 4), run_time=2)
+
+        # self.play(charge3_mag_tkr.animate.set_value(15),
+        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
+        # self.play(charge3_mag_tkr.animate.set_value(1),
+        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
+        # self.wait(5)
+
+
+class test_2(VectorScene):
+    def construct(self):
+        mag_tracker = ValueTracker(2)
+        current1 = Current(LEFT * 4)
+
+        # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
+        current2 = Current(RIGHT * 4, direction=IN, magnitude=mag_tracker.get_value())
+        def mag_change(current):
+            current.magnitude= mag_tracker.get_value()
+        current2.add_updater(mag_change)
+        magnet = BarMagnet().rotate(PI/4)
+
+        field = redraw(lambda: MagneticField(current1, current2,magnet))
+        # field = MagneticField(current1, current2)
+
+        # sources=[current1, current2]
+        # def field_update(field):
+        #     field.magnetic_sources = sources
+        #
+        # field.add_updater(field_update)
+        # field = MagneticField(current1, current2,magnet)
+        # field.add_updater(lambda x: x.become(MagneticField(current1, current2)))
+
+        # def field_fun(field):
+        #     updated_field = MagneticField(current1, current2)
+        #
+        #     return updated_field
+        # field.add_updater(field_update)
+
+        # def redraw(func):
+        #     mob = func()
+        #     mob.add_updater(lambda m: mob.become(func()))
+        #     return mob
+
+        # field = MagneticField(current1, current2)
+        # field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
+
+        # current2.magnitude=15
+        # print(current2.magnitude)
+
+        # print(self.mobjects)
+
+        # current(1)
+        # self.add(field,  magnet)
+        self.add(field, current1, current2, magnet)
+
+        # field.add_updater()
+        # self.wait(1)
+
+        # self.play(field.animate.shift(L*1))
+
+        # self.wait(5)
+
+        self.play(current1.animate.shift(L * 2))
+        # self.play(current2.animate.become(Current(U * 2.5, direction=IN, magnitude=10)))
+
+        self.play(mag_tracker.animate.set_value(10))
+
+        # self.play()
+        self.play(magnet.animate.rotate(PI/4))
+        # self.wait(5)
+
+
+class test_3(SpaceScene):
+    def construct(self):
+        circle = Circle().shift(UP)
+        circle.set_fill(RED, 1)
+        circle.shift(DOWN + RIGHT)
+
+        rect = Square().shift(UP)
+        rect.rotate(PI / 4)
+        rect.set_fill(YELLOW_A, 1)
+        rect.shift(UP * 2)
+        rect.scale(0.5)
+
+        ground = Line([ -4, -3.5, 0 ], [ 4, -3.5, 0 ])
+        wall1 = Line([ -4, -3.5, 0 ], [ -4, 3.5, 0 ])
+        wall2 = Line([ 4, -3.5, 0 ], [ 4, 3.5, 0 ])
+        walls = VGroup(ground, wall1, wall2)
+        self.add(walls)
+
+        self.play(
+            DrawBorderThenFill(circle),
+            DrawBorderThenFill(rect),
+        )
+        self.make_rigid_body(rect, elasticity=2)  # Mobjects will move with gravity
+        self.make_rigid_body(circle, elasticity=0.3)  # Mobjects will move with gravity
+        self.make_static_body(walls)  # Mobjects will stay in place
+        self.wait(5)
+
+
+class test_4(SpaceScene):
+    def construct(self):
+        # smaller gear
+        gear1 = Gear(12, module=1, profile_shift=0.3, stroke_opacity=0, fill_color=WHITE, fill_opacity=1)
+        # larger gear with inner teeth
+        gear2 = Gear(36, module=1, inner_teeth=True, profile_shift=0.1, stroke_opacity=0, fill_color=RED, fill_opacity=1)
+        gear1.shift(gear1.rp * UP)
+        gear2.shift(gear2.rp * UP)
+        # mesh with 0.15*module larger distance than default
+        # positive_bias param is used to define left or right tooth flank shall engage if there is offset and play
+        gear2.mesh_to(gear1, offset=0.15, positive_bias=False)
+
+        self.play(Create(gear1))
+        self.play(Create(gear2))
+        # self.add(gear1)
+        # self.add(gear2)
+        # self.add(regular.angry)
+        self.play(Rotate(gear1, gear1.pitch_angle * 8, rate_func=linear),
+                  Rotate(gear2, gear2.pitch_angle * 8, rate_func=linear),
+                  run_time=10)
+
+
+
+class test_4(Scene):
+    def construct(self):
+        lens_style = {"fill_opacity": 0.5, "color": BLUE}
+        a = Lens(-5, 1, **lens_style).shift(LEFT)
+        a2 = Lens(5, 1, **lens_style).shift(RIGHT)
+        b = [
+            Ray(LEFT * 5 + UP * i, RIGHT, 8, [a, a2], color=RED)
+            for i in np.linspace(-2, 2, 10)
+        ]
+        self.add(a, a2, *b)
+
+#
+#
+#
+# with tempconfig({"quality": "low_quality", "preview": True, 'fps': 7}):
+#     scene = working1()
+#     # scene = working2()
+#     # scene = working3()
+#     # scene = working4()
+#     # scene = working5()
+#     scene.render()
