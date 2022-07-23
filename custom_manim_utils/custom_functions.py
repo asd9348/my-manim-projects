@@ -38,6 +38,71 @@ from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
 
 
+def is_in_triangle(point, A, B, C, contain_border=False):
+    COM = center_of_mass(A, B, C)
+    if is_on_left_by_points(A, B, COM) and \
+            is_on_left_by_points(B, C, COM) and \
+            is_on_left_by_points(C, A, COM):
+        if is_on_left_by_points(A, B, point, contain_border=contain_border) and \
+                is_on_left_by_points(B, C, point, contain_border=contain_border) and \
+                is_on_left_by_points(C, A, point, contain_border=contain_border):
+
+            return True
+        else:
+            return False
+
+    else:
+        if is_on_right_by_points(A, B, point, contain_border=contain_border) and \
+                is_on_right_by_points(B, C, point, contain_border=contain_border) and \
+                is_on_right_by_points(C, A, point, contain_border=contain_border):
+            return True
+
+        else:
+            return False
+
+
+# a = [ 1, 1, 0 ]
+# b = [ 2, 1.5, 0 ]
+# c = [ 1, 2, 0 ]
+
+
+def dollar_val_surface_triangle(self, u, v):
+    if is_in_triangle([ u, v, 0 ], a, b, c):
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+    else:
+        pass
+    #
+    #     # if
+    #     angle = angle_of_vector(np.array([ u, v, 0 ]))
+    #     u = np.cos(angle) * 0.5
+    #     v = np.sin(angle) * 0.5
+    #     k = ((1 + u) / (1 + v)) - 1
+    #     z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+    #     hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+    #     curr_val = hold_val * (1 + z) - 1
+    # return np.array([ u, v, curr_val ])
+
+
+def get_tangent_line(coor_sys, graph, x_point, line_length=3):
+    """ debugging is needed """
+    slope = coor_sys.slope_of_tangent(x_point, graph)
+    if coor_sys.angle_of_tangent(x_point, graph) <= PI / 2:
+        angle = coor_sys.angle_of_tangent(x_point, graph)
+    else:
+        angle = PI - coor_sys.angle_of_tangent(x_point, graph)
+
+    y_intercept = graph.underlying_function(x_point) - slope * x_point
+    tangent_func = lambda x: slope * x + y_intercept
+    adjacent_len = np.cos(angle) * line_length
+
+    tangent_line = coor_sys.plot(tangent_func, x_range=[ x_point - adjacent_len / 2, x_point + adjacent_len / 2 ])
+
+    return tangent_line
+
+
 def get_slope_with_two_points(p1, p2):
     slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
 
@@ -214,11 +279,13 @@ def get_halfway(A, B, z=0):
 def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
     x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
     y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
+    z_compen = main_mob.get_z() - point_inside_main_mob[ 2 ]
 
     x = point_goes_to[ 0 ] + x_compen
     y = point_goes_to[ 1 ] + y_compen
+    z = point_goes_to[ 2 ] + z_compen
 
-    return [ x, y, 0 ]
+    return [ x, y, z ]
 
 #
 # def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):

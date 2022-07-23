@@ -1,3 +1,6 @@
+from manim.opengl import *
+
+from custom_manim_utils.custom_mobs import *
 import manim.utils.space_ops
 from manim import *
 
@@ -12,13 +15,15 @@ from custom_manim_utils.custom_mobs import *
 from custom_manim_utils.custom_mobs import *
 from manim_physics import *
 from manim_gearbox import *
-from manim_fontawesome import regular
 from pathlib import Path
+
+from pprint import pprint
 
 config.frame_width = 16
 config.frame_height = 9
+
+
 # background_color = W02
-from pprint import pprint
 
 
 class final(Scene):
@@ -719,579 +724,6 @@ class working3(ThreeDScene):
         # self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
 
-class working1(MovingCameraScene):
-    # config.background_color = GRAY
-
-    def construct(self):
-        numberplane = NumberPlane()
-        self.add(numberplane)
-        line = Line(start=[ -2, 2, 0 ], end=[ 3, 1, 0 ])
-        # poly = Polygram([[-2,2,0],[2,2,0]],
-        #                 [[2,2,0],[2,-2,0]],
-        #                 [[2,-2,0],[-2,-2,0]],
-        #                 [[-2,-2,0],[-2,2,0]],color = RED, fill_opacity=0.5)
-        poly = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5)
-
-        print(poly.get_end_anchors())
-
-        temp_line = Line(start=poly.get_end_anchors()[ 1 ], end=poly.get_end_anchors()[ 2 ])
-        # self.add(index_labels(poly.get_subpaths()))
-        print(line_intersection(([ -2, 2, 0 ], [ 3, -1, 0 ]), (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ])))
-
-        # alpha_half_base = line_intersection((A, alpha_half_point), (B, C))
-
-        intersect = line_intersection(
-            ([ -2, 2, 0 ], [ 3, 1, 0 ]),
-            (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ]))
-        dot = Dot(radius=0.5).move_to(line_intersection(
-            ([ -2, 2, 0 ], [ 3, 1, 0 ]),
-            (poly.get_end_anchors()[ 0 ], poly.get_end_anchors()[ 1 ])))
-
-        fuck_line = Line(start=[ -6, 4, 0 ], end=[ -3, -2, 0 ])
-        print(f'getvector is {fuck_line.get_vector()}')
-        fuck_vector = Arrow(start=O, end=fuck_line.get_vector(), buff=0)
-        print(f'unutvector is {fuck_line.get_unit_vector()}')
-        fuck_unit_vector = Arrow(start=O, end=fuck_line.get_unit_vector(), buff=0, color=RED)
-        # new_tri = Polygon
-        new_tri = Polygon([ -2, 2, 0 ], [ 2, 2, 0 ], intersect, color=BLUE, fill_opacity=1)
-
-        # print(angle_of_vector([1,1,0]))
-        # new_tri.align_to(O, UL)
-        # print(new_tri.get_end_anchors())
-        # print(angle_between_vectors([ 2, 2, 0 ],intersect))
-        # print(angle_between_vectors([ 4, -0.5, 0 ],[ 4, 0, 0 ]))
-
-        print('current angle is', angle_of_vector(fuck_line.get_unit_vector()))
-
-        unit_vector_1 = Line(start=[ -2, 2, 0 ], end=[ 2, 2, 0 ]).get_unit_vector()
-        unit_vector_2 = Line(start=[ -2, 2, 0 ], end=[ 2, 1.2, 0 ]).get_unit_vector()
-        unit_vector_1_arrow = Arrow(start=O, end=unit_vector_1, buff=0, color=RED)
-        unit_vector_2_arrow = Arrow(start=O, end=unit_vector_2, buff=0, color=BLUE)
-        angle = angle_between_vectors(unit_vector_1, unit_vector_2)
-        print(angle)
-
-        fuck_angle = angle_of_vector(fuck_line.get_unit_vector()) - (-angle)
-
-        new_tri_path = Line(start=new_tri.get_center(), end=new_tri.get_center() + R * new_tri.width + D * new_tri.height)
-        # self.add( line,
-        #          poly, dot,new_tri, new_rect,fuck_line,unit_vector_1_arrow,unit_vector_2_arrow
-        #          )
-
-        self.play(Create(poly))
-
-        self.play(Create(new_tri))
-        poly.become(Polygon([ -2, 2, 0 ], intersect, [ 2, -2, 0 ], [ -2, -2, 0 ], color=GREEN, fill_opacity=0.5))
-        # self.play(Create(poly))
-        # self.play(Create(poly))
-
-        self.play(Rotate(new_tri, angle=fuck_angle, about_point=new_tri.get_end_anchors()[ -1 ]))
-
-        self.play(new_tri.animate.move_to(get_compensated_coor(new_tri, new_tri.get_end_anchors()[ -1 ], [ -6, 4, 0 ])))
-        self.play(new_tri.animate.move_to(get_compensated_coor(new_tri, new_tri.get_end_anchors()[ -2 ], fuck_line.get_end())))
-
-        # new_fucking_temp_line = Line(start=midpoint(new_tri.get_end_anchors()[ -1 ],new_tri.get_end_anchors()[ -2 ], end=fuck_line.e)
-        # self.play(MoveAlongPath(new_tri, fuck_line))
-
-        self.wait(5)
-
-
-class working1(MovingCameraScene):
-    # config.background_color = GRAY
-
-    def construct(self):
-        numberplane = NumberPlane()
-        # self.add(numberplane)
-
-        # start_dot = Dot(color=RED).move_to([ -2, 2, 0 ])
-
-        # line = Line(start=[ 3, -1, 0 ], end=[ 2, 2, 0 ])
-        # line = Arrow(start=[ 2, 2, 0 ], end=[ 3, -1, 0 ])
-
-        # tri_base_line = Arrow(color=BLUE, buff=0, start=[ 2, -1, 0 ], end=[ -2, -1, 0 ])
-        # tri_base_line = Line(color=BLUE, buff=0, start=[ -2, -1, 0 ], end=[ 2, -1, 0 ])
-        #
-        # unit_v = line.get_unit_vector()
-        # print(is_on_left(tri_base_line, np.array([0,-5,0])))
-
-        tri = Triangle(fill_color=C2495, fill_opacity=1, stroke_color=C2498).scale(4)
-        tri.move_to(get_compensated_coor(tri, tri.get_bottom(), [ 0, -3, 0 ]))
-        print(tri.get_end_anchors())
-
-        dot = Dot(color=RED).move_to(center_of_mass(tri.get_end_anchors())).set_z_index(3.5)
-
-        perp_line_left = redraw(
-            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-                color=YELLOW, width=7).set_z_index(3))
-        perp_line_right = redraw(
-            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 1 ], tri.get_end_anchors()[ 2 ] ]).set_stroke(
-                color=PINK, width=7).set_z_index(3))
-        perp_line_bottom = redraw(
-            lambda: get_perpendicular_line(dot.get_center(), [ tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 1 ] ]).set_stroke(
-                color=GREEN, width=7).set_z_index(3))
-
-        my_scaler = 1
-
-        vertical_green = Line(color=GREEN, stroke_width=13, start=[ 4, -4, 0 ],
-                              end=[ 4, -4, 0 ] + U * get_line_length(perp_line_bottom)).set_z_index(4)
-        vertical_pink = Line(color=PINK, stroke_width=13, start=vertical_green.get_end(),
-                             end=vertical_green.get_end() + U * get_line_length(perp_line_right)).set_z_index(3)
-        vertical_yellow = Line(color=YELLOW, stroke_width=13, start=vertical_green.get_end(),
-                               end=vertical_green.get_end() + U * perp_line_left.get_end()).set_z_index(2)
-
-        start = [ 4, -3, 0 ]
-
-        vertical_green = redraw(
-            lambda: Line(color=GREEN, stroke_width=13, start=start, end=start + + U * get_line_length(perp_line_bottom)).set_z_index(4))
-        vertical_pink = redraw(lambda: Line(color=PINK, stroke_width=13, start=start, end=start + U * (
-                get_line_length(perp_line_right) + get_line_length(perp_line_bottom)) * my_scaler).set_z_index(3))
-        vertical_yellow = redraw(lambda: Line(color=YELLOW, stroke_width=13, start=start, end=start + U * (
-                get_line_length(perp_line_left) + get_line_length(perp_line_bottom) + get_line_length(
-            perp_line_right)) * my_scaler).set_z_index(2))
-
-        yellow_var = Variable(0, 'YELLOW', DecimalNumber).to_edge(UL, buff=1.5)
-        yellow_var[ 0 ][ 0 ].set_color(color=YELLOW)
-        yellow_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_left)).next_to(yellow_var[ 0 ], R)))
-
-        pink_var = Variable(0, 'PINK', DecimalNumber)
-        pink_var[ 0 ][ 0 ].set_color(color=YELLOW)
-        pink_var.move_to(get_compensated_coor(pink_var, pink_var[ 0 ][ 1 ].get_center(), yellow_var[ 0 ][ 1 ].get_bottom() + D * 1))
-        pink_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_right)).next_to(pink_var[ 0 ], R)))
-
-        green_var = Variable(0, 'GREEN', DecimalNumber)
-        green_var[ 0 ][ 0 ].set_color(color=YELLOW)
-        green_var.move_to(get_compensated_coor(green_var, green_var[ 0 ][ 1 ].get_center(), pink_var[ 0 ][ 1 ].get_bottom() + D * 1))
-        green_var[ 1 ].add_updater(lambda x: x.become(DecimalNumber(get_line_length(perp_line_bottom)).next_to(green_var[ 0 ], R)))
-
-        vertical_green_braces = redraw(lambda: BraceBetweenPoints(vertical_green.get_start(), vertical_green.get_end()))
-        vertical_pink_braces = redraw(lambda: BraceBetweenPoints(vertical_green.get_end(), vertical_pink.get_end()))
-        vertical_yellow_braces = redraw(lambda: BraceBetweenPoints(vertical_pink.get_end(), vertical_yellow.get_end()))
-
-        vertical_green_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_bottom)).next_to(vertical_green_braces))
-        vertical_pink_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_right)).next_to(vertical_pink_braces))
-        vertical_yellow_braces_label = redraw(lambda: DecimalNumber(get_line_length(perp_line_left)).next_to(vertical_yellow_braces))
-
-        self.play(Create(tri))
-        self.play(Create(VGroup(yellow_var, pink_var, green_var)))
-        self.play(Create(dot))
-        self.play(Create(VGroup(perp_line_left, perp_line_right, perp_line_bottom)))
-        self.play(Create(VGroup(vertical_green, vertical_pink, vertical_yellow)))
-        self.play(Create(VGroup(vertical_green_braces, vertical_pink_braces, vertical_yellow_braces)))
-        print(vertical_green_braces_label.get_center())
-        self.play(Create(VGroup(vertical_green_braces_label, vertical_pink_braces_label, vertical_yellow_braces_label)))
-        # self.play(Create(vertical_green_braces_label))
-
-        self.play(dot.animate.shift(L * 1), run_time=1)
-        self.play(dot.animate.shift(R * 1), run_time=1)
-        self.play(dot.animate.shift(U * 1), run_time=1)
-        self.play(dot.animate.shift(D * 1), run_time=1)
-
-        tri_path = Triangle(fill_color=BLUE_E, fill_opacity=1).scale(2.5)
-        tri_path.move_to(
-            get_compensated_coor(tri_path, center_of_mass(tri_path.get_end_anchors()), center_of_mass(tri.get_end_anchors())))
-
-        self.play(dot.animate.move_to(tri_path.get_end_anchors()[ 2 ]), run_time=1)
-        self.play(MoveAlongPath(dot, tri_path), run_time=7)
-
-        self.play(dot.animate.move_to(center_of_mass(tri.get_end_anchors())), run_time=3)
-        self.play(dot.animate.shift(D * 0.5 + R * 0.5), run_time=3)
-
-        yellow_tri = Polygon(dot.get_center(), dot.get_center() + L * get_line_length(perp_line_left) / np.cos(30 * DEGREES),
-                             move_point_with_angle_and_length(dot.get_center(), 120 * DEGREES,
-                                                              get_line_length(perp_line_left) / np.cos(30 * DEGREES)), color=C1995,
-                             fill_opacity=1, stroke_color=C1998).set_z_index(2)
-
-        pink_tri = Polygon(dot.get_center(), dot.get_center() + R * get_line_length(perp_line_right) / np.cos(30 * DEGREES),
-                           move_point_with_angle_and_length(dot.get_center(), 60 * DEGREES,
-                                                            get_line_length(perp_line_right) / np.cos(30 * DEGREES)), color=C1995,
-                           fill_opacity=1, stroke_color=C1998).set_z_index(2)
-        green_tri = Polygon(dot.get_center(),
-                            dot.get_center() + np.array([ np.cos(-60 * DEGREES), np.sin(-60 * DEGREES), 0 ]) * get_line_length(
-                                perp_line_bottom) / np.cos(30 * DEGREES),
-                            move_point_with_angle_and_length(dot.get_center(), -120 * DEGREES,
-                                                             get_line_length(perp_line_bottom) / np.cos(30 * DEGREES)), color=C1995,
-                            fill_opacity=1, stroke_color=C1998).set_z_index(2)
-
-        perp_line_left.clear_updaters()
-        perp_line_right.clear_updaters()
-        perp_line_bottom.clear_updaters()
-
-        self.play(Create(VGroup(yellow_tri, green_tri, pink_tri)),
-                  FadeOut(dot))
-
-        yellow_tri.add(perp_line_left)
-        pink_tri.add(perp_line_right)
-        green_tri.add(perp_line_bottom)
-
-        big_tri = Polygon(yellow_tri.get_end_anchors()[ 0 ], pink_tri.get_end_anchors()[ 0 ], tri.get_end_anchors()[ 2 ], color=C2298,
-                          fill_opacity=1, fill_color=C2295).set_z_index(1.5)
-
-        self.play(Rotate(yellow_tri, angle=-120 * DEGREES, about_point=center_of_mass(yellow_tri.get_end_anchors())))
-
-        self.play(Create(big_tri))
-
-        big_tri.add(yellow_tri, pink_tri)
-
-        self.play(Rotate(big_tri, angle=-120 * DEGREES, about_point=center_of_mass(big_tri.get_end_anchors())))
-
-        self.play(pink_tri.animate.move_to([ 0, pink_tri.get_y(), 0 ]),
-                  green_tri.animate.move_to([ 0, green_tri.get_y(), 0 ]))
-
-        self.wait(10)
-
-
-class working1(ThreeDScene):
-    # config.background_color = GRAY
-
-    def construct(self):
-        # self.add(coin('mana', type='color'))
-
-        # def _setup_faces(self):
-        # u_values, v_values = self._get_u_values_and_v_values()
-
-        axes = ThreeDAxes()
-
-        vertex_list = [ [ 0.0, 0.0, 0.0 ], [ 0.0, 0.1111111111111111, 0.1975308641975309 ], [ 0.0, 0.2222222222222222, 0.345679012345679 ],
-                        [ 0.0, 0.3333333333333333, 0.4444444444444444 ], [ 0.0, 0.4444444444444444, 0.49382716049382713 ],
-                        [ 0.0, 0.5555555555555556, 0.49382716049382713 ], [ 0.0, 0.6666666666666666, 0.4444444444444445 ],
-                        [ 0.0, 0.7777777777777777, 0.3456790123456791 ], [ 0.0, 0.8888888888888888, 0.19753086419753094 ],
-                        [ 0.0, 1.0, 0.0 ], [ 0.1111111111111111, 0.0, 0.1975308641975309 ],
-                        [ 0.1111111111111111, 0.1111111111111111, 0.3703703703703704 ],
-                        [ 0.1111111111111111, 0.2222222222222222, 0.49382716049382713 ],
-                        [ 0.1111111111111111, 0.3333333333333333, 0.5679012345679012 ],
-                        [ 0.1111111111111111, 0.4444444444444444, 0.5925925925925926 ],
-                        [ 0.1111111111111111, 0.5555555555555556, 0.5679012345679012 ],
-                        [ 0.1111111111111111, 0.6666666666666666, 0.49382716049382713 ],
-                        [ 0.1111111111111111, 0.7777777777777777, 0.37037037037037046 ],
-                        [ 0.1111111111111111, 0.8888888888888888, 0.1975308641975309 ],
-                        [ 0.1111111111111111, 0.8888888888888888, 0.1975308641975309 ], [ 0.2222222222222222, 0.0, 0.345679012345679 ],
-                        [ 0.2222222222222222, 0.1111111111111111, 0.49382716049382713 ],
-                        [ 0.2222222222222222, 0.2222222222222222, 0.5925925925925926 ],
-                        [ 0.2222222222222222, 0.3333333333333333, 0.6419753086419753 ],
-                        [ 0.2222222222222222, 0.4444444444444444, 0.6419753086419753 ],
-                        [ 0.2222222222222222, 0.5555555555555556, 0.5925925925925926 ],
-                        [ 0.2222222222222222, 0.6666666666666666, 0.4938271604938272 ],
-                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ],
-                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ],
-                        [ 0.2222222222222222, 0.7777777777777777, 0.34567901234567916 ], [ 0.3333333333333333, 0.0, 0.4444444444444444 ],
-                        [ 0.3333333333333333, 0.1111111111111111, 0.5679012345679012 ],
-                        [ 0.3333333333333333, 0.2222222222222222, 0.6419753086419753 ],
-                        [ 0.3333333333333333, 0.3333333333333333, 0.6666666666666667 ],
-                        [ 0.3333333333333333, 0.4444444444444444, 0.6419753086419753 ],
-                        [ 0.3333333333333333, 0.5555555555555556, 0.5679012345679012 ],
-                        [ 0.3333333333333333, 0.6666666666666666, 0.4444444444444446 ],
-                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ],
-                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ],
-                        [ 0.3333333333333333, 0.6666666666666667, 0.4444444444444444 ], [ 0.4444444444444444, 0.0, 0.49382716049382713 ],
-                        [ 0.4444444444444444, 0.1111111111111111, 0.5925925925925926 ],
-                        [ 0.4444444444444444, 0.2222222222222222, 0.6419753086419753 ],
-                        [ 0.4444444444444444, 0.3333333333333333, 0.6419753086419753 ],
-                        [ 0.4444444444444444, 0.4444444444444444, 0.5925925925925926 ],
-                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
-                        [ 0.4444444444444444, 0.5555555555555555, 0.49382716049382724 ],
-                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
-                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ],
-                        [ 0.4444444444444444, 0.5555555555555556, 0.49382716049382713 ], [ 0.5555555555555556, 0.0, 0.49382716049382713 ],
-                        [ 0.5555555555555556, 0.1111111111111111, 0.5679012345679012 ],
-                        [ 0.5555555555555556, 0.2222222222222222, 0.5925925925925926 ],
-                        [ 0.5555555555555556, 0.3333333333333333, 0.5679012345679012 ],
-                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
-                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
-                        [ 0.5555555555555556, 0.4444444444444443, 0.49382716049382724 ],
-                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
-                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ],
-                        [ 0.5555555555555556, 0.4444444444444444, 0.49382716049382713 ], [ 0.6666666666666666, 0.0, 0.4444444444444445 ],
-                        [ 0.6666666666666666, 0.1111111111111111, 0.49382716049382713 ],
-                        [ 0.6666666666666666, 0.2222222222222222, 0.4938271604938272 ],
-                        [ 0.6666666666666666, 0.3333333333333333, 0.44444444444444453 ],
-                        [ 0.6666666666666666, 0.33333333333333326, 0.44444444444444453 ],
-                        [ 0.6666666666666666, 0.33333333333333326, 0.44444444444444453 ],
-                        [ 0.6666666666666666, 0.33333333333333337, 0.4444444444444445 ],
-                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ],
-                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ],
-                        [ 0.6666666666666666, 0.3333333333333335, 0.4444444444444444 ], [ 0.7777777777777777, 0.0, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.1111111111111111, 0.3703703703703705 ],
-                        [ 0.7777777777777777, 0.2222222222222222, 0.34567901234567916 ],
-                        [ 0.7777777777777777, 0.22222222222222238, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222243, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ],
-                        [ 0.7777777777777777, 0.22222222222222232, 0.3456790123456791 ], [ 0.8888888888888888, 0.0, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.1111111111111111, 0.19753086419753096 ],
-                        [ 0.8888888888888888, 0.11111111111111105, 0.19753086419753096 ],
-                        [ 0.8888888888888888, 0.11111111111111122, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.11111111111111127, 0.1975308641975309 ],
-                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ],
-                        [ 0.8888888888888888, 0.11111111111111116, 0.19753086419753094 ], [ 1.0, 0.0, 0.0 ],
-                        [ 1.0, -5.551115123125783e-17, 0.0 ], [ 1.0, -1.1102230246251565e-16, -1.232595164407831e-32 ],
-                        [ 1.0, 5.551115123125783e-17, 0.0 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ],
-                        [ 1.0, 1.1102230246251565e-16, -1.232595164407831e-32 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ], [ 1.0, 0.0, 0.0 ] ]
-
-        test_mob = PointCloudFromCustom(vertex_list,
-                                        fill_color=RED, fill_opacity=0.5,
-                                        stroke_width=1, stroke_opacity=0.5, scaler=3).scale_to_fit_width(4)
-        # .move_to(axes.c2p(0, 0, 0))
-        test_mob.set_fill_by_checkerboard(BLUE)
-        self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
-
-        self.add(axes, test_mob)
-
-        # for i in range(len(u_values) - 1):
-        #     for j in range(len(v_values) - 1):
-        #         u1, u2 = u_values[ i: i + 2 ]
-        #         v1, v2 = v_values[ j: j + 2 ]
-        #         face = ThreeDVMobject()
-        #         face.set_points_as_corners(
-        #             [
-        #                 [ u1, v1, 0 ],
-        #                 [ u2, v1, 0 ],
-        #                 [ u2, v2, 0 ],
-        #                 [ u1, v2, 0 ],
-        #                 [ u1, v1, 0 ],
-        #             ],
-        #         )
-        #         faces.add(face)
-        #         face.u_index = i
-        #         face.v_index = j
-        #         face.u1 = u1
-        #         face.u2 = u2
-        #         face.v1 = v1
-        #         face.v2 = v2
-        # faces.set_fill(color=self.fill_color, opacity=self.fill_opacity)
-        # faces.set_stroke(
-        #     color=self.stroke_color,
-        #     width=self.stroke_width,
-        #     opacity=self.stroke_opacity,
-        # )
-        # self.add(*faces)
-        # if self.checkerboard_colors:
-        #     self.set_fill_by_checkerboard(*self.checkerboard_colors)
-
-        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
-        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        # self.move_camera(phi=90 * DEGREES, about="phi", run_time=1)
-        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(phi=135 * DEGREES, about="phi", run_time=1)
-        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
-
-
-class ParaSurface(ThreeDScene):
-    def func(self, p1, p2):
-        if p1 + p2 > 1:
-            p2 = p2 - (p1 + p2 - 1)
-        p3 = 1 - p1 - p2
-        z = p1 * (1 - p1) + p2 * (1 - p2) + p3 * (1 - p3)
-        return np.array([ p1, p2, z ])
-
-    def dot_text(self, color, tracker):
-        dot = Dot(radius=0.15, color=color)
-        percent_text = Tex("\% = ", color=color).next_to(dot, RIGHT * 0.6)
-        static_group = VGroup(dot, percent_text).scale(0.65)
-        if isinstance(tracker, list):
-            percent_changer = Integer(number=int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).scale(0.65).set_color(
-                color)
-            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
-                perc.set_value(int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).set_color(color).next_to(static_group,
-                                                                                                                              RIGHT * 0.6)))
-        else:
-            percent_changer = Integer(number=int(tracker.get_value() * 100)).scale(0.65).set_color(color)
-            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
-                perc.set_value(tracker.get_value() * 100).set_color(color).next_to(static_group, RIGHT * 0.6)))
-        percent_changer.next_to(static_group, RIGHT * 0.6)
-        text_group = VGroup(static_group, percent_changer)
-        self.renderer.camera.add_fixed_in_frame_mobjects(static_group)
-        return text_group
-
-    def construct(self):
-        x = ValueTracker(0.0)
-        y = ValueTracker(0.0)
-
-        blue_dot_tracker = self.dot_text(BLUE, x)
-        red_dot_tracker = self.dot_text(RED, y).next_to(blue_dot_tracker, RIGHT * 2)
-        green_dot_tracker = self.dot_text(GREEN, [ x, y ]).next_to(red_dot_tracker, RIGHT * 2)
-
-        dot_updater_text = VGroup(blue_dot_tracker, red_dot_tracker, green_dot_tracker).scale(1.5).shift(DOWN * 3 + LEFT * 2)
-
-        x_vals = [ "0\%", "33\%", "66\%", "100\%" ]
-        x_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
-        x_dict = dict(zip(x_pos, x_vals))
-        x_label_dot = Sphere(radius=.15).set_color(BLUE)
-        x_label_perc = Tex("\%", color=BLUE).next_to(x_label_dot, RIGHT * 0.6)
-        x_label = VGroup(x_label_dot, x_label_perc)
-
-        # y_vals = [Tex("0\%").rotate(PI/2,axis=IN).rotate(p),Tex("33\%").rotate(PI/2,axis=IN).rotate(p),Tex("66\%").rotate(PI/2,axis=IN).rotate(p),Tex("100\%").rotate(PI/2,axis=IN).rotate(p)]
-        y_vals = [ "0\%", "33\%", "66\%", "100\%" ]
-        y_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
-        y_dict = dict(zip(y_pos, y_vals))
-        y_label_dot = Sphere(radius=.15).set_color(RED)
-        y_label_perc = Tex("\%", color=RED).next_to(y_label_dot, RIGHT * 0.6)
-        y_label = VGroup(y_label_dot, y_label_perc)
-
-        axes = ThreeDAxes(
-            x_range=[ 0, 1, .3333 ],
-            y_range=[ 0, 1, .3333 ],
-            z_range=[ 0, 1, .2 ],
-            axis_config={
-                "include_tip": False
-            }
-        ).add_coordinates(x_dict, y_dict)
-
-        cost_label = axes.get_z_axis_label('Gini')
-
-        axes.background_line_style = {
-            "stroke_color": BLUE_D,
-            "stroke_width": 2,
-            "stroke_opacity": 1,
-        }
-
-        labels = axes.get_axis_labels(
-            x_label=x_label,
-            y_label=y_label
-        )
-        axes.axis_labels[ 0 ].rotate(PI / 2, axis=RIGHT)
-        axes.axis_labels[ 0 ].shift(RIGHT)
-        axes.axis_labels[ 1 ].rotate(PI / 2, axis=RIGHT)
-        axes.axis_labels[ 1 ].rotate(PI / 2, axis=IN)
-        axes.axis_labels[ 1 ].shift(UP * 3)
-
-        surface = Surface(
-            lambda u, v: axes.c2p(*self.func(u, v)),
-            u_range=[ 0, 1 ],
-            v_range=[ 0, 1 ],
-            fill_opacity=0.5
-        )
-
-        line1 = Line(axes.c2p(1, 0, 0), axes.c2p(0, 0, 0), stroke_width=2).set_color(color=YELLOW)
-        line2 = Line(axes.c2p(0, 0, 0), axes.c2p(0, 1, 0), stroke_width=2).set_color(color=YELLOW)
-        line3 = Line(axes.c2p(0, 1, 0), axes.c2p(1, 0, 0), stroke_width=2).set_color(color=YELLOW)
-        triangle_perimeter = VGroup(line1, line2, line3)
-
-        def triangular_grid(x_min, x_max, dx, y_min, y_max, dy):
-            def get_line(s, e):
-                return Line(s, e, color=BLUE_D, stroke_width=1)
-
-            ctp = axes.coords_to_point
-            v_lines = VGroup(*[ get_line(ctp(x, y_min), ctp(x, y_max - x)) for x in np.arange(x_min, x_max + dx, dx) ])
-            h_lines = VGroup(*[ get_line(ctp(x_min, y), ctp(x_max - y, y)) for y in np.arange(y_min, y_max + dy, dy) ])
-
-            return VGroup(v_lines, h_lines)
-
-        plane = triangular_grid(0, 1, .05, 0, 1, 0.05).next_to(line1, UP, buff=0)
-
-        initial_point = [ axes.coords_to_point(*self.func(x.get_value(), y.get_value())) ]
-        sphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
-        xysphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
-        sphere.add_updater(lambda s: s.move_to(axes.coords_to_point(*self.func(x.get_value(), y.get_value()))))
-        xysphere.add_updater(lambda s: s.move_to(axes.coords_to_point(x.get_value(), y.get_value(), 0)))
-
-        entropy1 = ParametricFunction(lambda t: axes.c2p(t, 0, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
-        entropy2 = ParametricFunction(lambda t: axes.c2p(0, t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
-        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 1 - t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
-
-        self.set_camera_orientation(theta=-90 * DEGREES, phi=60 * DEGREES, zoom=0.5)
-        self.play(Create(axes), FadeIn(labels), FadeIn(cost_label))
-        # self.wait(0.3)
-        self.play(Create(triangle_perimeter))
-        self.play(Create(plane))
-        self.bring_to_back(plane)
-        self.play(triangle_perimeter.animate.set_color(BLUE_D))
-        self.bring_to_back(triangle_perimeter)
-        self.wait()
-        # self.move_camera(theta=-90 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=4)
-        # self.play(Create(entropy1), run_time=1.5)
-        # self.wait()
-        # self.renderer.camera.add_fixed_in_frame_mobjects(dot_updater_text)
-        # self.play(FadeIn(dot_updater_text))
-        # self.add_fixed_in_frame_mobjects(dot_updater_text)
-        # self.play(Create(xysphere))
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
-        # self.wait()
-        # self.move_camera(theta=-180 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
-        # self.wait()
-        # self.play(Create(entropy2), run_time=1.5)
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
-        # self.move_camera(theta=-315 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
-        # self.wait(0.3)
-        # self.play(
-        #     Create(entropy3),
-        #     x.animate.set_value(1.0),
-        #     y.animate.set_value(0.0),
-        #     run_time=1.5
-        # )
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
-        # self.wait()
-        # self.move_camera(theta=-420 * DEGREES, phi=75 * DEGREES, zoom=0.6, run_time=4)
-        # self.begin_ambient_camera_rotation(rate=-0.1)
-        # self.wait()
-        self.play(Create(surface))
-        self.play(
-            Uncreate(entropy1),
-            Uncreate(entropy2),
-            Uncreate(entropy3)
-        )
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.3), y.animate.set_value(0.3), run_time=1)
-        #
-        # x_line = DashedLine(axes.c2p(x.get_value(), 0, 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
-        # y_line = DashedLine(axes.c2p(0, y.get_value(), 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
-        # z_line = DashedLine(axes.c2p(x.get_value(), y.get_value(), 0), axes.c2p(*self.func(x.get_value(), y.get_value())), color=YELLOW)
-        #
-        # x_line.add_updater(lambda l: l.put_start_and_end_on(
-        #     axes.c2p(x.get_value(), 0, 0),
-        #     axes.c2p(x.get_value(), y.get_value(), 0)
-        # )
-        #                    )
-        #
-        # y_line.add_updater(lambda l: l.put_start_and_end_on(
-        #     axes.c2p(0, y.get_value(), 0),
-        #     axes.c2p(x.get_value(), y.get_value(), 0)
-        # )
-        #                    )
-        #
-        # z_line.add_updater(lambda l: l.put_start_and_end_on(
-        #     axes.c2p(x.get_value(), y.get_value(), 0),
-        #     axes.coords_to_point(*self.func(x.get_value(), y.get_value()))
-        # )
-        #                    )
-        #
-        # self.play(Create(x_line), Create(y_line), FadeOut(xysphere))
-        # self.play(Create(z_line))
-        # self.play(Create(sphere))
-        # self.wait(0.3)
-        # self.play(x.animate.set_value(0.1), y.animate.set_value(0.1), run_time=1.5)
-        # self.wait()
-        # self.play(x.animate.set_value(0.6), y.animate.set_value(0.3), run_time=1.5)
-        # self.wait()
-        # self.play(x.animate.set_value(0.4), y.animate.set_value(0.5), run_time=1.5)
-        # self.wait()
-
-
 class working3(ThreeDScene):
     def imp_loss_surface(self, u, v):
         x = u
@@ -1315,8 +747,8 @@ class working3(ThreeDScene):
 
         return np.array([ u, v, curr_val ])
 
-    def dollar_val_surface_circle(self, u, v):
-        if u ** 2 + v ** 2 < 0.5 ** 2:
+    def dollar_val_surface_circle(self, u, v, x_shift=1, y_shift=1, radius=0.5):
+        if (u - x_shift) ** 2 + (v - y_shift) ** 2 < radius ** 2:
             # v=np.sqrt(0.5 ** 2-u ** 2)
             # return np.array([ u, v, 0 ])
             k = ((1 + u) / (1 + v)) - 1
@@ -1325,9 +757,9 @@ class working3(ThreeDScene):
             curr_val = hold_val * (1 + z) - 1
         else:
 
-            angle = angle_of_vector(np.array([ u, v, 0 ]))
-            u = np.cos(angle) * 0.5
-            v = np.sin(angle) * 0.5
+            angle = angle_of_vector(np.array([ u - x_shift, v - y_shift, 0 ]))
+            u = np.cos(angle) * radius + x_shift
+            v = np.sin(angle) * radius + y_shift
             k = ((1 + u) / (1 + v)) - 1
             z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
             hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
@@ -1335,101 +767,466 @@ class working3(ThreeDScene):
         return np.array([ u, v, curr_val ])
 
     def construct(self):
-        resolution_fa = 20
-        # self.set_camera_orientation(phi=0 * DEGREES, theta=0 * DEGREES, gamma=0, zoom=1)
+
+        self.add(NumberPlane())
+        radius = 0.5
+        x_shift = 1
+        y_shift = 1
+
         axes = ThreeDAxes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33), z_range=(-1, 3, 1 / 3),
-                          x_length=5, y_length=5, z_length=5)
+                          x_length=7, y_length=7, z_length=7).move_to(O)
 
-        lab_x = axes.get_x_axis_label(Tex("$x$-label"))
-        lab_y = axes.get_y_axis_label(Tex("$y$-label"))
-        lab_z = axes.get_z_axis_label(Tex("$z$-label"))
+        lab_x = axes.get_x_axis_label(Tex("$x$-label"),direction=DR,  buff=0.5)
+        lab_y = axes.get_y_axis_label(Tex("$y$-label"),direction=UL, buff=0.5)
+        lab_z = axes.get_z_axis_label(Tex("$z$-label"),direction=OUT, buff=0.5).rotate(270 * DG, axis=X)
         labs = VGroup(lab_x, lab_y, lab_z)
+        self.play(Create(VGroup(axes, labs)))
+        self.add_fixed_orientation_mobjects(*labs)
 
-        # some_graph = axes.plot(lambda x: 2 * x, x_range=[ -0.99, 2 ]).set_stroke(width=10, color=RED).set_shade_in_3d(True)
-
-        # some_graph.set_z_index_by_z_coordinate()
-        # entropy1 = ParametricFunction(lambda t: axes.c2p(t, t, 0), color=BLUE, stroke_width=6, t_range=[ -0.99, 3 ]).set_shade_in_3d(True)
-
-        def is_in_triangle(point, A, B, C, contain_border=False):
-            COM = center_of_mass(A, B, C)
-            if is_on_left_by_points(A, B, COM) and \
-                    is_on_left_by_points(B, C, COM) and \
-                    is_on_left_by_points(C, A, COM):
-                if is_on_left_by_points(A, B, point, contain_border=contain_border) and \
-                        is_on_left_by_points(B, C, point, contain_border=contain_border) and \
-                        is_on_left_by_points(C, A, point, contain_border=contain_border):
-
-                    return True
-                else:
-                    return False
-
-            else:
-                if is_on_right_by_points(A, B, point, contain_border=contain_border) and \
-                        is_on_right_by_points(B, C, point, contain_border=contain_border) and \
-                        is_on_right_by_points(C, A, point, contain_border=contain_border):
-                    return True
-
-                else:
-                    return False
-
-        a = [ 1, 1, 0 ]
-        b = [ 2, 1.5, 0 ]
-        c = [ 1, 2, 0 ]
-
-        def dollar_val_surface_triangle(self, u, v):
-            if is_in_triangle([ u, v, 0 ], a, b, c):
-                k = ((1 + u) / (1 + v)) - 1
-                z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-                hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-                curr_val = hold_val * (1 + z) - 1
-            else:
-                pass
-            #
-            #     # if
-            #     angle = angle_of_vector(np.array([ u, v, 0 ]))
-            #     u = np.cos(angle) * 0.5
-            #     v = np.sin(angle) * 0.5
-            #     k = ((1 + u) / (1 + v)) - 1
-            #     z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-            #     hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-            #     curr_val = hold_val * (1 + z) - 1
-            # return np.array([ u, v, curr_val ])
 
         val_graph = Surface(
-            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v)),
+            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
             v_range=[ -0.99, 3 ],
             u_range=[ -0.99, 3 ],
             resolution=30
         )
-
         val_graph.set_style(fill_opacity=0.5)
         val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
 
-        # self.add(some_graph, entropy1)
+        val_graph_2 = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v, x_shift, y_shift, radius)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99,3 ],
+            resolution=30
+        )
+        # val_graph_2.set_style(fill_opacity=1,fill_color =RED)
+        val_graph_2.set_style(fill_opacity=0.5,fill_color =RED)
+        # val_graph_2.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
 
-        my_graph = axes.plot(lambda x: x, x_range=[ -1, 5 ])
-        three_d_wall = ThreeDVMobject().set_points_as_corners([ [ -0.5, -0.5, -0.5 ],
-                                                                [ 2, -0.5, -0.5 ],
-                                                                [ 2, -0.5, 1 ],
-                                                                [ -0.5, -0.5, 1 ],
-                                                                [ -0.5, -0.5, -0.5 ],
-                                                                ]).set_fill(color=BLUE, opacity=1).set_shade_in_3d(True)
+        self.move_camera(theta=45 * DG, about="theta", run_time=1)
+        circle_cut = Circle().scale_to_fit_width(radius*2 * get_dist_btwn_points(axes.c2p(0, 0), axes.c2p(1, 0))).move_to(axes.c2p(x_shift, y_shift))
 
-        self.add(axes, labs)
-        self.add(val_graph, three_d_wall)
-        self.set_camera_orientation(theta=-90 * DEGREES, phi=45 * DEGREES, zoom=1)
-
-        # self.move_camera(theta=PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=2 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=3 * PI / 2, about="theta", run_time=2)
-        # self.move_camera(theta=4 * PI / 2, about="theta", run_time=2)
+        text = Tex('Circle').rotate(45*DG, axis= Z)
+        text = Tex('Circle')
+        text.move_to([2, 2, circle_cut.get_z()])
+        self.play(Create(text))
+        self.add_fixed_in_frame_mobjects(text)
+        # self.move_camera(phi=80 * DG, about="phi", run_time=1)
 
 
-# with tempconfig({"quality": "low_quality", "preview": True, 'fps': 7}):
-#     scene = working3()
-#     #     # scene = working2()
-#     #     # scene = working3()
-#     #     # scene = working4()
-#     #     # scene = working5()
+        self.play(Create(val_graph))
+        # self.play(Create(val_graph_2))
+        self.play(Create(circle_cut))
+        self.play(circle_cut.copy().animate.shift(OUT*5.5))
+        self.play(Transform(val_graph, val_graph_2))
+
+        self.move_camera(phi=80 * DG, about="phi", run_time=1)
+        self.move_camera(theta=10 * DG, about="theta", run_time=1)
+        # self.move_camera(theta=0 * DG, about="theta", run_time=1)
+        self.begin_ambient_camera_rotation(0.2, about='theta')
+
+        self.wait(2)
+
+        # self.interactive_embed()
+
+
+class working2(ThreeDScene):
+    """이거는 포물선 그래프와 접선 사이의 특이한 모양의 영역을 벡터모브젝트로 따는 것"""
+
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ 0, 1.0, 0.2 ],
+                          y_range=[ 0, 1.0, 0.2 ],
+                          z_range=[ 0, 1.0, 0.2 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True}
+                          )
+
+        dot = Dot(color=RED).move_to(axes[ 0 ].get_end())
+        dot1 = Dot(color=BLUE).move_to(axes[ 2 ].get_start())
+        # dot = Dot(color = RED).move_to(axes[0].get_end())
+
+        # self.add(axes[ 0:2 ])
+        copied_z = axes[ 2 ].copy()
+        axes.add(copied_z)
+        axes[ 3 ].move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_end()))
+        # self.add(copied_z)
+        # self.play(copied_z.animate.move_to(
+        #     get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_end())))
+        # self.play(self.camera.animate.rotate(PI/4, _AXIS))
+
+        print(axes.x_range)
+        #
+        x_range = axes.x_range
+        x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
+        print(x_tick_pos)
+        y_range = axes.y_range
+        y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
+        z_range = axes.z_range
+        z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
+        #
+        # for x in x_tick_pos:
+        #     for y in x_tick_pos:
+        #         for z in x_tick_pos:
+
+        # dashed_line = DashedLine(start=axes.c2p(1, 0, 0.2), end=axes.c2p(0, 0, 0.2))
+
+        x_axis_dash_line = VGroup()
+        y_axis_dash_line = VGroup()
+        z_axis_dash_line = VGroup()
+        for z in z_tick_pos[ 1: ]:
+            # z_axis_dash_line.add(DashedLine(start=axes.c2p(x_range[ 1 ], 0, z), end=axes.c2p(0, 0, z)))
+            # z_axis_dash_line.add(DashedLine(start=axes.c2p(0, y_range[ 1 ], z), end=axes.c2p(0, 0, z)))
+            y_axis_dash_line.add(
+                VMobject().set_points_as_corners([ axes.c2p(1, 0, z), axes.c2p(0, 0, z), axes.c2p(0, 1, z) ]).set_stroke(opacity=0.3,
+                                                                                                                         width=2,
+                                                                                                                         color=GRAY))
+
+        for y in y_tick_pos[ 1: ]:
+            y_axis_dash_line.add(
+                VMobject().set_points_as_corners([ axes.c2p(1, y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, 1) ]).set_stroke(opacity=0.3,
+                                                                                                                         width=2,
+                                                                                                                         color=GRAY))
+        # y_axis_dash_line.add(DashedLine(start=axes.c2p(y_range[ 1 ], 0, z), end=axes.c2p(0, 0, z)))
+        for x in x_tick_pos[ 0: ]:
+            y_axis_dash_line.add(
+                VMobject().set_points_as_corners([ axes.c2p(x, 1, 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, 1) ]).set_stroke(opacity=0.3,
+                                                                                                                         width=2,
+                                                                                                                         color=GRAY))
+
+        my_dot = Dot().move_to(axes.c2p(0, 0, 0.2))
+
+        # x_axis_dash_line.set_stroke(opacity=1, color=RED, width=15)
+        # self.add(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line)
+        axes.add(VGroup(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line))
+
+        axes[ 0 ].set_color(RED)
+        axes[ 1 ].set_color(GREEN)
+        axes[ 3 ].set_color(BLUE)
+
+        new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], VGroup(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line))
+
+        self.add(new_axes)
+
+        # axes.get_z_axis_label('z')
+        # axes.get_x_axis_label('x')
+        # axes.get_y_axis_label('y')
+
+        self.play(new_axes.animate.move_to(O))
+
+        self.camera.set_zoom(0.5)
+        for number in axes[ 0 ].numbers:
+            number.rotate(135 * DG)
+        for number in axes[ 1 ].numbers:
+            number.rotate(135 * DG)
+
+        self.wait(1)
+        # self.move_camera(theta=45 * DEGREES, about="theta", run_time=1)
+        # self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
+        # self.move_camera(gamma= 45 *DEGREES, run_time=1)
+        self.move_camera(theta=45 * DEGREES, run_time=1)
+        self.move_camera(phi=45 * DEGREES, run_time=1)
+        # self.move_camera(gamma= 45 *DEGREES, run_time=1)
+        # self.move_camera()
+        # self.begin_ambient_camera_rotation(rate=0.3,about="theta")
+        # self.add_fixed_in_frame_mobjects(axes[0].numbers)
+        # self.add_fixed_in_frame_mobjects(axes[1].numbers)
+
+        # self.add_fixed_in_frame_mobjects(copied[0].numbers)
+        # self.add(index_labels(axes[0].numbers))
+        # theta =z  , phi =
+        # self.camera.set_phi(45*DEGREES)
+        # self.camera.set_theta(45*DEGREES)
+
+        # self.set_camera_orientation(phi=45*)
+
+        # self.play(self.camera.animate.rotate(135*DEGREES, Z_AXIS))
+        # self.play(Create(Circle()))
+        # self.interactive_embed()
+
+        self.wait(10)
+
+
+class working2(ThreeDScene):
+
+
+    """ 반영구 손실 공간에서 3차원으로 움직이는 점
+    xyz 보조선 공간템플릿, 엑스와이가 뒤쪽으로 모임, 제트 축은 왼쪽 """
+
+    def dollar_val_surface(self, u, v):
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ 0, 3, 1 ],
+                          y_range=[ 0, 3, 1 ],
+                          z_range=[ 0, 3, 1 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
+                          x_axis_config={"label_direction": D},
+                          y_axis_config={"label_direction": L},
+                          z_axis_config={"label_direction": U}
+                          )
+
+        # curr_val_text.to_edge(UR).shift(L*1)
+        x_tkr = ValueTracker(0)
+        y_tkr = ValueTracker(0)
+        # self.add(profit,curr_profit, inv_text)
+
+        # self.add(index_labels(curr_profit))
+        # self.add_fixed_orientation_mobjects(profit,curr_profit, inv_text)
+
+        # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
+        axes.add(axes[ 2 ].copy())
+        VGroup(axes[ 3 ]).move_to(get_compensated_coor(axes[ 3 ], axes.c2p(0, 0, 0), axes[ 0 ].get_end()))
+
+        # 보조선 작성 루틴 , 틱 위치 개수하고 잘 보기
+        x_range, y_range, z_range = axes.x_range, axes.y_range, axes.z_range
+
+        x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
+        y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
+        z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
+
+        x_axis_aux_line, y_axis_aux_line, z_axis_aux_line = VGroup(), VGroup(), VGroup()
+
+        for x, y, z in zip(x_tick_pos[ 1: ], y_tick_pos[ 1: ], z_tick_pos[ 1: ], ):
+            z_axis_aux_line.add(
+                VMobject().set_points_as_corners(
+                    [ axes.c2p(x_tick_pos[ -1 ], 0, z), axes.c2p(0, 0, z), axes.c2p(0, y_tick_pos[ -1 ], z) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+            y_axis_aux_line.add(
+                VMobject().set_points_as_corners([ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+            x_axis_aux_line.add(
+                VMobject().set_points_as_corners(
+                    [ axes.c2p(x, y_tick_pos[ -1 ], 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, z_tick_pos[ -1 ]) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+
+        origin_vertical_aux_line = VMobject().set_points_as_corners([ axes.c2p(0, 0, 0), axes.c2p(0, 0, z_tick_pos[ -1 ]) ]) \
+            .set_stroke(opacity=0.3,
+                        width=2,
+                        color=GRAY)
+
+        aux_lines = VGroup(x_axis_aux_line, y_axis_aux_line, z_axis_aux_line, origin_vertical_aux_line, )
+        # 기존 좌표계가 틀어지지 않게 모두 이동은 같이 하되 제트 축은 보여주지 않을 것임
+        VGroup(axes[ 0 ], axes[ 1 ], axes[ 2 ], axes[ 3 ], aux_lines).move_to(O)
+        # 실제 쓸 축들만 뉴 엑시스로 정의
+        new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], aux_lines)
+
+        new_axes[ 0 ].set_color(RED)
+        new_axes[ 1 ].set_color(GREEN)
+        new_axes[ 2 ].set_color(BLUE)
+
+        # 뉴엑시스는 클래스가 없이 그저 브이그룹이어서 기존의 메서드들을 사용 못 함 그래서 메서드 사용은 기존 엑시스
+        axes.get_z_axis_label('z')
+        axes.get_x_axis_label('x')
+        axes.get_y_axis_label('y')
+
+        self.camera.set_zoom(0.6)
+
+        self.add(new_axes)
+
+        # 제트축 넘버들을 픽ㅅ드 오리엔테이션 적용 전에 전부 위로 향하게 돌려줌
+        for number in axes[ 3 ].numbers:
+            number.rotate(90 * DG, axis=X).rotate(90 * DG)
+
+        # numbers = VGroup(*axes[ 0 ].numbers, *axes[ 1 ].numbers, *axes[ 3 ].numbers)
+
+        # if Zoom is applied, gotta change scale,
+        # for number in numbers:
+        #     number.scale(0.5)
+
+        self.add_fixed_orientation_mobjects(*axes[ 0 ].numbers)
+        self.add_fixed_orientation_mobjects(*axes[ 1 ].numbers)
+        self.add_fixed_orientation_mobjects(*axes[ 3 ].numbers, use_static_center_func=False)
+
+        entropy1 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(t, 0)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
+        entropy2 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(0, t)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
+        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 3 - t, self.dollar_val_surface(t, 3 - t)[ 2 ]), t_range=[ 0, 3 ], color=YELLOW,
+                                      stroke_width=6)
+        self.play(Create(entropy1),
+                  Create(entropy2),
+                  Create(entropy3))
+
+        # 서페이스 생성 하고 카메라 회전
+        val_graph = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
+            v_range=[ 0, 3 ],
+            u_range=[ 0, 3 ],
+            resolution=15)
+
+        val_graph.set_style(fill_opacity=0.3)
+        val_graph.set_fill_by_value(axes=axes, colors=[ (RED, 0), (GREEN, 2) ], axis=2)
+
+        self.play(Create(val_graph))
+        # self.add(val_graph)
+
+        self.move_camera(theta=20 * DEGREES, about="theta", run_time=1)
+        # self.move_camera(phi=25 * DEGREES, about="phi", run_time=3)
+        self.move_camera(phi=80 * DEGREES, about="phi", run_time=1)
+
+        inv = 100
+        inv_text = Tex(rf'Investment = {inv}\$').move_to(axes.c2p(1.5, 0, 2.5)).rotate(90 * DG, axis=X).rotate(180 * DG, axis=Z).scale(1.5)
+
+        self.play(Create(inv_text))
+
+        # self.add(inv_text)
+
+        # profit = Tex('Profit = ').move_to(axes.c2p(0, 0.8, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.8)
+
+        # self.play(Create(profit))
+
+        def curr_profit_with_IfOnTriangle():
+
+            text = Tex(rf'Profit = {inv * (self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ]):.2f}\$') \
+                .move_to(axes.c2p(0, 1.5, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.8).set_color(GREEN)
+            # text = DecimalNumber(inv * (self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ])).next_to(profit,R)
+            letter_len = len([ letter for letter in text ])
+            if x_tkr.get_value() + y_tkr.get_value() > 3:
+                text = Tex(rf'Profit = Out of range') \
+                    .move_to(axes.c2p(0, 1.5, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.6).set_color(RED)
+
+            # self.add_fixed_in_frame_mobjects(*[text[i] for i in range(letter_len) ])
+
+            return text
+
+        curr_profit = redraw(curr_profit_with_IfOnTriangle)
+        self.add(curr_profit)
+
+        flat_tri = VMobject().set_points_as_corners([ axes.c2p(3, 0, 0), axes.c2p(0, 0, 0), axes.c2p(0, 3, 0), axes.c2p(3, 0, 0) ]) \
+            .set_fill(opacity=0.3, color=PINK).set_stroke(opacity=0)
+
+        self.play(Create(flat_tri))
+
+        # 3디 공간상의점을 정의하고 평면에 투사된 위치를 표시할 점도 같이 리드로우 설정정
+        def curr_p_projected_with_label():
+            dot = Dot().move_to(axes.c2p(x_tkr.get_value(), y_tkr.get_value(), 0))
+            label = Tex(f'({x_tkr.get_value():.2f}, {y_tkr.get_value():.2f})').next_to(dot, UR, buff=0.5)
+            return VGroup(dot, label)
+
+        def curr_p_with_IfOnSurface():
+            dot = Dot3D(radius=0.2, color=GREEN).move_to(
+                axes.c2p(x_tkr.get_value(), y_tkr.get_value(), self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ]))
+
+            if x_tkr.get_value() + y_tkr.get_value() > 3:
+                dot.set_color(RED)
+
+            return dot
+
+        curr_p = redraw(curr_p_with_IfOnSurface)
+        curr_p_projected = redraw(curr_p_projected_with_label)
+        self.add_fixed_orientation_mobjects(curr_p_projected[ 1 ])
+        self.play(Create(VGroup(curr_p_projected, curr_p)))
+        # self.add(curr_p_projected, curr_p)
+
+        lines = redraw(lambda: VGroup(axes.get_lines_to_point(curr_p_projected[ 0 ].get_center())[ 1 ].set_color(RED),
+                                      axes.get_lines_to_point(curr_p_projected[ 0 ].get_center())[ 0 ].set_color(GREEN)))
+        vertical_line = redraw(lambda: DashedLine(start=curr_p_projected[ 0 ].get_center(), end=curr_p.get_center()))
+        self.play(Create(VGroup(lines, vertical_line)))
+        # self.add(lines, vertical_line)
+
+        self.play(x_tkr.animate.set_value(1))
+        self.play(y_tkr.animate.set_value(1))
+
+        # self.play(x_tkr.animate.set_value(2), y_tkr.animate.set_value(2))
+        self.play(x_tkr.animate.set_value(2))
+        self.play(y_tkr.animate.set_value(2))
+        #           val_tkr.animate.set_value(self.dollar_val_surface(x_tkr.get_value(),2)[2]))
+
+        # self.play(y_tkr.animate.set_value(2))
+        # self.move_camera(theta=70 * DEGREES, about="theta", run_time=1)
+
+        self.play(x_tkr.animate.set_value(1))
+        self.play(y_tkr.animate.set_value(1))
+
+        # self.move_camera(theta=45 * DEGREES, about="theta", run_time=1)
+
+        self.move_camera(phi=45 * DEGREES, run_time=1)
+
+        self.begin_ambient_camera_rotation(0.1, about='theta')
+
+        self.wait(3)
+
+# class working1(ThreeDScene):
+#     def construct(self):
+#         axes = ThreeDAxes(x_range=[ -4, 4, 2 ],
+#                           y_range=[ -4, 4, 2 ],
+#                           z_range=[ -4, 4, 2 ],
+#                           x_length=8,
+#                           y_length=8,
+#                           z_length=8,
+#                           tips=False,
+#                           axis_config={'include_numbers': True, 'include_ticks': True,"line_to_number_buff":0.2},
+#                           x_axis_config = {"label_direction":DR},
+#                           y_axis_config = {"label_direction":UL},
+#                           z_axis_config = {"label_direction":UR,"line_to_number_buff":0.2}
+#
+#                           )
+#
+#
+#         circle= Circle()
+#
+#         self.play(TracedPath)
+#         self.add(text,axes)
+#
+#         # self.wait(2)
+#
+#         self.wait(2)
+#
+#         self.wait(1)
+class working1(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ -4, 4, 2 ],
+                          y_range=[ -4, 4, 2 ],
+                          z_range=[ -4, 4, 2 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True,"line_to_number_buff":0.2},
+                          x_axis_config = {"label_direction":DR},
+                          y_axis_config = {"label_direction":UL},
+                          z_axis_config = {"label_direction":UR,"line_to_number_buff":0.2}
+
+                          )
+
+
+        circle= Circle()
+
+        self.play(TracedPath)
+        self.add(text,axes)
+
+        # self.wait(2)
+
+        self.wait(2)
+
+        self.wait(1)
+# #
+# with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
+#                  'renderer': 'cairo', 'write_to_movie': True}):
+#     scene = working1()
+#     #     #     # scene = working2()
+#     #     #     # scene = working3()
+#     #     #     # scene = working4()
+#     #     #     # scene = working5()
 #     scene.render()
 
+# 리드로우 매크로 브이그룹
