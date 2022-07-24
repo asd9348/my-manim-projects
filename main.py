@@ -9,7 +9,7 @@ import numpy as np
 from math import *
 from colour import Color
 from custom_manim_utils.custom_consts import *
-from custom_manim_utils.custom_color_consts import *
+# from custom_manim_utils.custom_color_consts import *
 from custom_manim_utils.custom_functions import *
 from custom_manim_utils.custom_mobs import *
 from custom_manim_utils.custom_mobs import *
@@ -724,329 +724,44 @@ class working3(ThreeDScene):
         # self.move_camera(theta=PI / 2, about="theta", run_time=2)
 
 
-class working3(ThreeDScene):
-    def imp_loss_surface(self, u, v):
-        x = u
-        y = v
-        k = ((1 + x) / (1 + y)) - 1
-        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-        # hold_val = 0.5*x+0.5*y
-        # z = np.sin(x) * np.cos(y)
-        return np.array([ x, y, z ])
-
-    def dollar_val_surface(self, u, v):
-        if u + v > 3:
-            v = v - (u + v - 3)
-
-        # x = u
-        # y = v
-        k = ((1 + u) / (1 + v)) - 1
-        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-        curr_val = hold_val * (1 + z) - 1
-
-        return np.array([ u, v, curr_val ])
-
-    def dollar_val_surface_circle(self, u, v, x_shift=1, y_shift=1, radius=0.5):
-        if (u - x_shift) ** 2 + (v - y_shift) ** 2 < radius ** 2:
-            # v=np.sqrt(0.5 ** 2-u ** 2)
-            # return np.array([ u, v, 0 ])
-            k = ((1 + u) / (1 + v)) - 1
-            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-            curr_val = hold_val * (1 + z) - 1
-        else:
-
-            angle = angle_of_vector(np.array([ u - x_shift, v - y_shift, 0 ]))
-            u = np.cos(angle) * radius + x_shift
-            v = np.sin(angle) * radius + y_shift
-            k = ((1 + u) / (1 + v)) - 1
-            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-            curr_val = hold_val * (1 + z) - 1
-        return np.array([ u, v, curr_val ])
-
-    def construct(self):
-
-        self.add(NumberPlane())
-        radius = 0.5
-        x_shift = 1
-        y_shift = 1
-
-        axes = ThreeDAxes(x_range=(-0.99, 3, 0.33), y_range=(-0.99, 3, 0.33), z_range=(-1, 3, 1 / 3),
-                          x_length=7, y_length=7, z_length=7).move_to(O)
-
-        lab_x = axes.get_x_axis_label(Tex("$x$-label"),direction=DR,  buff=0.5)
-        lab_y = axes.get_y_axis_label(Tex("$y$-label"),direction=UL, buff=0.5)
-        lab_z = axes.get_z_axis_label(Tex("$z$-label"),direction=OUT, buff=0.5).rotate(270 * DG, axis=X)
-        labs = VGroup(lab_x, lab_y, lab_z)
-        self.play(Create(VGroup(axes, labs)))
-        self.add_fixed_orientation_mobjects(*labs)
-
-
-        val_graph = Surface(
-            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
-            v_range=[ -0.99, 3 ],
-            u_range=[ -0.99, 3 ],
-            resolution=30
-        )
-        val_graph.set_style(fill_opacity=0.5)
-        val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
-
-        val_graph_2 = Surface(
-            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v, x_shift, y_shift, radius)),
-            v_range=[ -0.99, 3 ],
-            u_range=[ -0.99,3 ],
-            resolution=30
-        )
-        # val_graph_2.set_style(fill_opacity=1,fill_color =RED)
-        val_graph_2.set_style(fill_opacity=0.5,fill_color =RED)
-        # val_graph_2.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
-
-        self.move_camera(theta=45 * DG, about="theta", run_time=1)
-        circle_cut = Circle().scale_to_fit_width(radius*2 * get_dist_btwn_points(axes.c2p(0, 0), axes.c2p(1, 0))).move_to(axes.c2p(x_shift, y_shift))
-
-        text = Tex('Circle').rotate(45*DG, axis= Z)
-        text = Tex('Circle')
-        text.move_to([2, 2, circle_cut.get_z()])
-        self.play(Create(text))
-        self.add_fixed_in_frame_mobjects(text)
-        # self.move_camera(phi=80 * DG, about="phi", run_time=1)
-
-
-        self.play(Create(val_graph))
-        # self.play(Create(val_graph_2))
-        self.play(Create(circle_cut))
-        self.play(circle_cut.copy().animate.shift(OUT*5.5))
-        self.play(Transform(val_graph, val_graph_2))
-
-        self.move_camera(phi=80 * DG, about="phi", run_time=1)
-        self.move_camera(theta=10 * DG, about="theta", run_time=1)
-        # self.move_camera(theta=0 * DG, about="theta", run_time=1)
-        self.begin_ambient_camera_rotation(0.2, about='theta')
-
-        self.wait(2)
-
-        # self.interactive_embed()
-
-
 class working2(ThreeDScene):
-    """이거는 포물선 그래프와 접선 사이의 특이한 모양의 영역을 벡터모브젝트로 따는 것"""
+    """3디 공간 제트 엑스 와이 순 """
 
     def construct(self):
-        axes = ThreeDAxes(x_range=[ 0, 1.0, 0.2 ],
-                          y_range=[ 0, 1.0, 0.2 ],
-                          z_range=[ 0, 1.0, 0.2 ],
-                          x_length=8,
-                          y_length=8,
-                          z_length=8,
-                          tips=False,
-                          axis_config={'include_numbers': True, 'include_ticks': True}
-                          )
-
-        dot = Dot(color=RED).move_to(axes[ 0 ].get_end())
-        dot1 = Dot(color=BLUE).move_to(axes[ 2 ].get_start())
-        # dot = Dot(color = RED).move_to(axes[0].get_end())
-
-        # self.add(axes[ 0:2 ])
-        copied_z = axes[ 2 ].copy()
-        axes.add(copied_z)
-        axes[ 3 ].move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_end()))
-        # self.add(copied_z)
-        # self.play(copied_z.animate.move_to(
-        #     get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_end())))
-        # self.play(self.camera.animate.rotate(PI/4, _AXIS))
-
-        print(axes.x_range)
-        #
-        x_range = axes.x_range
-        x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
-        print(x_tick_pos)
-        y_range = axes.y_range
-        y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
-        z_range = axes.z_range
-        z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
-        #
-        # for x in x_tick_pos:
-        #     for y in x_tick_pos:
-        #         for z in x_tick_pos:
-
-        # dashed_line = DashedLine(start=axes.c2p(1, 0, 0.2), end=axes.c2p(0, 0, 0.2))
-
-        x_axis_dash_line = VGroup()
-        y_axis_dash_line = VGroup()
-        z_axis_dash_line = VGroup()
-        for z in z_tick_pos[ 1: ]:
-            # z_axis_dash_line.add(DashedLine(start=axes.c2p(x_range[ 1 ], 0, z), end=axes.c2p(0, 0, z)))
-            # z_axis_dash_line.add(DashedLine(start=axes.c2p(0, y_range[ 1 ], z), end=axes.c2p(0, 0, z)))
-            y_axis_dash_line.add(
-                VMobject().set_points_as_corners([ axes.c2p(1, 0, z), axes.c2p(0, 0, z), axes.c2p(0, 1, z) ]).set_stroke(opacity=0.3,
-                                                                                                                         width=2,
-                                                                                                                         color=GRAY))
-
-        for y in y_tick_pos[ 1: ]:
-            y_axis_dash_line.add(
-                VMobject().set_points_as_corners([ axes.c2p(1, y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, 1) ]).set_stroke(opacity=0.3,
-                                                                                                                         width=2,
-                                                                                                                         color=GRAY))
-        # y_axis_dash_line.add(DashedLine(start=axes.c2p(y_range[ 1 ], 0, z), end=axes.c2p(0, 0, z)))
-        for x in x_tick_pos[ 0: ]:
-            y_axis_dash_line.add(
-                VMobject().set_points_as_corners([ axes.c2p(x, 1, 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, 1) ]).set_stroke(opacity=0.3,
-                                                                                                                         width=2,
-                                                                                                                         color=GRAY))
-
-        my_dot = Dot().move_to(axes.c2p(0, 0, 0.2))
-
-        # x_axis_dash_line.set_stroke(opacity=1, color=RED, width=15)
-        # self.add(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line)
-        axes.add(VGroup(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line))
-
-        axes[ 0 ].set_color(RED)
-        axes[ 1 ].set_color(GREEN)
-        axes[ 3 ].set_color(BLUE)
-
-        new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], VGroup(x_axis_dash_line, y_axis_dash_line, z_axis_dash_line))
-
-        self.add(new_axes)
-
-        # axes.get_z_axis_label('z')
-        # axes.get_x_axis_label('x')
-        # axes.get_y_axis_label('y')
-
-        self.play(new_axes.animate.move_to(O))
-
-        self.camera.set_zoom(0.5)
-        for number in axes[ 0 ].numbers:
-            number.rotate(135 * DG)
-        for number in axes[ 1 ].numbers:
-            number.rotate(135 * DG)
-
-        self.wait(1)
-        # self.move_camera(theta=45 * DEGREES, about="theta", run_time=1)
-        # self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
-        # self.move_camera(gamma= 45 *DEGREES, run_time=1)
-        self.move_camera(theta=45 * DEGREES, run_time=1)
-        self.move_camera(phi=45 * DEGREES, run_time=1)
-        # self.move_camera(gamma= 45 *DEGREES, run_time=1)
-        # self.move_camera()
-        # self.begin_ambient_camera_rotation(rate=0.3,about="theta")
-        # self.add_fixed_in_frame_mobjects(axes[0].numbers)
-        # self.add_fixed_in_frame_mobjects(axes[1].numbers)
-
-        # self.add_fixed_in_frame_mobjects(copied[0].numbers)
-        # self.add(index_labels(axes[0].numbers))
-        # theta =z  , phi =
-        # self.camera.set_phi(45*DEGREES)
-        # self.camera.set_theta(45*DEGREES)
-
-        # self.set_camera_orientation(phi=45*)
-
-        # self.play(self.camera.animate.rotate(135*DEGREES, Z_AXIS))
-        # self.play(Create(Circle()))
-        # self.interactive_embed()
-
-        self.wait(10)
-
-
-class working2(ThreeDScene):
-
-
-    """ 반영구 손실 공간에서 3차원으로 움직이는 점
-    xyz 보조선 공간템플릿, 엑스와이가 뒤쪽으로 모임, 제트 축은 왼쪽 """
-
-    def dollar_val_surface(self, u, v):
-        if u + v > 3:
-            v = v - (u + v - 3)
-
-        k = ((1 + u) / (1 + v)) - 1
-        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
-        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
-        curr_val = hold_val * (1 + z) - 1
-
-        return np.array([ u, v, curr_val ])
-
-    def construct(self):
-        axes = ThreeDAxes(x_range=[ 0, 3, 1 ],
-                          y_range=[ 0, 3, 1 ],
-                          z_range=[ 0, 3, 1 ],
+        axes = ThreeDAxes(x_range=[ 0, 1, 0.2 ],
+                          y_range=[ 0, 1, 0.2 ],
+                          z_range=[ 0, 1, 0.2 ],
                           x_length=8,
                           y_length=8,
                           z_length=8,
                           tips=False,
                           axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
                           x_axis_config={"label_direction": D},
-                          y_axis_config={"label_direction": L},
-                          z_axis_config={"label_direction": U}
+                          y_axis_config={"label_direction": R},
+                          z_axis_config={"label_direction": IN, "line_to_number_buff": 1}
                           )
 
-        # curr_val_text.to_edge(UR).shift(L*1)
-        x_tkr = ValueTracker(0)
-        y_tkr = ValueTracker(0)
-        # self.add(profit,curr_profit, inv_text)
-
-        # self.add(index_labels(curr_profit))
-        # self.add_fixed_orientation_mobjects(profit,curr_profit, inv_text)
-
-        # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
-        axes.add(axes[ 2 ].copy())
-        VGroup(axes[ 3 ]).move_to(get_compensated_coor(axes[ 3 ], axes.c2p(0, 0, 0), axes[ 0 ].get_end()))
-
-        # 보조선 작성 루틴 , 틱 위치 개수하고 잘 보기
-        x_range, y_range, z_range = axes.x_range, axes.y_range, axes.z_range
-
-        x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
-        y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
-        z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
-
-        x_axis_aux_line, y_axis_aux_line, z_axis_aux_line = VGroup(), VGroup(), VGroup()
-
-        for x, y, z in zip(x_tick_pos[ 1: ], y_tick_pos[ 1: ], z_tick_pos[ 1: ], ):
-            z_axis_aux_line.add(
-                VMobject().set_points_as_corners(
-                    [ axes.c2p(x_tick_pos[ -1 ], 0, z), axes.c2p(0, 0, z), axes.c2p(0, y_tick_pos[ -1 ], z) ])
-                    .set_stroke(opacity=0.3,
-                                width=2,
-                                color=GRAY))
-            y_axis_aux_line.add(
-                VMobject().set_points_as_corners([ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
-                    .set_stroke(opacity=0.3,
-                                width=2,
-                                color=GRAY))
-            x_axis_aux_line.add(
-                VMobject().set_points_as_corners(
-                    [ axes.c2p(x, y_tick_pos[ -1 ], 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, z_tick_pos[ -1 ]) ])
-                    .set_stroke(opacity=0.3,
-                                width=2,
-                                color=GRAY))
-
-        origin_vertical_aux_line = VMobject().set_points_as_corners([ axes.c2p(0, 0, 0), axes.c2p(0, 0, z_tick_pos[ -1 ]) ]) \
-            .set_stroke(opacity=0.3,
-                        width=2,
-                        color=GRAY)
-
-        aux_lines = VGroup(x_axis_aux_line, y_axis_aux_line, z_axis_aux_line, origin_vertical_aux_line, )
-        # 기존 좌표계가 틀어지지 않게 모두 이동은 같이 하되 제트 축은 보여주지 않을 것임
-        VGroup(axes[ 0 ], axes[ 1 ], axes[ 2 ], axes[ 3 ], aux_lines).move_to(O)
-        # 실제 쓸 축들만 뉴 엑시스로 정의
-        new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], aux_lines)
-
-        new_axes[ 0 ].set_color(RED)
-        new_axes[ 1 ].set_color(GREEN)
-        new_axes[ 2 ].set_color(BLUE)
-
-        # 뉴엑시스는 클래스가 없이 그저 브이그룹이어서 기존의 메서드들을 사용 못 함 그래서 메서드 사용은 기존 엑시스
-        axes.get_z_axis_label('z')
-        axes.get_x_axis_label('x')
-        axes.get_y_axis_label('y')
-
-        self.camera.set_zoom(0.6)
+        new_axes = three_d_space_zxy(self, axes)
 
         self.add(new_axes)
 
-        # 제트축 넘버들을 픽ㅅ드 오리엔테이션 적용 전에 전부 위로 향하게 돌려줌
-        for number in axes[ 3 ].numbers:
-            number.rotate(90 * DG, axis=X).rotate(90 * DG)
+        x_axis = new_axes[ 0 ]
+        y_axis = new_axes[ 1 ]
+        z_axis = new_axes[ 2 ]
+
+        # 실제 쓸 축들만 뉴 엑시스로 정의
+        # new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], aux_lines)
+        #
+        x_axis.set_color(RED)
+        y_axis.set_color(GREEN)
+        z_axis.set_color(BLUE)
+
+        # 뉴엑시스는 클래스가 없이 그저 브이그룹이어서 기존의 메서드들을 사용 못 함 그래서 메서드 사용은 기존 엑시스
+        # axes.get_z_axis_label('z')
+        # axes.get_x_axis_label('x')
+        # axes.get_y_axis_label('y')
+
+        self.camera.set_zoom(0.6)
 
         # numbers = VGroup(*axes[ 0 ].numbers, *axes[ 1 ].numbers, *axes[ 3 ].numbers)
 
@@ -1054,145 +769,24 @@ class working2(ThreeDScene):
         # for number in numbers:
         #     number.scale(0.5)
 
-        self.add_fixed_orientation_mobjects(*axes[ 0 ].numbers)
-        self.add_fixed_orientation_mobjects(*axes[ 1 ].numbers)
-        self.add_fixed_orientation_mobjects(*axes[ 3 ].numbers, use_static_center_func=False)
-
-        entropy1 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(t, 0)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
-        entropy2 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(0, t)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
-        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 3 - t, self.dollar_val_surface(t, 3 - t)[ 2 ]), t_range=[ 0, 3 ], color=YELLOW,
-                                      stroke_width=6)
-        self.play(Create(entropy1),
-                  Create(entropy2),
-                  Create(entropy3))
-
-        # 서페이스 생성 하고 카메라 회전
-        val_graph = Surface(
-            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
-            v_range=[ 0, 3 ],
-            u_range=[ 0, 3 ],
-            resolution=15)
-
-        val_graph.set_style(fill_opacity=0.3)
-        val_graph.set_fill_by_value(axes=axes, colors=[ (RED, 0), (GREEN, 2) ], axis=2)
-
-        self.play(Create(val_graph))
-        # self.add(val_graph)
-
-        self.move_camera(theta=20 * DEGREES, about="theta", run_time=1)
-        # self.move_camera(phi=25 * DEGREES, about="phi", run_time=3)
-        self.move_camera(phi=80 * DEGREES, about="phi", run_time=1)
-
-        inv = 100
-        inv_text = Tex(rf'Investment = {inv}\$').move_to(axes.c2p(1.5, 0, 2.5)).rotate(90 * DG, axis=X).rotate(180 * DG, axis=Z).scale(1.5)
-
-        self.play(Create(inv_text))
-
-        # self.add(inv_text)
-
-        # profit = Tex('Profit = ').move_to(axes.c2p(0, 0.8, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.8)
-
-        # self.play(Create(profit))
-
-        def curr_profit_with_IfOnTriangle():
-
-            text = Tex(rf'Profit = {inv * (self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ]):.2f}\$') \
-                .move_to(axes.c2p(0, 1.5, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.8).set_color(GREEN)
-            # text = DecimalNumber(inv * (self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ])).next_to(profit,R)
-            letter_len = len([ letter for letter in text ])
-            if x_tkr.get_value() + y_tkr.get_value() > 3:
-                text = Tex(rf'Profit = Out of range') \
-                    .move_to(axes.c2p(0, 1.5, 2.5)).rotate(90 * DG, axis=X).rotate(90 * DG, axis=Z).scale(1.6).set_color(RED)
-
-            # self.add_fixed_in_frame_mobjects(*[text[i] for i in range(letter_len) ])
-
-            return text
-
-        curr_profit = redraw(curr_profit_with_IfOnTriangle)
-        self.add(curr_profit)
-
-        flat_tri = VMobject().set_points_as_corners([ axes.c2p(3, 0, 0), axes.c2p(0, 0, 0), axes.c2p(0, 3, 0), axes.c2p(3, 0, 0) ]) \
-            .set_fill(opacity=0.3, color=PINK).set_stroke(opacity=0)
-
-        self.play(Create(flat_tri))
-
-        # 3디 공간상의점을 정의하고 평면에 투사된 위치를 표시할 점도 같이 리드로우 설정정
-        def curr_p_projected_with_label():
-            dot = Dot().move_to(axes.c2p(x_tkr.get_value(), y_tkr.get_value(), 0))
-            label = Tex(f'({x_tkr.get_value():.2f}, {y_tkr.get_value():.2f})').next_to(dot, UR, buff=0.5)
-            return VGroup(dot, label)
-
-        def curr_p_with_IfOnSurface():
-            dot = Dot3D(radius=0.2, color=GREEN).move_to(
-                axes.c2p(x_tkr.get_value(), y_tkr.get_value(), self.dollar_val_surface(x_tkr.get_value(), y_tkr.get_value())[ 2 ]))
-
-            if x_tkr.get_value() + y_tkr.get_value() > 3:
-                dot.set_color(RED)
-
-            return dot
-
-        curr_p = redraw(curr_p_with_IfOnSurface)
-        curr_p_projected = redraw(curr_p_projected_with_label)
-        self.add_fixed_orientation_mobjects(curr_p_projected[ 1 ])
-        self.play(Create(VGroup(curr_p_projected, curr_p)))
-        # self.add(curr_p_projected, curr_p)
-
-        lines = redraw(lambda: VGroup(axes.get_lines_to_point(curr_p_projected[ 0 ].get_center())[ 1 ].set_color(RED),
-                                      axes.get_lines_to_point(curr_p_projected[ 0 ].get_center())[ 0 ].set_color(GREEN)))
-        vertical_line = redraw(lambda: DashedLine(start=curr_p_projected[ 0 ].get_center(), end=curr_p.get_center()))
-        self.play(Create(VGroup(lines, vertical_line)))
-        # self.add(lines, vertical_line)
-
-        self.play(x_tkr.animate.set_value(1))
-        self.play(y_tkr.animate.set_value(1))
-
-        # self.play(x_tkr.animate.set_value(2), y_tkr.animate.set_value(2))
-        self.play(x_tkr.animate.set_value(2))
-        self.play(y_tkr.animate.set_value(2))
-        #           val_tkr.animate.set_value(self.dollar_val_surface(x_tkr.get_value(),2)[2]))
-
-        # self.play(y_tkr.animate.set_value(2))
-        # self.move_camera(theta=70 * DEGREES, about="theta", run_time=1)
-
-        self.play(x_tkr.animate.set_value(1))
-        self.play(y_tkr.animate.set_value(1))
-
-        # self.move_camera(theta=45 * DEGREES, about="theta", run_time=1)
-
-        self.move_camera(phi=45 * DEGREES, run_time=1)
-
-        self.begin_ambient_camera_rotation(0.1, about='theta')
+        self.move_camera(theta=-45 * DEGREES, about="theta", run_time=1)
+        self.move_camera(phi=45 * DEGREES, about="phi", run_time=1)
 
         self.wait(3)
 
-# class working1(ThreeDScene):
-#     def construct(self):
-#         axes = ThreeDAxes(x_range=[ -4, 4, 2 ],
-#                           y_range=[ -4, 4, 2 ],
-#                           z_range=[ -4, 4, 2 ],
-#                           x_length=8,
-#                           y_length=8,
-#                           z_length=8,
-#                           tips=False,
-#                           axis_config={'include_numbers': True, 'include_ticks': True,"line_to_number_buff":0.2},
-#                           x_axis_config = {"label_direction":DR},
-#                           y_axis_config = {"label_direction":UL},
-#                           z_axis_config = {"label_direction":UR,"line_to_number_buff":0.2}
-#
-#                           )
-#
-#
-#         circle= Circle()
-#
-#         self.play(TracedPath)
-#         self.add(text,axes)
-#
-#         # self.wait(2)
-#
-#         self.wait(2)
-#
-#         self.wait(1)
+
 class working1(ThreeDScene):
+    def dollar_val_surface(self, u, v):
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
     def construct(self):
         axes = ThreeDAxes(x_range=[ -4, 4, 2 ],
                           y_range=[ -4, 4, 2 ],
@@ -1201,32 +795,131 @@ class working1(ThreeDScene):
                           y_length=8,
                           z_length=8,
                           tips=False,
-                          axis_config={'include_numbers': True, 'include_ticks': True,"line_to_number_buff":0.2},
-                          x_axis_config = {"label_direction":DR},
-                          y_axis_config = {"label_direction":UL},
-                          z_axis_config = {"label_direction":UR,"line_to_number_buff":0.2}
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.2},
+                          x_axis_config={"label_direction": DR},
+                          y_axis_config={"label_direction": UL},
+                          z_axis_config={"label_direction": UR, "line_to_number_buff": 0.2}
 
                           )
 
-
-        circle= Circle()
+        circle = Circle()
 
         self.play(TracedPath)
-        self.add(text,axes)
+        # self.add(text, axes)
 
         # self.wait(2)
 
         self.wait(2)
 
         self.wait(1)
-# #
+
+
+class working2(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ 0, 1, 0.2 ],
+                          y_range=[ 0, 1, 0.2 ],
+                          z_range=[ 0, 1, 0.2 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
+                          x_axis_config={"label_direction": D},
+                          y_axis_config={"label_direction": R},
+                          z_axis_config={"label_direction": IN, "line_to_number_buff": 0.7}
+                          )
+
+        new_axes = three_d_space_zxy(self, axes)
+
+        self.add(new_axes)
+        self.wait(1)
+
+
+class working2(MovingCameraScene):
+
+    def construct(self):
+        current1 = Current(LEFT * 4)
+
+        mag_tracker =ValueTracker(4)
+
+        # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
+        current2 = Current(RIGHT * 4, direction=IN, magnitude=mag_tracker.get_value())
+
+        def mag_change(current):
+            current.magnitude = mag_tracker.get_value()
+
+        current2.add_updater(mag_change)
+        magnet = BarMagnet().rotate(PI / 4)
+
+        # field = redraw(lambda: MagneticField(current1, current2, magnet))
+
+        # field = MagneticField(current1, current2)
+        field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
+
+
+        self.add(field, current1, current2, magnet)
+
+
+        # self.play(field.animate.shift(L*1))
+
+        # self.wait(5)
+
+        self.play(current1.animate.shift(L * 2))
+        # self.play(current2.animate.become(Current(U * 2.5, direction=IN, magnitude=10)))
+
+        self.play(mag_tracker.animate.set_value(10))
+
+        # self.play()
+        self.play(magnet.animate.rotate(PI / 4))
+        # self.wait(5)
+        self.wait(2)
+#
+
+class working2(SpaceScene):
+
+    def construct(self):
+        circle = Circle().shift(UP)
+        circle.set_fill(RED, 1)
+        circle.shift(DOWN + RIGHT)
+
+        tri = Triangle().shift(UP+L*1)
+        tri.set_fill(BLUE, 1)
+        # circle.shift(DOWN + RIGHT)
+
+
+        rect = Square().shift(UP)
+        rect.rotate(PI / 4)
+        rect.set_fill(YELLOW_A, 1)
+        rect.shift(UP * 2)
+        rect.scale(0.5)
+
+        ground = Line([ -4, -4, 0 ], [ 4, -4, 0 ])
+        wall1 = Line([ -4, -4, 0 ], [ -4, 4, 0 ])
+        wall2 = Line([ 4, -4, 0 ], [ 4, 4, 0 ])
+        walls = VGroup(ground, wall1, wall2)
+        self.add(walls)
+
+        self.play(
+            DrawBorderThenFill(circle),
+            DrawBorderThenFill(rect),
+            DrawBorderThenFill(tri),
+        )
+        self.make_rigid_body(rect, elasticity=1.2,)  # Mobjects will move with gravity
+        self.make_rigid_body(tri, elasticity=0.8,)  # Mobjects will move with gravity
+        self.make_rigid_body(circle, elasticity=0.3, )  # Mobjects will move with gravity
+        self.make_static_body(walls)  # Mobjects will stay in place
+        self.wait(8)
+
+
+#
+
 # with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
-#                  'renderer': 'cairo', 'write_to_movie': True}):
-#     scene = working1()
+#                  'renderer': 'opengl', 'write_to_movie': True}):
+#     scene = working2()
 #     #     #     # scene = working2()
 #     #     #     # scene = working3()
 #     #     #     # scene = working4()
 #     #     #     # scene = working5()
 #     scene.render()
-
+#
 # 리드로우 매크로 브이그룹

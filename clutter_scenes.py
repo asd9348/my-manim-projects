@@ -1715,3 +1715,104 @@ class working1(MovingCameraScene):
 # for number in axes[ 1 ].numbers:
 #     number.rotate(135*DG).rotate(45*DG, axis=label_rotation_unit_v)
 # self.add_fixed_orientation_mobjects(axes[0].numbers)
+
+class working3(ThreeDScene):
+    def imp_loss_surface(self, u, v):
+        x = u
+        y = v
+        k = ((1 + x) / (1 + y)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        # hold_val = 0.5*x+0.5*y
+        # z = np.sin(x) * np.cos(y)
+        return np.array([ x, y, z ])
+
+    def dollar_val_surface(self, u, v):
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        # x = u
+        # y = v
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
+    def dollar_val_surface_circle(self, u, v, x_shift=1, y_shift=1, radius=0.5):
+        if (u - x_shift) ** 2 + (v - y_shift) ** 2 < radius ** 2:
+            # v=np.sqrt(0.5 ** 2-u ** 2)
+            # return np.array([ u, v, 0 ])
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+        else:
+
+            angle = angle_of_vector(np.array([ u - x_shift, v - y_shift, 0 ]))
+            u = np.cos(angle) * radius + x_shift
+            v = np.sin(angle) * radius + y_shift
+            k = ((1 + u) / (1 + v)) - 1
+            z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+            hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+            curr_val = hold_val * (1 + z) - 1
+        return np.array([ u, v, curr_val ])
+
+    def construct(self):
+
+        # self.add(NumberPlane())
+        radius = 0.5
+        x_shift = 1
+        y_shift = 1
+
+        axes = ThreeDAxes(x_range=(-0.99, 3, 1), y_range=(-0.99, 3, 1), z_range=(-1, 3, 1),
+                          x_length=7, y_length=7, z_length=7).move_to(O)
+
+        lab_x = axes.get_x_axis_label(Tex("$x$-label"),direction=DR,  buff=0.5)
+        lab_y = axes.get_y_axis_label(Tex("$y$-label"),direction=UL, buff=0.5)
+        lab_z = axes.get_z_axis_label(Tex("$z$-label"),direction=OUT, buff=0.5).rotate(270 * DG, axis=X)
+        labs = VGroup(lab_x, lab_y, lab_z)
+        self.play(Create(VGroup(axes, labs)))
+        self.add_fixed_orientation_mobjects(*labs)
+
+
+        val_graph = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface(u, v)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99, 3 ],
+            resolution=30
+        )
+        val_graph.set_style(fill_opacity=0.5)
+        val_graph.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
+
+        val_graph_2 = Surface(
+            lambda u, v: axes.c2p(*self.dollar_val_surface_circle(u, v, x_shift, y_shift, radius)),
+            v_range=[ -0.99, 3 ],
+            u_range=[ -0.99,3 ],
+            resolution=30
+        )
+        # val_graph_2.set_style(fill_opacity=1,fill_color =RED)
+        val_graph_2.set_style(fill_opacity=0.5,fill_color =RED)
+        # val_graph_2.set_fill_by_value(axes=axes, colors=[ (C0193, -0.99), (C0493, -0.5), (C0795, 0), (C1145, 1), (C1195, 3) ], axis=2)
+
+        self.move_camera(theta=80 * DG, about="theta", run_time=1)
+        circle_cut = Circle().scale_to_fit_width(radius*2 * get_dist_btwn_points(axes.c2p(0, 0), axes.c2p(1, 0))).move_to(axes.c2p(x_shift, y_shift,0)).set_fill(opacity=0.2, color =RED)
+
+        text = MathTex(rf'(x-{x_shift})^2+(y-{y_shift})^2<{radius}^2').move_to(axes.c2p(x_shift,y_shift, -1)).scale(0.7)
+        text_dashed_line = DashedLine(start=axes.c2p(x_shift,y_shift, -0.8), end=axes.c2p(x_shift,y_shift, 0), stroke_color = RED)
+
+        self.play(Create(val_graph))
+        self.add_fixed_orientation_mobjects(text)
+        self.play(Create(text_dashed_line))
+        self.play(Create(circle_cut))
+        self.play(circle_cut.copy().animate.shift(OUT*5.5))
+        self.play(Transform(val_graph, val_graph_2))
+
+        self.move_camera(phi=80 * DG, about="phi", run_time=1)
+        # self.move_camera(theta=10 * DG, about="theta", run_time=1)
+        # self.move_camera(theta=0 * DG, about="theta", run_time=1)
+        self.begin_ambient_camera_rotation(-0.2, about='theta')
+
+        self.wait(5)
+
+        # self.interactive_embed()

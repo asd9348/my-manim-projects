@@ -1,8 +1,8 @@
 
 
-반영구적 손실과 플랫그래프
+반영구적 손실과 플랫그래프1111111111111
 
-전기장 벡터필드 움직이는 거
+전기장 벡터필드 움직이는 거111111111
 
 자기장 커런트 움직이는 거
 
@@ -14,25 +14,25 @@
 
 간단한 미적분
 
-포물선 2개 2차함수 했던 거
+포물선 2개 2차함수 했던 거11111111111111111111111
 
-비비아니 정리
+비비아니 정리1111111111111111111
 
-원의 방정식으로 반영구적 손실 자른 거
+원의 방정식으로 반영구적 손실 자른 거1111111111111
 
-불리언 오퍼레이션 2디
+불리언 오퍼레이션 2디111111111111111111111111111
 
 덱스 소개영상
 
 에이엠엠 영상
 
-에이엠 지엠 인이퀄리티
+에이엠 지엠 인이퀄리티11111111111111111111111111111111
 
-포물선 면적 따기
+포물선 면적 따기11111111111111111111111111111111111
 
-3디 스피어
+3디 스피어11111111111111111111111111111111111
 
-썸 오브 큐브스
+썸 오브 큐브스11111111111111
 
 
 
@@ -56,11 +56,11 @@ class test_1(Scene):
         self.add(field, charge1, charge2, charge3, charge4, charge5, charge6, charge7)
         # self.play(charge3.animate.shift(L * 4), run_time=2)
 
-        # self.play(charge3_mag_tkr.animate.set_value(15),
-        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
-        # self.play(charge3_mag_tkr.animate.set_value(1),
-        #           charge1.animate.shift(D * 1 + L * 1), run_time=1)
-        # self.wait(5)
+        self.play(charge3_mag_tkr.animate.set_value(15),
+                  charge1.animate.shift(D * 1 + L * 1), run_time=1)
+        self.play(charge3_mag_tkr.animate.set_value(1),
+                  charge1.animate.shift(D * 1 + L * 1), run_time=1)
+        self.wait(5)
 
 
 class test_2(VectorScene):

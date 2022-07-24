@@ -15,9 +15,10 @@ from pathlib import Path
 import shutil
 from pprint import pprint
 
-# from custom_manim_utils.custom_consts import *
-from custom_manim_utils.custom_color_consts import *
+from custom_manim_utils.custom_consts import *
+# from custom_manim_utils.custom_color_consts import *
 # from custom_manim_utils.custom_ import *
+
 
 
 from typing import *
@@ -26,7 +27,7 @@ import numpy as np
 from colour import Color
 
 from manim import config
-from manim.constants import *
+# from manim.constants import *
 from manim.mobject.geometry.arc import Circle
 from manim.mobject.geometry.polygram import Square
 from manim.mobject.mobject import *
@@ -36,6 +37,64 @@ from manim.mobject.types.vectorized_mobject import VGroup, VMobject
 from manim.utils.color import *
 from manim.utils.iterables import tuplify
 from manim.utils.space_ops import normalize, perpendicular_bisector, z_to_vector
+
+
+
+def three_d_space_zxy(self,axes):
+    # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
+    new_y_axis = axes[ 1 ].copy()
+    x_axis = axes[ 0 ]
+    y_axis = axes[ 1 ]
+    z_axis = axes[ 2 ]
+    new_y_axis.move_to(get_compensated_coor(new_y_axis, new_y_axis.get_start(), x_axis.get_end()))
+    #
+    # 보조선 작성 루틴 , 틱 위치 개수하고 잘 보기
+    x_range, y_range, z_range = axes.x_range, axes.y_range, axes.z_range
+
+    x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
+    y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
+    z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
+
+    x_axis_aux_line, y_axis_aux_line, z_axis_aux_line = VGroup(), VGroup(), VGroup()
+
+    for x, y, z in zip(x_tick_pos[ 0: ], y_tick_pos[ 1: ], z_tick_pos[ 1: ], ):
+        z_axis_aux_line.add(
+            VMobject().set_points_as_corners(
+                [ axes.c2p(x_tick_pos[ -1 ], y_tick_pos[ -1 ], z), axes.c2p(0, y_tick_pos[ -1 ], z), axes.c2p(0, 0, z) ])
+                .set_stroke(opacity=0.3,
+                            width=2,
+                            color=GRAY))
+        y_axis_aux_line.add(
+            VMobject().set_points_as_corners([ axes.c2p(1, y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
+                .set_stroke(opacity=0.3,
+                            width=2,
+                            color=GRAY))
+        x_axis_aux_line.add(
+            VMobject().set_points_as_corners(
+                [ axes.c2p(x, 0, 0), axes.c2p(x, y_tick_pos[ -1 ], 0), axes.c2p(x, y_tick_pos[ -1 ], z_tick_pos[ -1 ]) ])
+                .set_stroke(opacity=0.3,
+                            width=2,
+                            color=GRAY))
+
+    origin_vertical_aux_line = VMobject().set_points_as_corners(
+        [ axes.c2p(x_tick_pos[ -1 ], y_tick_pos[ -1 ], 0), axes.c2p(x_tick_pos[ -1 ], y_tick_pos[ -1 ], z_tick_pos[ -1 ]) ]) \
+        .set_stroke(opacity=0.3,
+                    width=2,
+                    color=GRAY)
+    aux_lines = VGroup(x_axis_aux_line, y_axis_aux_line, z_axis_aux_line, origin_vertical_aux_line)
+    # 제트축 넘버들을 픽ㅅ드 오리엔테이션 적용 전에 전부 위로 향하게 돌려줌
+    for number in z_axis.numbers:
+        number.rotate(90 * DEGREES, axis=X_AXIS).rotate(90 * DEGREES)
+
+    self.add_fixed_orientation_mobjects(*x_axis.numbers)
+    self.add_fixed_orientation_mobjects(*new_y_axis.numbers)
+    self.add_fixed_orientation_mobjects(*z_axis.numbers)
+
+    # 기존 좌표계가 틀어지지 않게 모두 이동은 같이 하되 제트 축은 보여주지 않을 것임
+
+    new_axes = VGroup(x_axis, new_y_axis, z_axis, aux_lines).move_to(UP)
+
+    return new_axes
 
 
 def is_in_triangle(point, A, B, C, contain_border=False):
