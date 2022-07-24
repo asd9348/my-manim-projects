@@ -893,3 +893,49 @@ class ParabolaArea(MovingCameraScene):
         self.play(path_2.copy().animate.move_to([ 4, 2, 0 ]).scale(0.6))
 
         self.wait(2)
+
+
+class GravityEngine(SpaceScene):
+
+    def construct(self):
+        circle = Circle().shift(UP)
+        circle.set_fill(RED, 1)
+        circle.shift(DOWN + RIGHT)
+
+        # tri = Triangle().shift(UP+L*4).rotate(30*DG)
+        # tri.set_fill(BLUE, 1)
+        # circle.shift(DOWN + RIGHT)
+
+        math = Tex('Math').scale(2).shift(UP+L*4).rotate(30*DG)
+
+        rect = Square().shift(UP)
+        rect.rotate(PI / 4)
+        rect.set_fill(YELLOW_A, 1)
+        rect.shift(UP * 2)
+        rect.scale(0.5)
+
+        ground = Line([ -6, -4, 0 ], [ 6, -4, 0 ])
+        wall1 = Line([ -6, -4, 0 ], [ -6, 4, 0 ])
+        wall2 = Line([ 6, -4, 0 ], [ 6, 4, 0 ])
+        walls = VGroup(ground, wall1, wall2)
+        self.add(walls)
+
+        self.play(
+            DrawBorderThenFill(circle),
+            DrawBorderThenFill(rect),
+            DrawBorderThenFill(math),
+        )
+        self.make_rigid_body(rect, elasticity=0.8,)  # Mobjects will move with gravity
+        self.make_rigid_body(circle, elasticity=0.9)  # Mobjects will move with gravity
+        self.make_static_body(walls)  # Mobjects will stay in place
+        self.make_rigid_body(*math, elasticity=0.4)  # Mobjects will move with gravity
+        self.wait(10)
+
+# with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
+#                  'renderer': 'opengl', 'write_to_movie': True}):
+#     scene = Sphere_3D()
+#     #     #     # scene = working2()
+#     #     #     # scene = working3()
+#     #     #     # scene = working4()
+#     #     #     # scene = working5()
+#     scene.render()

@@ -875,6 +875,174 @@ class working2(MovingCameraScene):
         self.wait(2)
 #
 
+
+class working2(ThreeDScene):
+    def dollar_val_surface(self, u, v):
+        if u + v > 3:
+            v = v - (u + v - 3)
+
+        k = ((1 + u) / (1 + v)) - 1
+        z = (2 * np.sqrt(k + 1) / (2 + k)) - 1
+        hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
+        curr_val = hold_val * (1 + z) - 1
+
+        return np.array([ u, v, curr_val ])
+
+    def construct(self):
+
+        axes = ThreeDAxes(x_range=[ 0, 3, 1 ],
+                          y_range=[ 0, 3, 1 ],
+                          z_range=[ 0, 3, 1 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
+                          x_axis_config={"label_direction": D},
+                          y_axis_config={"label_direction": L},
+                          z_axis_config={"label_direction": U}
+                          )
+
+        # self.add(profit,curr_profit, inv_text)
+
+        # self.add(index_labels(curr_profit))
+        # self.add_fixed_orientation_mobjects(profit,curr_profit, inv_text)
+
+        # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
+        axes.add(axes[ 2 ].copy())
+        VGroup(axes[ 3 ]).move_to(get_compensated_coor(axes[ 3 ], axes.c2p(0, 0, 0), axes[ 0 ].get_end()))
+
+        # 보조선 작성 루틴 , 틱 위치 개수하고 잘 보기
+        x_range, y_range, z_range = axes.x_range, axes.y_range, axes.z_range
+
+        x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
+        y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
+        z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
+
+        x_axis_aux_line, y_axis_aux_line, z_axis_aux_line = VGroup(), VGroup(), VGroup()
+
+        for x, y, z in zip(x_tick_pos[ 1: ], y_tick_pos[ 1: ], z_tick_pos[ 1: ], ):
+            z_axis_aux_line.add(
+                OpenGLVMobject().set_points_as_corners(
+                    [ axes.c2p(x_tick_pos[ -1 ], 0, z), axes.c2p(0, 0, z), axes.c2p(0, y_tick_pos[ -1 ], z) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+            y_axis_aux_line.add(
+                OpenGLVMobject().set_points_as_corners([ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+            x_axis_aux_line.add(
+                OpenGLVMobject().set_points_as_corners(
+                    [ axes.c2p(x, y_tick_pos[ -1 ], 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, z_tick_pos[ -1 ]) ])
+                    .set_stroke(opacity=0.3,
+                                width=2,
+                                color=GRAY))
+
+        origin_vertical_aux_line = OpenGLVMobject().set_points_as_corners([ axes.c2p(0, 0, 0), axes.c2p(0, 0, z_tick_pos[ -1 ]) ]) \
+            .set_stroke(opacity=0.3,
+                        width=2,
+                        color=GRAY)
+
+        aux_lines = OpenGLVGroup(x_axis_aux_line, y_axis_aux_line, z_axis_aux_line, origin_vertical_aux_line, )
+        # 기존 좌표계가 틀어지지 않게 모두 이동은 같이 하되 제트 축은 보여주지 않을 것임
+        VGroup(axes[ 0 ], axes[ 1 ], axes[ 2 ], axes[ 3 ], aux_lines).move_to(O)
+        # 실제 쓸 축들만 뉴 엑시스로 정의
+        new_axes = VGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], aux_lines)
+
+        new_axes[ 0 ].set_color(RED)
+        new_axes[ 1 ].set_color(GREEN)
+        new_axes[ 2 ].set_color(BLUE)
+
+        # 뉴엑시스는 클래스가 없이 그저 브이그룹이어서 기존의 메서드들을 사용 못 함 그래서 메서드 사용은 기존 엑시스
+        axes.get_z_axis_label('z')
+        axes.get_x_axis_label('x')
+        axes.get_y_axis_label('y')
+
+        # self.camera.set_zoom(0.6)
+        self.play(Create(new_axes))
+        for number in axes[ 3 ].numbers:
+            number.rotate(90 * DG, axis=X).rotate(90 * DG)
+
+        # numbers = VGroup(*axes[ 0 ].numbers, *axes[ 1 ].numbers, *axes[ 3 ].numbers)
+
+        # if Zoom is applied, gotta change scale,
+        # for number in numbers:
+        #     number.scale(0.5)
+
+        # self.add_fixed_orientation_mobjects(*axes[ 0 ].numbers)
+        # self.add_fixed_orientation_mobjects(*axes[ 1 ].numbers)
+        # self.add_fixed_orientation_mobjects(*axes[ 3 ].numbers)
+
+        entropy1 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(t, 0)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
+        entropy2 = ParametricFunction(lambda t: axes.c2p(*self.dollar_val_surface(0, t)), t_range=[ 0, 3 ], color=YELLOW, stroke_width=6)
+        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 3 - t, self.dollar_val_surface(t, 3 - t)[ 2 ]), t_range=[ 0, 3 ], color=YELLOW,
+                                      stroke_width=6)
+        self.play(Create(entropy1),
+                  Create(entropy2),
+                  Create(entropy3))
+
+
+        self.interactive_embed()
+        # self.wait(3)
+class working2(ThreeDScene):
+
+    def construct(self):
+
+        # self.add(NumberPlane())
+        #
+        #
+        # cone = ConCylinder(3, 6)
+        # cone.move_to(get_compensated_coor(cone, cone.get_critical_point(IN)[1], O))
+        #
+        # plane= Square(5).set_style(fill_opacity=0.5)
+        #
+        # self.play(Create(cone))
+        # self.play(Create(plane))
+        #
+        # self.play(plane.animate.shift(IN*2))
+        #
+        # self.play(plane.animate.rotate(30*DG, axis= X))
+        grid = Axes(
+            x_range=[0, 1, 0.05],  # step size determines num_decimal_places.
+            y_range=[0, 1, 0.05],
+            x_length=9,
+            y_length=5.5,
+            axis_config={
+                "numbers_to_include": np.arange(0, 1 + 0.1, 0.1),
+                "font_size": 24,
+            },
+            tips=False,
+        )
+
+        # Labels for the x-axis and y-axis.
+        y_label = grid.get_y_axis_label("y", edge=LEFT, direction=LEFT, buff=0.4)
+        x_label = grid.get_x_axis_label("x")
+        grid_labels = VGroup(x_label, y_label)
+
+        graphs = VGroup()
+        for n in np.arange(1, 20 + 0.5, 0.5):
+            graphs += grid.plot(lambda x: x ** n, color=WHITE)
+            graphs += grid.plot(
+                lambda x: x ** (1 / n), color=WHITE, use_smoothing=False
+            )
+
+        # Extra lines and labels for point (1,1)
+        graphs += grid.get_horizontal_line(grid.c2p(1, 1, 0), color=BLUE)
+        graphs += grid.get_vertical_line(grid.c2p(1, 1, 0), color=BLUE)
+        graphs += Dot(point=grid.c2p(1, 1, 0), color=YELLOW)
+        graphs += Tex("(1,1)").scale(0.75).next_to(grid.c2p(1, 1, 0))
+        title = Title(
+            # spaces between braces to prevent SyntaxError
+            r"Graphs of $y=x^{ {1}\over{n} }$ and $y=x^n (n=1,2,3,...,20)$",
+            include_underline=False,
+            font_size=40,
+        )
+
+        self.play(Create(VGroup(title, graphs, grid, grid_labels)))
+
+        self.interactive_embed()
 class working2(SpaceScene):
 
     def construct(self):
@@ -882,10 +1050,11 @@ class working2(SpaceScene):
         circle.set_fill(RED, 1)
         circle.shift(DOWN + RIGHT)
 
-        tri = Triangle().shift(UP+L*1)
-        tri.set_fill(BLUE, 1)
+        # tri = Triangle().shift(UP+L*4).rotate(30*DG)
+        # tri.set_fill(BLUE, 1)
         # circle.shift(DOWN + RIGHT)
 
+        math = Tex('Math').scale(2).shift(UP+L*4).rotate(30*DG)
 
         rect = Square().shift(UP)
         rect.rotate(PI / 4)
@@ -893,28 +1062,28 @@ class working2(SpaceScene):
         rect.shift(UP * 2)
         rect.scale(0.5)
 
-        ground = Line([ -4, -4, 0 ], [ 4, -4, 0 ])
-        wall1 = Line([ -4, -4, 0 ], [ -4, 4, 0 ])
-        wall2 = Line([ 4, -4, 0 ], [ 4, 4, 0 ])
+        ground = Line([ -6, -4, 0 ], [ 6, -4, 0 ])
+        wall1 = Line([ -6, -4, 0 ], [ -6, 4, 0 ])
+        wall2 = Line([ 6, -4, 0 ], [ 6, 4, 0 ])
         walls = VGroup(ground, wall1, wall2)
         self.add(walls)
 
         self.play(
             DrawBorderThenFill(circle),
             DrawBorderThenFill(rect),
-            DrawBorderThenFill(tri),
+            DrawBorderThenFill(math),
         )
-        self.make_rigid_body(rect, elasticity=1.2,)  # Mobjects will move with gravity
-        self.make_rigid_body(tri, elasticity=0.8,)  # Mobjects will move with gravity
-        self.make_rigid_body(circle, elasticity=0.3, )  # Mobjects will move with gravity
+        self.make_rigid_body(rect, elasticity=0.8,)  # Mobjects will move with gravity
+        self.make_rigid_body(circle, elasticity=0.9)  # Mobjects will move with gravity
         self.make_static_body(walls)  # Mobjects will stay in place
-        self.wait(8)
-
+        self.make_rigid_body(*math, elasticity=0.4)  # Mobjects will move with gravity
+        self.wait(10)
+        # self.wait(30)
 
 #
 
 # with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
-#                  'renderer': 'opengl', 'write_to_movie': True}):
+#                  'renderer': 'opengl', 'write_to_movie': False}):
 #     scene = working2()
 #     #     #     # scene = working2()
 #     #     #     # scene = working3()
