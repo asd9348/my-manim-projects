@@ -258,7 +258,7 @@ class working1(ThreeDScene):
         row2 = VGroup(ccw, n0, equal_2, n1, n2).arrange(R)
 
         VGroup(row1, row2).arrange(D)
-        row2.move_to(get_moved_coor_based_submob(row2, equal_2.get_center(), [ equal_1.get_x(), row2.get_y(), 0 ]))
+        row2.move_to(get_compensated_coor(row2, equal_2.get_center(), [ equal_1.get_x(), row2.get_y(), 0 ]))
         # self.add(row1, row2)
 
         return VGroup(row1, row2)
@@ -642,7 +642,7 @@ class test(ThreeDScene):
         charge5= Charge(-1,  DOWN*3.5)
         charge6 = Charge(-1, RIGHT*7+ DOWN*2)
         charge7 = Charge(-1, L*7+ DOWN*3)
-        field = redraw(lambda: ElectricField(charge1, charge2, charge3,charge4,charge5, charge6,charge7))
+        field = ElectricField(charge1, charge2, charge3,charge4,charge5, charge6,charge7)
         # self.add(field,charge1, charge2, charge3,charge4,charge5, charge6,charge7)
         return VGroup(field,charge1, charge2, charge3,charge4,charge5, charge6,charge7)
     # def scene_4(self):
@@ -796,7 +796,7 @@ class test(ThreeDScene):
         row2 = VGroup(ccw, n0, equal_2, n1, n2).arrange(R)
 
         VGroup(row1, row2).arrange(D)
-        row2.move_to(get_moved_coor_based_submob(row2, equal_2.get_center(), [ equal_1.get_x(), row2.get_y(), 0 ]))
+        row2.move_to(get_compensated_coor(row2, equal_2.get_center(), [ equal_1.get_x(), row2.get_y(), 0 ]))
         # self.add(row1, row2)
 
         return VGroup(row1, row2)
@@ -950,24 +950,24 @@ class test(ThreeDScene):
 
         stem_film = Square(fill_opacity=1, fill_color=WHITE)
 
-        # self.add(slide_svg, sqs, slide_box, cutout, slider, stem_cutout)
-        #
-        # sqs.save_state()
-        # self.play(sqs.animate.shift(R * 8), run_time=1.5)
-        # sqs.restore()
-        # self.play(sqs.animate.shift(R * 8), run_time=1.5)
-        # self.play(slider.animate(rate_func=rush_into).shift(R * 7), run_time=0.4)
-        # self.remove(slide_svg, sqs, cutout, stem_cutout)
-        # # self.wait(q)
-        # self.play(AnimationGroup(FadeOut(slider_circle),
-        #                          FadeOut(slider_flim),
-        #                          FadeOut(slider_arrow), run_time=0.1)
-        #           )
+        self.add(slide_svg, sqs, slide_box, cutout, slider, stem_cutout)
+
+        sqs.save_state()
+        self.play(sqs.animate.shift(R * 8), run_time=1.5)
+        sqs.restore()
+        self.play(sqs.animate.shift(R * 8), run_time=1.5)
+        self.play(slider.animate(rate_func=rush_into).shift(R * 7), run_time=0.4)
+        self.remove(slide_svg, sqs, cutout, stem_cutout)
+        # self.wait(q)
+        self.play(AnimationGroup(FadeOut(slider_circle),
+                                 FadeOut(slider_flim),
+                                 FadeOut(slider_arrow), run_time=0.1)
+                  )
 
         # self.play(Flash(Dot(fill_opacity=0).shift(R*3.5),color='#787878', line_length=1,
         #     num_lines=30,flash_radius=1+SMALL_BUFF,
         #     time_width=0.3),run_time=2)
-
+        #
         stem_svg = SVGMobject('stem.svg', fill_color=RED, fill_opacity=0.5)
 
         frames = VGroup(
@@ -978,8 +978,8 @@ class test(ThreeDScene):
         for frame in frames:
             frame_pos.append(frame.get_center())
         # self.play(Create(frames))
-        self.add(frames.arrange_in_grid(4, 4))
-        # self.play(frames.animate.arrange_in_grid(4, 4))
+        # self.add(frames.arrange_in_grid(4, 4))
+        self.play(frames.animate.arrange_in_grid(4, 4))
         #
         scene_1_mobs = self.scene_1().scale(0.325).move_to(frames[ 0 ])
         scene_2_mobs = self.scene_2().scale(0.18).move_to(frames[ 1 ])
@@ -998,43 +998,43 @@ class test(ThreeDScene):
         scene_15_mobs = self.scene_15().scale(0.225).move_to(frames[ 14 ])
         scene_16_mobs = self.scene_16().scale(0.21).move_to(frames[ 15 ])
 
-        # self.play(Create(scene_1_mobs),
-        #           Create(scene_2_mobs),
-        #           Create(scene_3_mobs),
-        #           Create(scene_4_mobs),
-        #           Create(scene_5_mobs),
-        #           Create(scene_6_mobs),
-        #           Create(scene_7_mobs),
-        #           Create(scene_8_mobs),
-        #           Create(scene_9_mobs),
-        #           Create(scene_10_mobs),
-        #           Create(scene_11_mobs),
-        #           Create(scene_12_mobs),
-        #           Create(scene_13_mobs),
-        #           Create(scene_14_mobs),
-        #           Create(scene_15_mobs),
-        #           Create(scene_16_mobs),
-        #           run_time=7, rate_func=exponential_decay)
-        # self.wait(0.5)
-        # self.play(FadeOut(scene_1_mobs, target_position=frame_pos[ 0 ]),
-        #           FadeOut(scene_2_mobs, target_position=frame_pos[ 1 ]),
-        #           FadeOut(scene_3_mobs, target_position=frame_pos[ 2 ]),
-        #           FadeOut(scene_4_mobs, target_position=frame_pos[ 3 ]),
-        #           FadeOut(scene_5_mobs, target_position=frame_pos[ 4 ]),
-        #           FadeOut(scene_6_mobs, target_position=frame_pos[ 5 ]),
-        #           FadeOut(scene_7_mobs, target_position=frame_pos[ 6 ]),
-        #           FadeOut(scene_8_mobs, target_position=frame_pos[ 7 ]),
-        #           FadeOut(scene_9_mobs, target_position=frame_pos[ 8 ]),
-        #           FadeOut(scene_10_mobs, target_position=frame_pos[ 9 ]),
-        #           FadeOut(scene_11_mobs, target_position=frame_pos[ 10 ]),
-        #           FadeOut(scene_12_mobs, target_position=frame_pos[ 11 ]),
-        #           FadeOut(scene_13_mobs, target_position=frame_pos[ 12 ]),
-        #           FadeOut(scene_14_mobs, target_position=frame_pos[ 13 ]),
-        #           FadeOut(scene_15_mobs, target_position=frame_pos[ 14 ]),
-        #           FadeOut(scene_16_mobs, target_position=frame_pos[ 15 ]),
-        #           Restore(frames),
-        #           run_time=1)
-        # self.play(Restore(frames), run_time=0.5)
+        self.play(Create(scene_1_mobs),
+                  Create(scene_2_mobs),
+                  Create(scene_3_mobs),
+                  Create(scene_4_mobs),
+                  Create(scene_5_mobs),
+                  Create(scene_6_mobs),
+                  Create(scene_7_mobs),
+                  Create(scene_8_mobs),
+                  Create(scene_9_mobs),
+                  Create(scene_10_mobs),
+                  Create(scene_11_mobs),
+                  Create(scene_12_mobs),
+                  Create(scene_13_mobs),
+                  Create(scene_14_mobs),
+                  Create(scene_15_mobs),
+                  Create(scene_16_mobs),
+                  run_time=7, rate_func=exponential_decay)
+        self.wait(0.5)
+        self.play(FadeOut(scene_1_mobs, target_position=frame_pos[ 0 ]),
+                  FadeOut(scene_2_mobs, target_position=frame_pos[ 1 ]),
+                  FadeOut(scene_3_mobs, target_position=frame_pos[ 2 ]),
+                  FadeOut(scene_4_mobs, target_position=frame_pos[ 3 ]),
+                  FadeOut(scene_5_mobs, target_position=frame_pos[ 4 ]),
+                  FadeOut(scene_6_mobs, target_position=frame_pos[ 5 ]),
+                  FadeOut(scene_7_mobs, target_position=frame_pos[ 6 ]),
+                  FadeOut(scene_8_mobs, target_position=frame_pos[ 7 ]),
+                  FadeOut(scene_9_mobs, target_position=frame_pos[ 8 ]),
+                  FadeOut(scene_10_mobs, target_position=frame_pos[ 9 ]),
+                  FadeOut(scene_11_mobs, target_position=frame_pos[ 10 ]),
+                  FadeOut(scene_12_mobs, target_position=frame_pos[ 11 ]),
+                  FadeOut(scene_13_mobs, target_position=frame_pos[ 12 ]),
+                  FadeOut(scene_14_mobs, target_position=frame_pos[ 13 ]),
+                  FadeOut(scene_15_mobs, target_position=frame_pos[ 14 ]),
+                  FadeOut(scene_16_mobs, target_position=frame_pos[ 15 ]),
+                  Restore(frames),
+                  run_time=1)
+        self.play(Restore(frames), run_time=0.5)
 
         title_1 = Tex('Visual').scale(3).set_z_index(1).shift(U * 1.5 + L * 2)
         title_2 = Tex('STEM').scale(2.8).set_z_index(1).shift(R * 1)
@@ -1060,35 +1060,35 @@ class test(ThreeDScene):
             Cutout(Square(20, stroke_opacity=0, fill_opacity=1, fill_color=RED), slide_box, stroke_opacity=0, fill_opacity=1,
                    fill_color=BLACK).set_z_index(0.4)))
 
-        # self.add(slide_svg, sqs, slide_box, slider, cutout)
-        # self.play(Write(VGroup(eye, title_1, title_2)),
-        #           sqs.animate.shift(R * 7),
-        #           run_time=1)
-        # self.play(slider.animate(rate_func=rush_into).shift(R * 7), run_time=0.4)
-        # self.remove(slide_svg, sqs, cutout)
-        # # self.wait(q)
-        # self.play(AnimationGroup(FadeOut(slider_circle),
-        #                          FadeOut(slider_flim),
-        #                          FadeOut(slider_arrow),
-        #                          run_time=0.1)
-        #           )
-        # self.play(FadeOut(VGroup(eye, title_1, title_2), scale=3), run_time=0.7)
-        self.add(scene_1_mobs,
-                 scene_2_mobs,
-                 scene_3_mobs,
-                 scene_4_mobs,
-                 scene_5_mobs,
-                 scene_6_mobs,
-                 scene_7_mobs,
-                 scene_8_mobs,
-                 scene_9_mobs,
-                 scene_10_mobs,
-                 scene_11_mobs,
-                 scene_12_mobs,
-                 scene_13_mobs,
-                 scene_14_mobs,
-                 scene_15_mobs,
-                 scene_16_mobs,
-                 )
+        self.add(slide_svg, sqs, slide_box, slider, cutout)
+        self.play(Write(VGroup(eye, title_1, title_2)),
+                  sqs.animate.shift(R * 7),
+                  run_time=1)
+        self.play(slider.animate(rate_func=rush_into).shift(R * 7), run_time=0.4)
+        self.remove(slide_svg, sqs, cutout)
+        # self.wait(q)
+        self.play(AnimationGroup(FadeOut(slider_circle),
+                                 FadeOut(slider_flim),
+                                 FadeOut(slider_arrow),
+                                 run_time=0.1)
+                  )
+        self.play(FadeOut(VGroup(eye, title_1, title_2), scale=3), run_time=0.7)
+        # self.add(scene_1_mobs,
+        #          scene_2_mobs,
+        #          scene_3_mobs,
+        #          scene_4_mobs,
+        #          scene_5_mobs,
+        #          scene_6_mobs,
+        #          scene_7_mobs,
+        #          scene_8_mobs,
+        #          scene_9_mobs,
+        #          scene_10_mobs,
+        #          scene_11_mobs,
+        #          scene_12_mobs,
+        #          scene_13_mobs,
+        #          scene_14_mobs,
+        #          scene_15_mobs,
+        #          scene_16_mobs,
+        #          )
         #
-        # self.wait(10)
+        self.wait(3)

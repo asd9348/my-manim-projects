@@ -1151,7 +1151,7 @@ class L01S04_stablecoin(MovingCameraScene):
         # arrow = MathTex()
 
         usd_equals_usdt = VGroup(usd_1ea, arrow, usdt_1ea).arrange(R)
-        usd_equals_usdt.move_to(get_moved_coor_based_submob(usd_equals_usdt, usd_equals_usdt.get_top(), [ 5.5, -1, 0 ]))
+        usd_equals_usdt.move_to(get_compensated_coor(usd_equals_usdt, usd_equals_usdt.get_top(), [ 5.5, -1, 0 ]))
 
         self.play(Create(usd_equals_usdt), run_time=3)
         self.wait(1.383)
@@ -1428,12 +1428,12 @@ class L01S02_pair(MovingCameraScene):
 
         buy_btc_sell_usdt_equal = Tex(r'BUY BTC = SELL USDT').scale(1.3)
         buy_btc_sell_usdt_equal.move_to(
-            get_moved_coor_based_submob(buy_btc_sell_usdt_equal, buy_btc_sell_usdt_equal[ 0 ][ 6 ].get_center(),
+            get_compensated_coor(buy_btc_sell_usdt_equal, buy_btc_sell_usdt_equal[ 0 ][ 6 ].get_center(),
                                         both_arrow.get_top() + U * 3)
         )
         buy_usdt_sell_btc_equal = Tex(r'SELL BTC = BUY USDT').scale(1.3)
         buy_usdt_sell_btc_equal.move_to(
-            get_moved_coor_based_submob(buy_usdt_sell_btc_equal, buy_usdt_sell_btc_equal[ 0 ][ 7 ].get_center(),
+            get_compensated_coor(buy_usdt_sell_btc_equal, buy_usdt_sell_btc_equal[ 0 ][ 7 ].get_center(),
                                         both_arrow.get_top() + U * 1.5)
         )
         # self.add(index_labels(buy_usdt_sell_btc_equal[ 0 ]))

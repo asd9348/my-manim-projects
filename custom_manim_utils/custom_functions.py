@@ -195,7 +195,7 @@ def coin(coin_ticker, type='color', radius=1):
 
     svg_folder = Path('./svgs')
     svg_file = svg_folder / 'coin' / f'{type}' / f'{coin_ticker}.svg'
-    pprint(list(svg_folder.iterdir()))
+    # pprint(list(svg_folder.iterdir()))
 
     return SVGMobject(svg_file).scale_to_fit_width(radius * 2)
 

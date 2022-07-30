@@ -1816,3 +1816,360 @@ class working3(ThreeDScene):
         self.wait(5)
 
         # self.interactive_embed()
+class working2(ThreeDScene):
+    def construct(self):
+
+        axes = ThreeDAxes(x_range=[ -3.5, 3.5 ], y_range=[ -3.5, 3.5 ], z_range=[ -3.5, 3.5 ],
+                          x_length=7, y_length=7, z_length=7, axis_config={"include_tip": True, "include_ticks": True, "stroke_width": 1})
+
+        # dot = Sphere(radius=0.05,fill_color=BLUE).move_to(0*RIGHT + 0.1*UP + 0.105*OUT)
+        dot_1 = Sphere(radius=0.02, color=Color(hsl=(0, 1, 0.5),)).move_to([1,0,0])
+        dot_2 = Sphere(radius=0.02, color=Color(hsl=(1/5, 1, 0.5))).move_to([0.8,0,0])
+        dot_3 = Sphere(radius=0.02, color=Color(hsl=(2/5, 1, 0.5))).move_to([0.6,0,0])
+        dot_4 = Sphere(radius=0.02, color=Color(hsl=(3/5, 1, 0.5))).move_to([0.4,0,0])
+        dot_5 = Sphere(radius=0.02, color=Color(hsl=(4/5, 1, 0.5))).move_to([0.2,0,0])
+        # dot_1 = Sphere(radius=0.02, color=Color(hsl=(0, 1, 0.5),)).move_to([1,0,0])
+        # dot_2 = Sphere(radius=0.02, color=Color(hsl=(1/5, 1, 0.5))).move_to([0.2,0,0])
+        # dot_3 = Sphere(radius=0.02, color=Color(hsl=(2/5, 1, 0.5))).move_to([0.3,0,0])
+        # dot_4 = Sphere(radius=0.02, color=Color(hsl=(3/5, 1, 0.5))).move_to([0.4,0,0])
+        # dot_5 = Sphere(radius=0.02, color=Color(hsl=(4/5, 1, 0.5))).move_to([0.5,0,0])
+
+        # self.set_camera_orientation(phi=45 * DEGREES,theta=30*DEGREES,gamma = 90*DEGREES)
+        self.move_camera(phi=60 * DEGREES, zoom=1.2)
+        self.begin_ambient_camera_rotation(rate=0.08)  # Start move camera
+
+        dt = 0.1
+        # numsteps = 30
+        # self.add(axes, dot)
+        # self.add( dot_1,dot_2,dot_3,dot_4,dot_5)
+        # self.add( dot_4,dot_5)
+        self.add( dot_1)
+
+
+        def lorenz(x, y, z, s=10, r=28, b=2.667):
+            x_dot = s * (y - x)
+            y_dot = r * x - y - x * z
+            z_dot = x * y - b * z
+            return x_dot, y_dot, z_dot
+
+        def aizawa(x, y, z, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
+            x_dot = (z - b) * x - d * y
+            y_dot = d * x + (z - b) * y
+            z_dot = c + a * z - z ** 3 / 3 - (x ** 2 + y ** 2) * (1 + e * z) + f * z * x ** 3
+            return x_dot, y_dot, z_dot
+        def hoover(x, y, z, a=1.5):
+            x_dot = y
+            y_dot = -x+y*z
+            z_dot = a-y**2
+            return x_dot, y_dot, z_dot
+        def rayleigh(x, y, z, a=9, r=12,b=5):
+            x_dot = -a*x+a*y
+            y_dot = r*x-y-x*z
+            z_dot = x*y-b*z
+            return x_dot, y_dot, z_dot
+
+        def halvorsen(x, y, z, a=1.4):
+            x_dot = -a*x-4*y-4*z-y**2
+            y_dot =-a*y-4*z-4*x-z**2
+            z_dot =-a*z-4*x-4*y-x**2
+            return x_dot, y_dot, z_dot
+
+        def update_trajectory_V(self):
+            new_point = self.get_center()
+            if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+                self.add_smooth_curve_to(new_point)
+        def update_trajectory_Open_dot_1(self):
+            new_point = dot_1.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_2(self):
+            new_point = dot_2.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+        def update_trajectory_Open_dot_3(self):
+            new_point = dot_3.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+        def update_trajectory_Open_dot_4(self):
+            new_point = dot_4.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+        def update_trajectory_Open_dot_5(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+        def update_trajectory_face_dot_45(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+        def update_trajectory_Open_dot_5(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        #
+        #
+        #
+
+        which = 0
+        traj_opacity=0.8
+        if which == 0:
+            traj_1 = OpenGLVMobject()
+            traj_1.start_new_path(dot_1.get_center())
+            traj_1.set_stroke(Color(hsl=(0, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_2 = OpenGLVMobject()
+            traj_2.start_new_path(dot_2.get_center())
+            traj_2.set_stroke(Color(hsl=(1/5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_3 = OpenGLVMobject()
+            traj_3.start_new_path(dot_3.get_center())
+            traj_3.set_stroke(Color(hsl=(2/5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_4 = OpenGLVMobject()
+            traj_4.start_new_path(dot_4.get_center())
+            traj_4.set_stroke(Color(hsl=(3/5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_5 = OpenGLVMobject()
+            traj_5.start_new_path(dot_5.get_center())
+            traj_5.set_stroke(Color(hsl=(4/5, 1, 0.5)), 1.5, opacity=traj_opacity)
+
+            traj_1.add_updater(update_trajectory_Open_dot_1)
+            traj_2.add_updater(update_trajectory_Open_dot_2)
+            traj_3.add_updater(update_trajectory_Open_dot_3)
+            traj_4.add_updater(update_trajectory_Open_dot_4)
+            traj_5.add_updater(update_trajectory_Open_dot_5)
+            # traj_1.add_updater(update_trajectory_Open_dot_1)
+            # traj_1.add_updater(update_trajectory_Open_dot_2)
+            # traj_1.add_updater(update_trajectory_Open_dot_3)
+            # traj_5.add_updater(update_trajectory_Open_dot_4)
+            # traj_5.add_updater(update_trajectory_Open_dot_5)
+            #
+        else:
+            traj = VMobject()
+            # traj.start_new_path(dot.get_center())
+            traj.set_stroke(BLUE, 1.5, opacity=0.8)
+            traj.add_updater(update_trajectory_V)
+
+        # self.add(traj_1,traj_2,traj_3,traj_4,traj_5)
+        # self.add(traj_4,traj_5)
+        self.add(traj_1)
+        # self.add(traj_1)
+        # self.add(traj_1)
+
+        def update_position_dot(self,dt):
+            x_dot, y_dot, z_dot = hoover(self.get_center()[ 0 ], self.get_center()[ 1 ], self.get_center()[ 2 ])
+            x = x_dot * 0.01
+            y = y_dot * 0.01
+            z = z_dot * 0.01
+            # self.move_to((self.get_x()+x,self.get_y()+y,self.get_z()+z))
+            self.shift(x * RIGHT + y * UP + z * OUT)
+
+        dot_1.add_updater(update_position_dot)
+        dot_2.add_updater(update_position_dot)
+        dot_3.add_updater(update_position_dot)
+        dot_4.add_updater(update_position_dot)
+        dot_5.add_updater(update_position_dot)
+        # trace = TracedPath(dot)
+        # self.add(trace)
+        # self.play()
+        self.wait(120)
+
+
+class ParaSurface(ThreeDScene):
+    def func(self, p1, p2):
+        if p1 + p2 > 1:
+            p2 = p2 - (p1 + p2 - 1)
+        p3 = 1 - p1 - p2
+        z = p1 * (1 - p1) + p2 * (1 - p2) + p3 * (1 - p3)
+        return np.array([ p1, p2, z ])
+
+    def dot_text(self, color, tracker):
+        dot = Dot(radius=0.15, color=color)
+        percent_text = Tex("\% = ", color=color).next_to(dot, RIGHT * 0.6)
+        static_group = VGroup(dot, percent_text).scale(0.65)
+        if isinstance(tracker, list):
+            percent_changer = Integer(number=int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).scale(0.65).set_color(
+                color)
+            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
+                perc.set_value(int((1 - tracker[ 0 ].get_value() - tracker[ 1 ].get_value()) * 100)).set_color(color).next_to(static_group,
+                                                                                                                              RIGHT * 0.6)))
+        else:
+            percent_changer = Integer(number=int(tracker.get_value() * 100)).scale(0.65).set_color(color)
+            percent_changer.add_updater(lambda perc: self.renderer.camera.add_fixed_in_frame_mobjects(
+                perc.set_value(tracker.get_value() * 100).set_color(color).next_to(static_group, RIGHT * 0.6)))
+        percent_changer.next_to(static_group, RIGHT * 0.6)
+        text_group = VGroup(static_group, percent_changer)
+        self.renderer.camera.add_fixed_in_frame_mobjects(static_group)
+        return text_group
+
+    def construct(self):
+        x = ValueTracker(0.0)
+        y = ValueTracker(0.0)
+
+        blue_dot_tracker = self.dot_text(BLUE, x)
+        red_dot_tracker = self.dot_text(RED, y).next_to(blue_dot_tracker, RIGHT * 2)
+        green_dot_tracker = self.dot_text(GREEN, [ x, y ]).next_to(red_dot_tracker, RIGHT * 2)
+
+        dot_updater_text = VGroup(blue_dot_tracker, red_dot_tracker, green_dot_tracker).scale(1.5).shift(DOWN * 3 + LEFT * 2)
+
+        x_vals = [ "0\%", "33\%", "66\%", "100\%" ]
+        x_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
+        x_dict = dict(zip(x_pos, x_vals))
+        x_label_dot = Sphere(radius=.15).set_color(BLUE)
+        x_label_perc = Tex("\%", color=BLUE).next_to(x_label_dot, RIGHT * 0.6)
+        x_label = VGroup(x_label_dot, x_label_perc)
+
+        # y_vals = [Tex("0\%").rotate(PI/2,axis=IN).rotate(p),Tex("33\%").rotate(PI/2,axis=IN).rotate(p),Tex("66\%").rotate(PI/2,axis=IN).rotate(p),Tex("100\%").rotate(PI/2,axis=IN).rotate(p)]
+        y_vals = [ "0\%", "33\%", "66\%", "100\%" ]
+        y_pos = [ 0, 0.3333, 0.6666, 0.9999 ]
+        y_dict = dict(zip(y_pos, y_vals))
+        y_label_dot = Sphere(radius=.15).set_color(RED)
+        y_label_perc = Tex("\%", color=RED).next_to(y_label_dot, RIGHT * 0.6)
+        y_label = VGroup(y_label_dot, y_label_perc)
+
+        axes = ThreeDAxes(
+            x_range=[ 0, 1, .3333 ],
+            y_range=[ 0, 1, .3333 ],
+            z_range=[ 0, 1, .2 ],
+            axis_config={
+                "include_tip": False
+            }
+        ).add_coordinates(x_dict, y_dict)
+
+        cost_label = axes.get_z_axis_label('Gini')
+
+        axes.background_line_style = {
+            "stroke_color": BLUE_D,
+            "stroke_width": 2,
+            "stroke_opacity": 1,
+        }
+
+        labels = axes.get_axis_labels(
+            x_label=x_label,
+            y_label=y_label
+        )
+        axes.axis_labels[ 0 ].rotate(PI / 2, axis=RIGHT)
+        axes.axis_labels[ 0 ].shift(RIGHT)
+        axes.axis_labels[ 1 ].rotate(PI / 2, axis=RIGHT)
+        axes.axis_labels[ 1 ].rotate(PI / 2, axis=IN)
+        axes.axis_labels[ 1 ].shift(UP * 3)
+
+        surface = Surface(
+            lambda u, v: axes.c2p(*self.func(u, v)),
+            u_range=[ 0, 1 ],
+            v_range=[ 0, 1 ],
+            fill_opacity=0.5
+        )
+
+        line1 = Line(axes.c2p(1, 0, 0), axes.c2p(0, 0, 0), stroke_width=2).set_color(color=YELLOW)
+        line2 = Line(axes.c2p(0, 0, 0), axes.c2p(0, 1, 0), stroke_width=2).set_color(color=YELLOW)
+        line3 = Line(axes.c2p(0, 1, 0), axes.c2p(1, 0, 0), stroke_width=2).set_color(color=YELLOW)
+        triangle_perimeter = VGroup(line1, line2, line3)
+
+        def triangular_grid(x_min, x_max, dx, y_min, y_max, dy):
+            def get_line(s, e):
+                return Line(s, e, color=BLUE_D, stroke_width=1)
+
+            ctp = axes.coords_to_point
+            v_lines = VGroup(*[ get_line(ctp(x, y_min), ctp(x, y_max - x)) for x in np.arange(x_min, x_max + dx, dx) ])
+            h_lines = VGroup(*[ get_line(ctp(x_min, y), ctp(x_max - y, y)) for y in np.arange(y_min, y_max + dy, dy) ])
+
+            return VGroup(v_lines, h_lines)
+
+        plane = triangular_grid(0, 1, .05, 0, 1, 0.05).next_to(line1, UP, buff=0)
+
+        initial_point = [ axes.coords_to_point(*self.func(x.get_value(), y.get_value())) ]
+        sphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
+        xysphere = Sphere(center=initial_point, radius=.08).set_color(YELLOW)
+        sphere.add_updater(lambda s: s.move_to(axes.coords_to_point(*self.func(x.get_value(), y.get_value()))))
+        xysphere.add_updater(lambda s: s.move_to(axes.coords_to_point(x.get_value(), y.get_value(), 0)))
+
+        entropy1 = ParametricFunction(lambda t: axes.c2p(t, 0, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+        entropy2 = ParametricFunction(lambda t: axes.c2p(0, t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+        entropy3 = ParametricFunction(lambda t: axes.c2p(t, 1 - t, 2 * t * (1 - t)), color=YELLOW, stroke_width=6)
+
+        self.set_camera_orientation(theta=-90 * DEGREES, phi=60 * DEGREES, zoom=0.5)
+        self.play(Create(axes), FadeIn(labels), FadeIn(cost_label))
+        self.wait(0.3)
+        self.play(Create(triangle_perimeter))
+        self.play(Create(plane))
+        self.bring_to_back(plane)
+        self.play(triangle_perimeter.animate.set_color(BLUE_D))
+        self.bring_to_back(triangle_perimeter)
+        self.wait()
+        self.move_camera(theta=-90 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=4)
+        self.play(Create(entropy1), run_time=1.5)
+        self.wait()
+        self.renderer.camera.add_fixed_in_frame_mobjects(dot_updater_text)
+        self.play(FadeIn(dot_updater_text))
+        self.add_fixed_in_frame_mobjects(dot_updater_text)
+        self.play(Create(xysphere))
+        self.wait(0.3)
+        self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
+        self.wait()
+        self.move_camera(theta=-180 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
+        self.wait()
+        self.play(Create(entropy2), run_time=1.5)
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.0), y.animate.set_value(0.0), run_time=2)
+        self.move_camera(theta=-315 * DEGREES, phi=75 * DEGREES, zoom=0.8, run_time=3)
+        self.wait(0.3)
+        self.play(
+            Create(entropy3),
+            x.animate.set_value(1.0),
+            y.animate.set_value(0.0),
+            run_time=1.5
+        )
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.0), y.animate.set_value(1.0), run_time=2)
+        self.wait(0.3)
+        self.play(x.animate.set_value(1.0), y.animate.set_value(0.0), run_time=2)
+        self.wait()
+        self.move_camera(theta=-420 * DEGREES, phi=75 * DEGREES, zoom=0.6, run_time=4)
+        self.begin_ambient_camera_rotation(rate=-0.1)
+        self.wait()
+        self.play(Create(surface))
+        self.play(
+            Uncreate(entropy1),
+            Uncreate(entropy2),
+            Uncreate(entropy3)
+        )
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.3), y.animate.set_value(0.3), run_time=1)
+
+        x_line = DashedLine(axes.c2p(x.get_value(), 0, 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
+        y_line = DashedLine(axes.c2p(0, y.get_value(), 0), axes.c2p(x.get_value(), y.get_value(), 0), color=YELLOW)
+        z_line = DashedLine(axes.c2p(x.get_value(), y.get_value(), 0), axes.c2p(*self.func(x.get_value(), y.get_value())), color=YELLOW)
+
+        x_line.add_updater(lambda l: l.put_start_and_end_on(
+            axes.c2p(x.get_value(), 0, 0),
+            axes.c2p(x.get_value(), y.get_value(), 0)
+        )
+                           )
+
+        y_line.add_updater(lambda l: l.put_start_and_end_on(
+            axes.c2p(0, y.get_value(), 0),
+            axes.c2p(x.get_value(), y.get_value(), 0)
+        )
+                           )
+
+        z_line.add_updater(lambda l: l.put_start_and_end_on(
+            axes.c2p(x.get_value(), y.get_value(), 0),
+            axes.coords_to_point(*self.func(x.get_value(), y.get_value()))
+        )
+                           )
+
+        self.play(Create(x_line), Create(y_line), FadeOut(xysphere))
+        self.play(Create(z_line))
+        self.play(Create(sphere))
+        self.wait(0.3)
+        self.play(x.animate.set_value(0.1), y.animate.set_value(0.1), run_time=1.5)
+        self.wait()
+        self.play(x.animate.set_value(0.6), y.animate.set_value(0.3), run_time=1.5)
+        self.wait()
+        self.play(x.animate.set_value(0.4), y.animate.set_value(0.5), run_time=1.5)
+        self.wait()
+
+

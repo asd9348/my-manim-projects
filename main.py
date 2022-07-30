@@ -1,12 +1,13 @@
 from manim.opengl import *
 
 from custom_manim_utils.custom_mobs import *
-import manim.utils.space_ops
+# import manim.utils.space_ops
 from manim import *
+# from manimlib.imports import *
 
 import random as rd
 import numpy as np
-from math import *
+# from math import *
 from colour import Color
 from custom_manim_utils.custom_consts import *
 # from custom_manim_utils.custom_color_consts import *
@@ -840,7 +841,7 @@ class working2(MovingCameraScene):
     def construct(self):
         current1 = Current(LEFT * 4)
 
-        mag_tracker =ValueTracker(4)
+        mag_tracker = ValueTracker(4)
 
         # current2 = redraw(lambda: Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))
         current2 = Current(RIGHT * 4, direction=IN, magnitude=mag_tracker.get_value())
@@ -854,11 +855,10 @@ class working2(MovingCameraScene):
         # field = redraw(lambda: MagneticField(current1, current2, magnet))
 
         # field = MagneticField(current1, current2)
-        field.add_updater(lambda field:field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
-
+        field.add_updater(
+            lambda field: field.become(MagneticField(current1, Current(RIGHT * 2.5, direction=IN, magnitude=mag_tracker.get_value()))))
 
         self.add(field, current1, current2, magnet)
-
 
         # self.play(field.animate.shift(L*1))
 
@@ -873,6 +873,8 @@ class working2(MovingCameraScene):
         self.play(magnet.animate.rotate(PI / 4))
         # self.wait(5)
         self.wait(2)
+
+
 #
 
 
@@ -929,7 +931,8 @@ class working2(ThreeDScene):
                                 width=2,
                                 color=GRAY))
             y_axis_aux_line.add(
-                OpenGLVMobject().set_points_as_corners([ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
+                OpenGLVMobject().set_points_as_corners(
+                    [ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
                     .set_stroke(opacity=0.3,
                                 width=2,
                                 color=GRAY))
@@ -983,107 +986,527 @@ class working2(ThreeDScene):
                   Create(entropy2),
                   Create(entropy3))
 
-
         self.interactive_embed()
         # self.wait(3)
+
+
+class working1(ThreeDScene):
+
+    def construct(self):
+        circles = VGroup(*[ Circle(radius=0.5, fill_opacity=0.5, sheen_direction=R) for i in range(20) ]).arrange_in_grid(4,
+                                                                                                                          5).set_color_by_gradient(
+            [ BLUE, RED ])
+        print(circles.get_family())
+
+        self.add(circles)
+
+        # self.interactive_embed()
+
+
+#
 class working2(ThreeDScene):
 
     def construct(self):
+        axes = ThreeDAxes(x_range=[ -5, 5, 1 ],
+                          y_range=[ -5, 5, 1 ],
+                          z_range=[ -5, 5, 1 ],
+                          x_length=9,
+                          y_length=5.5,
+                          z_length=5.5,
+                          )
 
-        # self.add(NumberPlane())
-        #
-        #
-        # cone = ConCylinder(3, 6)
-        # cone.move_to(get_compensated_coor(cone, cone.get_critical_point(IN)[1], O))
-        #
-        # plane= Square(5).set_style(fill_opacity=0.5)
-        #
-        # self.play(Create(cone))
-        # self.play(Create(plane))
-        #
-        # self.play(plane.animate.shift(IN*2))
-        #
-        # self.play(plane.animate.rotate(30*DG, axis= X))
-        grid = Axes(
-            x_range=[0, 1, 0.05],  # step size determines num_decimal_places.
-            y_range=[0, 1, 0.05],
-            x_length=9,
-            y_length=5.5,
-            axis_config={
-                "numbers_to_include": np.arange(0, 1 + 0.1, 0.1),
-                "font_size": 24,
-            },
-            tips=False,
-        )
+        def elip(t):
+            print(np.array([ -1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t) ]))
 
-        # Labels for the x-axis and y-axis.
-        y_label = grid.get_y_axis_label("y", edge=LEFT, direction=LEFT, buff=0.4)
-        x_label = grid.get_x_axis_label("x")
-        grid_labels = VGroup(x_label, y_label)
+            # return axes.c2p(-1.41*np.cos(t) + 0.82*np.sin(t), 1.41*np.cos(t) + 0.82*np.sin(t), -1.63*np.sin(t))
+            return (-1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t))
 
-        graphs = VGroup()
-        for n in np.arange(1, 20 + 0.5, 0.5):
-            graphs += grid.plot(lambda x: x ** n, color=WHITE)
-            graphs += grid.plot(
-                lambda x: x ** (1 / n), color=WHITE, use_smoothing=False
-            )
+        elip = ParametricFunction(elip, t_range=[ 0.01, 3.148 ], color=YELLOW, stroke_width=10)
 
-        # Extra lines and labels for point (1,1)
-        graphs += grid.get_horizontal_line(grid.c2p(1, 1, 0), color=BLUE)
-        graphs += grid.get_vertical_line(grid.c2p(1, 1, 0), color=BLUE)
-        graphs += Dot(point=grid.c2p(1, 1, 0), color=YELLOW)
-        graphs += Tex("(1,1)").scale(0.75).next_to(grid.c2p(1, 1, 0))
-        title = Title(
-            # spaces between braces to prevent SyntaxError
-            r"Graphs of $y=x^{ {1}\over{n} }$ and $y=x^n (n=1,2,3,...,20)$",
-            include_underline=False,
-            font_size=40,
-        )
+        plane = OpenGLSurface(lambda u, v: axes.c2p(u, v, -u - v),
+                              u_range=[ -5, 5 ],
+                              v_range=[ -5, 5 ], shade_in_3d=True).set_color(color=RED, opacity=0.5)
 
-        self.play(Create(VGroup(title, graphs, grid, grid_labels)))
+        def elip(t):
+            print(np.array([ -1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t) ]))
+
+            # return axes.c2p(-1.41*np.cos(t) + 0.82*np.sin(t), 1.41*np.cos(t) + 0.82*np.sin(t), -1.63*np.sin(t))
+            return (-1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t))
+
+        elip = ParametricFunction(elip, t_range=[ 0, TAU ], color=YELLOW, stroke_width=10)
+
+        sphere = Sphere(radius=2, shade_in_3d=True, color=BLUE)
+        self.move_camera(phi=30 * DG)
+        self.play(Create(sphere))
+        # self.add(sphere)
+        self.play(Create(plane))
+        # self.play(Create(elip))
 
         self.interactive_embed()
-class working2(SpaceScene):
+
+
+class working2(ThreeDScene):
 
     def construct(self):
-        circle = Circle().shift(UP)
-        circle.set_fill(RED, 1)
-        circle.shift(DOWN + RIGHT)
+        # self.add(NumberPlane())
+        axes = redraw(lambda: ThreeDAxes(x_range=[ -3, 3, 1 ],
+                                         y_range=[ -3, 3, 1 ],
+                                         z_range=[ -3, 3, 1 ],
+                                         x_length=6,
+                                         y_length=6,
+                                         z_length=6,
+                                         color=GREEN))
 
-        # tri = Triangle().shift(UP+L*4).rotate(30*DG)
-        # tri.set_fill(BLUE, 1)
-        # circle.shift(DOWN + RIGHT)
+        plane = redraw(lambda: OpenGLSurface(lambda u, v: axes.c2p(u, v, -u - v),
+                                             u_range=[ -5, 5 ],
+                                             v_range=[ -5, 5 ], shade_in_3d=False).set_color(color=RED, opacity=0.5))
 
-        math = Tex('Math').scale(2).shift(UP+L*4).rotate(30*DG)
+        sphere = redraw(lambda: Sphere(radius=2, shade_in_3d=False).move_to(O).set_color(color=BLUE, opacity=1))
 
-        rect = Square().shift(UP)
-        rect.rotate(PI / 4)
-        rect.set_fill(YELLOW_A, 1)
-        rect.shift(UP * 2)
-        rect.scale(0.5)
+        self.move_camera(phi=10 * DG)
+        self.play(Create(axes))
+        self.play(Create(sphere))
+        self.play(Create(plane))
+        self.move_camera(phi=45 * DG, run_time=1)
+        self.move_camera(theta=45 * DG, run_time=1)
 
-        ground = Line([ -6, -4, 0 ], [ 6, -4, 0 ])
-        wall1 = Line([ -6, -4, 0 ], [ -6, 4, 0 ])
-        wall2 = Line([ 6, -4, 0 ], [ 6, 4, 0 ])
-        walls = VGroup(ground, wall1, wall2)
-        self.add(walls)
+        self.interactive_embed()
 
-        self.play(
-            DrawBorderThenFill(circle),
-            DrawBorderThenFill(rect),
-            DrawBorderThenFill(math),
-        )
-        self.make_rigid_body(rect, elasticity=0.8,)  # Mobjects will move with gravity
-        self.make_rigid_body(circle, elasticity=0.9)  # Mobjects will move with gravity
-        self.make_static_body(walls)  # Mobjects will stay in place
-        self.make_rigid_body(*math, elasticity=0.4)  # Mobjects will move with gravity
-        self.wait(10)
-        # self.wait(30)
+
+class working2(ThreeDScene):
+
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ -4, 4, 1 ],
+                          y_range=[ -4, 4, 1 ],
+                          z_range=[ -4, 4, 1 ],
+                          x_length=8,
+                          y_length=8,
+                          z_length=8,
+                          tips=False,
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.2},
+                          x_axis_config={"label_direction": D},
+                          y_axis_config={"label_direction": L},
+                          z_axis_config={"label_direction": U}
+                          )
+
+        # curr_val_text.to_edge(UR).shift(L*1)
+        # x_tkr = ValueTracker(0)
+        # y_tkr = ValueTracker(0)
+        # self.add(profit,curr_profit, inv_text)
+
+        # self.add(index_labels(curr_profit))
+        # self.add_fixed_orientation_mobjects(profit,curr_profit, inv_text)
+
+        # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
+        # axes.add(axes[ 2 ].copy())
+        # OpenGLVGroup(axes[ 3 ]).move_to(get_compensated_coor(axes[ 3 ], axes.c2p(0, 0, 0), axes[ 0 ].get_end()))
+        #
+        # # 보조선 작성 루틴 , 틱 위치 개수하고 잘 보기
+        # x_range, y_range, z_range = axes.x_range, axes.y_range, axes.z_range
+        #
+        # x_tick_pos = np.arange(x_range[ 0 ], x_range[ 1 ] + 0.01, x_range[ 2 ])
+        # y_tick_pos = np.arange(y_range[ 0 ], y_range[ 1 ] + 0.01, y_range[ 2 ])
+        # z_tick_pos = np.arange(z_range[ 0 ], z_range[ 1 ] + 0.01, z_range[ 2 ])
+        #
+        # x_axis_aux_line, y_axis_aux_line, z_axis_aux_line = VGroup(), VGroup(), VGroup()
+        #
+        # for x, y, z in zip(x_tick_pos[ 1: ], y_tick_pos[ 1: ], z_tick_pos[ 1: ], ):
+        #     z_axis_aux_line.add(
+        #         OpenGLVMobject().set_points_as_corners(
+        #             [ axes.c2p(x_tick_pos[ -1 ], 0, z), axes.c2p(0, 0, z), axes.c2p(0, y_tick_pos[ -1 ], z) ])
+        #             .set_stroke(opacity=0.3,
+        #                         width=2,
+        #                         color=GRAY))
+        #     y_axis_aux_line.add(
+        #         OpenGLVMobject().set_points_as_corners([ axes.c2p(x_tick_pos[ -1 ], y, 0), axes.c2p(0, y, 0), axes.c2p(0, y, z_tick_pos[ -1 ]) ])
+        #             .set_stroke(opacity=0.3,
+        #                         width=2,
+        #                         color=GRAY))
+        #     x_axis_aux_line.add(
+        #         OpenGLVMobject().set_points_as_corners(
+        #             [ axes.c2p(x, y_tick_pos[ -1 ], 0), axes.c2p(x, 0, 0), axes.c2p(x, 0, z_tick_pos[ -1 ]) ])
+        #             .set_stroke(opacity=0.3,
+        #                         width=2,
+        #                         color=GRAY))
+        #
+        # origin_vertical_aux_line = OpenGLVMobject().set_points_as_corners([ axes.c2p(0, 0, 0), axes.c2p(0, 0, z_tick_pos[ -1 ]) ]) \
+        #     .set_stroke(opacity=0.3,
+        #                 width=2,
+        #                 color=GRAY)
+        #
+        # aux_lines = OpenGLVGroup(x_axis_aux_line, y_axis_aux_line, z_axis_aux_line, origin_vertical_aux_line, )
+        # # 기존 좌표계가 틀어지지 않게 모두 이동은 같이 하되 제트 축은 보여주지 않을 것임
+        # OpenGLVGroup(axes[ 0 ], axes[ 1 ], axes[ 2 ], axes[ 3 ], aux_lines).move_to(O)
+        # # 실제 쓸 축들만 뉴 엑시스로 정의
+        # new_axes = OpenGLVGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ], aux_lines)
+        # new_axes = OpenGLVGroup(axes[ 0 ], axes[ 1 ], axes[ 3 ])
+        #
+        #
+        # 뉴엑시스는 클래스가 없이 그저 브이그룹이어서 기존의 메서드들을 사용 못 함 그래서 메서드 사용은 기존 엑시스
+        # axes.get_z_axis_label('z')
+        # axes.get_x_axis_label('x')
+        # axes.get_y_axis_label('y')
+
+        # self.camera.set_zoom(0.6)
+
+        # self.add(new_axes)
+        axes[ 0 ].set_color(RED)
+        axes[ 1 ].set_color(GREEN)
+        axes[ 2 ].set_color(BLUE)
+
+        self.add_fixed_orientation_mobjects(*axes[ 0 ].numbers)
+        self.add_fixed_orientation_mobjects(*axes[ 1 ].numbers)
+
+        # 제트축 넘버들을 픽ㅅ드 오리엔테이션 적용 전에 전부 위로 향하게 돌려줌
+        for number in axes[ 2 ].numbers:
+            number.rotate(90 * DG, axis=X).rotate(90 * DG)
+
+        # numbers = VGroup(*axes[ 0 ].numbers, *axes[ 1 ].numbers, *axes[ 3 ].numbers)
+
+        # if Zoom is applied, gotta change scale,
+        # for number in numbers:
+        #     number.scale(0.5)
+
+        self.add_fixed_orientation_mobjects(*axes[ 2 ].numbers, use_static_center_func=False)
+
+        # surface =Surface(lambda u,v : axes.c2p(u,v,u*np.cos(v)),u_range=[-3,3],v_range=[-3,3]).set_color(color= RED, opacity=0.3)
+
+        self.play(Create(axes))
+        # self.play(Create(surface))
+        self.move_camera(theta=0 * DG, run_time=1)
+        self.move_camera(phi=45 * DG, run_time=1)
+        # self.move_camera(theta=80 * DG, run_time=1)
+        # self.move_camera(theta=20 * DG, run_time=1)
+
+        self.wait(3)
+
 
 #
+class working2(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes(x_range=[ -5, 5, 1 ],
+                          y_range=[ -5, 5, 1 ],
+                          z_range=[ -5, 5, 1 ],
+                          x_length=9,
+                          y_length=5.5,
+                          z_length=5.5,
+                          )
+
+        def elip(t):
+            print(np.array([ -1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t) ]))
+
+            # return axes.c2p(-1.41*np.cos(t) + 0.82*np.sin(t), 1.41*np.cos(t) + 0.82*np.sin(t), -1.63*np.sin(t))
+            return (-1.41 * np.cos(t) + 0.82 * np.sin(t), 1.41 * np.cos(t) + 0.82 * np.sin(t), -1.63 * np.sin(t))
+
+        elip = ParametricFunction(elip, t_range=[ 0.01, 3.148 ], color=YELLOW, stroke_width=10)
+
+        plane = OpenGLSurface(lambda u, v: (u, v, -u - v),
+                              u_range=[ -2, 2 ],
+                              v_range=[ -2, 2 ], shade_in_3d=True).set_color(color=RED, opacity=0.5)
+
+        def elip(t):
+            # return axes.c2p(-1.41*np.cos(t) + 0.82*np.sin(t), 1.41*np.cos(t) + 0.82*np.sin(t), -1.63*np.sin(t))
+            return (-0.71 * np.cos(t) + 0.41 * np.sin(t), 0.71 * np.cos(t) + 0.41 * np.sin(t), -0.82 * np.sin(t))
+
+        elip = ParametricFunction(elip, t_range=[ 0, TAU ], color=YELLOW, stroke_width=10)
+
+        sphere = Sphere(radius=1, shade_in_3d=True, color=BLUE)
+        self.move_camera(phi=90 * DG)
+        self.play(Create(sphere))
+        # self.add(sphere)
+        self.play(Create(plane))
+        self.play(Create(elip))
+        self.move_camera(theta=180 * DG, run_time=5)
+
+        self.interactive_embed()
+
+
+class working2(ThreeDScene):
+    def construct(self):
+
+        axes = ThreeDAxes(x_range=[ -3.5, 3.5 ], y_range=[ -3.5, 3.5 ], z_range=[ -3.5, 3.5 ],
+                          x_length=7, y_length=7, z_length=7, axis_config={"include_tip": True, "include_ticks": True, "stroke_width": 1})
+
+        # dot = Sphere(radius=0.05,fill_color=BLUE).move_to(0*RIGHT + 0.1*UP + 0.105*OUT)
+        dot_1 = Sphere(radius=0.02, color=Color(hsl=(0, 1, 0.5), )).move_to([ 1, 0, 0 ])
+        dot_2 = Sphere(radius=0.02, color=Color(hsl=(1 / 5, 1, 0.5))).move_to([ 0.8, 0, 0 ])
+        dot_3 = Sphere(radius=0.02, color=Color(hsl=(2 / 5, 1, 0.5))).move_to([ 0.6, 0, 0 ])
+        dot_4 = Sphere(radius=0.02, color=Color(hsl=(3 / 5, 1, 0.5))).move_to([ 0.4, 0, 0 ])
+        dot_5 = Sphere(radius=0.02, color=Color(hsl=(4 / 5, 1, 0.5))).move_to([ 0.2, 0, 0 ])
+        dot_1 = Sphere(radius=0.02, color=Color(hsl=(0, 1, 0.5), )).move_to([ 0.1, 0, 0 ])
+        dot_2 = Sphere(radius=0.02, color=Color(hsl=(1 / 5, 1, 0.5))).move_to([ 0.2, 0, 0 ])
+        dot_3 = Sphere(radius=0.02, color=Color(hsl=(2 / 5, 1, 0.5))).move_to([ 0.3, 0, 0 ])
+        dot_4 = Sphere(radius=0.02, color=Color(hsl=(3 / 5, 1, 0.5))).move_to([ 0.4, 0, 0 ])
+        dot_5 = Sphere(radius=0.02, color=Color(hsl=(4 / 5, 1, 0.5))).move_to([ 0.5, 0, 0 ])
+
+        # self.set_camera_orientation(phi=45 * DEGREES,theta=30*DEGREES,gamma = 90*DEGREES)
+        self.move_camera(phi=60 * DEGREES, zoom=1.2)
+        self.begin_ambient_camera_rotation(rate=0.08)  # Start move camera
+
+        dt = 0.1
+        # numsteps = 30
+        # self.add(axes, dot)
+        self.add(dot_1, dot_2, dot_3, dot_4, dot_5)
+        # self.add( dot_4,dot_5)
+        self.add(dot_1)
+
+        def aizawa(x, y, z, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
+            x_dot = (z - b) * x - d * y
+            y_dot = d * x + (z - b) * y
+            z_dot = c + a * z - z ** 3 / 3 - (x ** 2 + y ** 2) * (1 + e * z) + f * z * x ** 3
+            return x_dot, y_dot, z_dot
+
+        def hoover(x, y, z, a=1.5):
+            x_dot = y
+            y_dot = -x + y * z
+            z_dot = a - y ** 2
+            return x_dot, y_dot, z_dot
+
+        def rayleigh(x, y, z, a=9, r=12, b=5):
+            x_dot = -a * x + a * y
+            y_dot = r * x - y - x * z
+            z_dot = x * y - b * z
+            return x_dot, y_dot, z_dot
+
+        def halvorsen(x, y, z, a=1.4):
+            x_dot = -a * x - 4 * y - 4 * z - y ** 2
+            y_dot = -a * y - 4 * z - 4 * x - z ** 2
+            z_dot = -a * z - 4 * x - 4 * y - x ** 2
+            return x_dot, y_dot, z_dot
+
+        def update_trajectory_V(self):
+            new_point = self.get_center()
+            if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+                self.add_smooth_curve_to(new_point)
+
+        def update_trajectory_Open_dot_1(self):
+            new_point = dot_1.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_2(self):
+            new_point = dot_2.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_3(self):
+            new_point = dot_3.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_4(self):
+            new_point = dot_4.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_5(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_face_dot_45(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        def update_trajectory_Open_dot_5(self):
+            new_point = dot_5.get_center()
+            # if np.linalg.norm(new_point - self.points[ -1 ]) > 0.01:
+            self.add_line_to(new_point)
+
+        #
+        #
+        #
+
+        which = 0
+        traj_opacity = 0.8
+        if which == 0:
+            traj_1 = OpenGLVMobject()
+            traj_1.start_new_path(dot_1.get_center())
+            traj_1.set_stroke(Color(hsl=(0, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_2 = OpenGLVMobject()
+            traj_2.start_new_path(dot_2.get_center())
+            traj_2.set_stroke(Color(hsl=(1 / 5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_3 = OpenGLVMobject()
+            traj_3.start_new_path(dot_3.get_center())
+            traj_3.set_stroke(Color(hsl=(2 / 5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_4 = OpenGLVMobject()
+            traj_4.start_new_path(dot_4.get_center())
+            traj_4.set_stroke(Color(hsl=(3 / 5, 1, 0.5)), 1.5, opacity=traj_opacity)
+            traj_5 = OpenGLVMobject()
+            traj_5.start_new_path(dot_5.get_center())
+            traj_5.set_stroke(Color(hsl=(4 / 5, 1, 0.5)), 1.5, opacity=traj_opacity)
+
+            traj_1.add_updater(update_trajectory_Open_dot_1)
+            traj_2.add_updater(update_trajectory_Open_dot_2)
+            traj_3.add_updater(update_trajectory_Open_dot_3)
+            traj_4.add_updater(update_trajectory_Open_dot_4)
+            traj_5.add_updater(update_trajectory_Open_dot_5)
+            # traj_1.add_updater(update_trajectory_Open_dot_1)
+            # traj_1.add_updater(update_trajectory_Open_dot_2)
+            # traj_1.add_updater(update_trajectory_Open_dot_3)
+            # traj_5.add_updater(update_trajectory_Open_dot_4)
+            # traj_5.add_updater(update_trajectory_Open_dot_5)
+            #
+        else:
+            traj = VMobject()
+            # traj.start_new_path(dot.get_center())
+            traj.set_stroke(BLUE, 1.5, opacity=0.8)
+            traj.add_updater(update_trajectory_V)
+
+        self.add(traj_1, traj_2, traj_3, traj_4, traj_5)
+        # self.add(traj_4,traj_5)
+        self.add(traj_1)
+
+        # self.add(traj_1)
+        # self.add(traj_1)
+
+        def update_position_dot(self, dt):
+            x_dot, y_dot, z_dot = aizawa(self.get_center()[ 0 ], self.get_center()[ 1 ], self.get_center()[ 2 ])
+            x = x_dot * 0.01
+            y = y_dot * 0.01
+            z = z_dot * 0.01
+            # self.move_to((self.get_x()+x,self.get_y()+y,self.get_z()+z))
+            self.shift(x * RIGHT + y * UP + z * OUT)
+
+        dot_1.add_updater(update_position_dot)
+        dot_2.add_updater(update_position_dot)
+        dot_3.add_updater(update_position_dot)
+        dot_4.add_updater(update_position_dot)
+        dot_5.add_updater(update_position_dot)
+        # trace = TracedPath(dot)
+        # self.add(trace)
+        # self.play()
+        self.wait(30)
+
+class working2(ThreeDScene):
+    def construct(self):
+        def aizawa(x, y, z, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
+            # print(x)
+            # print(type(x))
+            x_dot = (z - b) * x - d * y
+            y_dot = d * x + (z - b) * y
+            z_dot = c + a * z - z ** 3 / 3 - (x ** 2 + y ** 2) * (1 + e * z) + f * z * x ** 3
+            return np.array([x_dot, y_dot, z_dot])
+
+        # func = lambda pos: np.sin(pos[0] / 2) * UR + np.cos(pos[1] / 2) * LEFT
+        # func = lambda pos: aizawa(pos[0], pos[1], pos[2])
+        func = lambda pos: np.sin(pos[0] / 2) * UR + np.cos(pos[1] / 2) * LEFT
+
+        # self.stroke_width
+
+        stream_lines = StreamLines(
+            func, stroke_width=0.5,max_anchors_per_line=5, virtual_time=1, color=[BLUE,RED],three_dimensions=False
+        )
+        self.add(stream_lines)
+        stream_lines.start_animation(warm_up=False, flow_speed=1.5, time_width=0.5)
+        self.wait(1)
+        self.play(stream_lines.end_animation())
+
+        self.interactive_embed()
+
+
+class working2(Scene):
+    def construct(self):
+        ltx = r"""
+            \begin{cases}
+                x' = \gamma(x-vt) \\
+                y' = y \\
+                z' = z \\
+                t'\, = \gamma \left(t-\frac{vx}{c^2}\right)
+            \end{cases}
+            """
+        # self.add(MathTex(ltx))
+        # self.play(Create(MathTex(ltx)))
+
+        template1 = TexTemplate(documentclass=r"\documentclass[preview]{standalone}",
+                                preamble=r"""\usepackage[english]{babel}
+                                \usepackage{amsmath}
+                                \usepackage{amssymb}
+                                \usepackage{kotex}
+                                \usepackage{siunitx}""",
+                                placeholder_text="YourTextHere",
+                                tex_compiler="latex",
+                                output_format=".dvi",
+                                post_doc_commands="",
+                                )
+
+        # ltx = Tex(r"""
+        #     \begin{cases}
+        #         x' = \gamma(x-vt) \\
+        #         y' = y \\
+        #         z' = z \\
+        #         t'\, = \gamma \left(t-\frac{vx}{c^2}\right)
+        #     \end{cases}
+        #     """)
+        # text= Tex(r'\ang{30}')
+        text= Tex(r'\begin{tabular}{ |c|c|c|} \hline cell1 & cell2 & cell3 \\  cell4 & cell5 & cell6 \\  cell7 & cell8 & cell9 \\ \hline \end{tabular}', tex_template=template1)
+        text= Tex(r'{{f(x)}}={{3x}}{{+58}}{{-dx}}',tex_environment='align*', tex_template=template1)
+
+        self.add(index_labels(text))
+
+        # self.play(text[])
+
+        self.play(Create(text))
+        self.wait(5)
+
+        self.interactive_embed()
+
+
+##
+# class working2(ThreeDScene):
+#     def construct(self):
+#
+#         text= Tex(r'\ang{30}')
+#
+#
+#         self.play(Create(text))
+#
+#         self.wait(5)
+
+# class working2(ThreeDScene):
+#     def construct(self):
+#
+#         y_vals = ["0","90","180","270"]
+#         y_pos = [0,PI/2,PI,3*PI/2]
+#         y_dict = dict(zip(y_pos, y_vals))
+#
+#         uv_plane = Axes(y_range=[0,2*PI, PI/2],
+#                         x_range=[0,1, 0.2],
+#                         x_length = 4,
+#                         y_length =6,
+#                         axis_config={
+#                             "include_tip": False
+#                         }
+#                         ).add_coordinates(None, y_dict)
+#
+#         self.play(Create(uv_plane))
+
+
+# test_mob = ThreeDVMobjectFromPLY('sphere.ply',
+#                                 fill_color=RED, fill_opacity=0.5,
+#                                 stroke_width=1, stroke_opacity=0.5, scaler=3).scale_to_fit_width(4).move_to(axes.c2p(0, 0, 0))
+# test_mob.set_fill_by_checkerboard(BLUE)
+# self.play(Create(axes))
+# self.play(Create(test_mob),run_time=5)
+# self.move_camera(phi=45*DG, about="phi", run_time=2)
+# self.move_camera(theta=2*PI, about="theta", run_time=5)
+
+
+# class working2(SpaceScene):
+#     def construct(self):
+#         p = MultiPendulum(
+#             RIGHT, LEFT # positions of the bobs.
+#         )
+#         self.add(p)
+#         self.make_rigid_body(p.bobs) # make the bobs fall free.
+#         p.start_swinging() # attach them to their pivots.
+#         self.add(TracedPath(p.bobs[-1].get_center, stroke_color=BLUE))
+#         # self.play(ChangeSpeed())
+#         self.wait(20)
 
 # with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
-#                  'renderer': 'opengl', 'write_to_movie': False}):
+#                  'renderer': 'opengl', 'write_to_movie': True}):
 #     scene = working2()
 #     #     #     # scene = working2()
 #     #     #     # scene = working3()
@@ -1092,3 +1515,49 @@ class working2(SpaceScene):
 #     scene.render()
 #
 # 리드로우 매크로 브이그룹
+#         arc = ArcBetweenPoints(start=p2.get_center(), end=p3.get_center())
+#         l1 = Line(p1.get_center(),p2.get_center())
+#         l2 = Line(p3.get_center(),p1.get_center())
+#
+#         iangle = VMobject()
+#         iangle.add_subpath(l1.points)
+#         iangle.add_subpath(arc.points)
+#         iangle.add_subpath(l2.points)
+#         iangle.set_fill(BLUE,opacity=0.6)
+
+# class CircleWithSidekick(Circle):
+#
+#     def __init__(
+#             self,
+#             sidekick_radius: float or None = None,
+#             **kwargs) -> None:
+#
+#         if sidekick_radius is None:
+#             sidekick_radius = 0.5
+#
+#         super().__init__(**kwargs)
+#
+#         side_circle=Circle(radius= sidekick_radius, fill_color=BLUE,fill_opacity=1).next_to(self, DOWN)
+#         self.add(side_circle)
+#
+#     def set_sidekick_radius(self, sidekick_radius):
+#         self.sidekick_radius = sidekick_radius
+#         return self
+#
+#
+# mob = always_redraw(lambda :CircleWithSidekick(sidekick_radius=2))
+#
+# self.play(Create(mob))
+#
+# self.play(mob.animate.set_sidekick_radius(1))
+# axes = ThreeDAxes(x_range=[ -5, -5, 1 ],
+#                   y_range=[ -5, -5, 1 ],
+#                   z_range=[ -5, -5, 1 ],
+#                   x_length=8,
+#                   y_length=8,
+#                   z_length=8,
+# tips=False,
+# axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
+# x_axis_config={"label_direction": D},
+# y_axis_config={"label_direction": L},
+# z_axis_config={"label_direction": U}

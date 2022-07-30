@@ -10,9 +10,11 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # p = subprocess.Popen(f"manim --preview --quality=l main.py working1 --renderer=opengl --write_to_movie",
 #                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
+os.system("start cmd /K manim -pql --fps 7  main.py working1") #/K remains the window, /C executes and dies (popup)
+# os.system("start cmd /K manim -pql --fps 7  main.py working1 --renderer=opengl") #/K remains the window, /C executes and dies (popup)
 
-p = subprocess.Popen(f"manim -pql main.py working1",
-                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
+# p = subprocess.Popen(f"manim -pql main.py working1",
+#                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT,shell=True)
 
 for line in p.stdout:
     if line.decode('utf-8') == '                                                                                           ':
