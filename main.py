@@ -1379,6 +1379,7 @@ class working2(ThreeDScene):
         # self.play()
         self.wait(30)
 
+
 class working2(ThreeDScene):
     def construct(self):
         def aizawa(x, y, z, a=0.95, b=0.7, c=0.6, d=3.5, e=0.25, f=0.1):
@@ -1387,16 +1388,16 @@ class working2(ThreeDScene):
             x_dot = (z - b) * x - d * y
             y_dot = d * x + (z - b) * y
             z_dot = c + a * z - z ** 3 / 3 - (x ** 2 + y ** 2) * (1 + e * z) + f * z * x ** 3
-            return np.array([x_dot, y_dot, z_dot])
+            return np.array([ x_dot, y_dot, z_dot ])
 
         # func = lambda pos: np.sin(pos[0] / 2) * UR + np.cos(pos[1] / 2) * LEFT
         # func = lambda pos: aizawa(pos[0], pos[1], pos[2])
-        func = lambda pos: np.sin(pos[0] / 2) * UR + np.cos(pos[1] / 2) * LEFT
+        func = lambda pos: np.sin(pos[ 0 ] / 2) * UR + np.cos(pos[ 1 ] / 2) * LEFT
 
         # self.stroke_width
 
         stream_lines = StreamLines(
-            func, stroke_width=0.5,max_anchors_per_line=5, virtual_time=1, color=[BLUE,RED],three_dimensions=False
+            func, stroke_width=0.5, max_anchors_per_line=5, virtual_time=1, color=[ BLUE, RED ], three_dimensions=False
         )
         self.add(stream_lines)
         stream_lines.start_animation(warm_up=False, flow_speed=1.5, time_width=0.5)
@@ -1424,6 +1425,8 @@ class working2(Scene):
                                 \usepackage{amsmath}
                                 \usepackage{amssymb}
                                 \usepackage{kotex}
+                                \usepackage{chemfig}
+                                \usepackage{pgfplots}
                                 \usepackage{siunitx}""",
                                 placeholder_text="YourTextHere",
                                 tex_compiler="latex",
@@ -1440,18 +1443,61 @@ class working2(Scene):
         #     \end{cases}
         #     """)
         # text= Tex(r'\ang{30}')
-        text= Tex(r'\begin{tabular}{ |c|c|c|} \hline cell1 & cell2 & cell3 \\  cell4 & cell5 & cell6 \\  cell7 & cell8 & cell9 \\ \hline \end{tabular}', tex_template=template1)
-        text= Tex(r'{{f(x)}}={{3x}}{{+58}}{{-dx}}',tex_environment='align*', tex_template=template1)
+        # text = Tex(
+        #     r'\begin{tabular}{ |c|c|c|} \hline cell1 & cell2 & cell3 \\  cell4 & cell5 & cell6 \\  cell7 & cell8 & cell9 \\ \hline \end{tabular}',
+        #     tex_template=template1)
+        # text = Tex(r'{{f(x)}}={{3x}}{{+58}}{{-dx}}', tex_environment='chemistry', tex_template=template1)
+        # text = Tex(
+        #     r"""
+        #       set("rLenN",20)
+        #       formula(L,R)
+        #         {
+        #           ring(,,H1=)
+        #             {
+        #               0: bond(r,=C) atom("O") ;
+        #               3: atom("N") bond(r) atom("C",C,R) atom("H$_3$",L) ;
+        #               4: bond(r,=C) atom("O") ;
+        #               5: atom("N") bond(r) atom("CH$_3$",L) ;
+        #               vertex(,1,4,H2=,5)
+        #                 {
+        #                   1: atom("N") bond(r) atom("C",C,L) atom("H$_3$",R) ;
+        #                   3: atom("N") ;
+        #                 } ;
+        #             }
+        #         }
+        #     """,tex_environment='chemistry', tex_template=template1)
 
-        self.add(index_labels(text))
+        # text = Tex(r'\chemfig{*6((=O)-N(-)-(*5(-N=-N(-)-))=-(=O)-N(-)-)}', tex_template=template1)
+        # text = Tex(
+        #     r'\setchemfig{atom sep=2em,bond style={line width=20pt,red,dash pattern=on 2pt off 2pt}}\chemname{\chemfig{H-C(-[2]H)(-[6]H)-C(=[1]O)-[7]H}}{Ethanal}',
+        #     tex_template=template1)
 
-        # self.play(text[])
 
-        self.play(Create(text))
-        self.wait(5)
+#         text = Tex(r"""\begin{tikzpicture}
+# \begin{axis}[
+#     title=Example using the mesh parameter,
+#     hide axis,
+#     colormap/hot2,
+# ]
+# \addplot3[
+#     surf,
+#     samples=50,
+#     domain=-8:8,
+# ]
+# {sin(deg(sqrt(x^2+y^2)))/sqrt(x^2+y^2)};
+# \addlegendentry{\(\frac{sin(r)}{r}\)}
+# \end{axis}
+# \end{tikzpicture}
+# """, tex_template=template1)
+#         self.add(text)
+#
+# self.play(text[])
 
-        self.interactive_embed()
+# self.play(FadeIn(text))
+# self.play(Create(text))
+# self.wait(5)
 
+# self.interactive_embed()
 
 ##
 # class working2(ThreeDScene):
@@ -1482,7 +1528,6 @@ class working2(Scene):
 #
 #         self.play(Create(uv_plane))
 
-
 # test_mob = ThreeDVMobjectFromPLY('sphere.ply',
 #                                 fill_color=RED, fill_opacity=0.5,
 #                                 stroke_width=1, stroke_opacity=0.5, scaler=3).scale_to_fit_width(4).move_to(axes.c2p(0, 0, 0))
@@ -1491,7 +1536,6 @@ class working2(Scene):
 # self.play(Create(test_mob),run_time=5)
 # self.move_camera(phi=45*DG, about="phi", run_time=2)
 # self.move_camera(theta=2*PI, about="theta", run_time=5)
-
 
 # class working2(SpaceScene):
 #     def construct(self):
@@ -1505,14 +1549,6 @@ class working2(Scene):
 #         # self.play(ChangeSpeed())
 #         self.wait(20)
 
-# with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
-#                  'renderer': 'opengl', 'write_to_movie': True}):
-#     scene = working2()
-#     #     #     # scene = working2()
-#     #     #     # scene = working3()
-#     #     #     # scene = working4()
-#     #     #     # scene = working5()
-#     scene.render()
 #
 # 리드로우 매크로 브이그룹
 #         arc = ArcBetweenPoints(start=p2.get_center(), end=p3.get_center())
@@ -1561,3 +1597,63 @@ class working2(Scene):
 # x_axis_config={"label_direction": D},
 # y_axis_config={"label_direction": L},
 # z_axis_config={"label_direction": U}
+
+
+class working2(ThreeDScene):
+    def construct(self):
+        # self.add(NumberPlane())
+        # class CustomThreeDAxes(ThreeDAxes):
+        #     def __init__(
+        #             self,
+        #             **kwargs,
+        #     ):
+        #         super().__init__()
+        #
+        #     def custom_c2p:
+
+        # axes = ThreeDAxes()
+
+        #
+        axes = ThreeDAxes(x_range=[ 0, 1, 0.2 ],
+                          y_range=[ -1, 1, 0.2 ],
+                          z_range=[ -1, 1, 0.2 ],
+                          x_length=4,
+                          y_length=4,
+                          z_length=4,
+                          tips=True,
+                          axis_config={'include_numbers': True, 'include_ticks': True, "line_to_number_buff": 0.7},
+                          )
+        # self.zoo
+        self.set_camera_orientation(phi=30 * DEGREES, about="phi", run_time=1)
+        self.move_camera(theta=30 * DEGREES, about="theta", run_time=1)
+
+        # self.add(axes)
+
+        # 실제로 사용하게될 ㅌ제트축을 카피해서 마지막 서브 모브젝트로 넣어놓고 원하는 위치로 이동시키기, 원래 제트축은 움직이지 않았음
+        # new_z_axis=axes[ 2 ].copy().move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 1 ].get_end()))
+        new_z_axis=axes[ 2 ].copy().move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_start()))
+        axes.y_axis.move_to(get_compensated_coor(axes.y_axis, axes.y_axis.get_start(),axes.x_axis.get_end()))
+        axes.remove(axes[2])
+        axes.add(new_z_axis)
+        axes.z_axis= new_z_axis
+        axes.x_axis.set_color(RED)
+        axes.y_axis.set_color(GREEN)
+        axes.z_axis.set_color(BLUE)
+
+        self.play(Create(axes))
+        self.add(index_labels(axes))
+        # self.play(axes.z_axis.animate.move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_end())))
+
+        dot = Sphere(color=RED, radius=0.1).move_to(axes.c2p(0, 0, 1))
+        self.play(Create(dot))
+        self.wait(5)
+        self.interactive_embed()
+
+# with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
+#                  'renderer': 'opengl', 'write_to_movie': True}):
+#     scene = working2test()
+# #     #     #     # scene = working2()
+# #     #     #     # scene = working3()
+# #     #     #     # scene = working4()
+# #     #     #     # scene = working5()
+#     scene.render()
