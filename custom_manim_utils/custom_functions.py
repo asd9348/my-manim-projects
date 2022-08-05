@@ -119,10 +119,24 @@ def is_in_triangle(point, A, B, C, contain_border=False):
         else:
             return False
 
+def axes2space(axes):
+
+    new_z_axis = axes[ 2 ].copy().move_to(get_compensated_coor(axes[ 2 ], axes[ 2 ].get_start(), axes[ 0 ].get_start()))
+    axes.y_axis.move_to(get_compensated_coor(axes.y_axis, axes.y_axis.get_start(), axes.x_axis.get_end()))
+    axes.remove(axes[ 2 ])
+    axes.add(new_z_axis)
+    axes.z_axis = new_z_axis
+    axes.x_axis.set_color(RED)
+    axes.y_axis.set_color(GREEN)
+    axes.z_axis.set_color(BLUE)
+
+    return axes
+
 
 # a = [ 1, 1, 0 ]
 # b = [ 2, 1.5, 0 ]
 # c = [ 1, 2, 0 ]
+
 
 
 def dollar_val_surface_triangle(self, u, v):
@@ -143,8 +157,19 @@ def dollar_val_surface_triangle(self, u, v):
     #     hold_val = 0.5 * (1 + u) + 0.5 * (1 + v)
     #     curr_val = hold_val * (1 + z) - 1
     # return np.array([ u, v, curr_val ])
+# 3D file Import
+def get_ply_file_triangles(file_name):
+    mesh = o3d.io.read_triangle_mesh(file_name)
+    # mesh.compute_vertex_normals()
+    return np.asarray(mesh.triangles)
 
 
+def get_ply_file_vertexs(file_name):
+    mesh = o3d.io.read_triangle_mesh(file_name)
+    # mesh.compute_vertex_normals()
+    return np.asarray(mesh.vertices)
+
+# GEOMETRY
 def get_tangent_line(coor_sys, graph, x_point, line_length=3):
     """ debugging is needed """
     slope = coor_sys.slope_of_tangent(x_point, graph)
@@ -160,58 +185,30 @@ def get_tangent_line(coor_sys, graph, x_point, line_length=3):
     tangent_line = coor_sys.plot(tangent_func, x_range=[ x_point - adjacent_len / 2, x_point + adjacent_len / 2 ])
 
     return tangent_line
+def my_c2p(axes, x, y, z):
+    origin = axes.x_axis.get_start() + OUT * (0 - axes.z_range[ 0 ]) * axes.z_length / (
+            abs(axes.z_range[ 0 ]) + abs(axes.z_range[ 1 ]))
+    x_dif = axes.x_axis.number_to_point(x) - np.array([ origin[ 0 ], 0, 0 ])
+    y_dif = axes.y_axis.number_to_point(y) - np.array([ 0, origin[ 1 ], 0 ])
+    z_dif = axes.z_axis.number_to_point(z) - np.array([ 0, 0, origin[ 2 ] ])
 
+    result = origin + x_dif + y_dif + z_dif
 
+    return result
 def get_slope_with_two_points(p1, p2):
     slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
 
     return slope
-
-
 def get_y_intersect_with_two_points(p1, p2):
     slope = (p2[ 1 ] - p1[ 1 ]) / (p2[ 0 ] - p1[ 0 ])
 
     y_intersect = p1[ 1 ] - slope * p1[ 0 ]
 
     return y_intersect
-
-
-def get_ply_file_triangles(file_name):
-    mesh = o3d.io.read_triangle_mesh(file_name)
-    # mesh.compute_vertex_normals()
-    return np.asarray(mesh.triangles)
-
-
-def get_ply_file_vertexs(file_name):
-    mesh = o3d.io.read_triangle_mesh(file_name)
-    # mesh.compute_vertex_normals()
-    return np.asarray(mesh.vertices)
-
-
-def coin(coin_ticker, type='color', radius=1):
-    """type : black , color, icon, white
-    coin ticker in lower case
-    """
-
-    svg_folder = Path('./svgs')
-    svg_file = svg_folder / 'coin' / f'{type}' / f'{coin_ticker}.svg'
-    # pprint(list(svg_folder.iterdir()))
-
-    return SVGMobject(svg_file).scale_to_fit_width(radius * 2)
-
-
-def redraw(func):
-    mob = func()
-    mob.add_updater(lambda m: mob.become(func()))
-    return mob
-
-
 def get_unit_v_by_angle(angle):
     unit_v = np.array([ np.cos(angle), np.sin(angle), 0 ])
 
     return unit_v
-
-
 def get_perpendicular_line(point, line):
     if type(line) is list:
         temp_line = Line(start=line[ 0 ], end=line[ 1 ])
@@ -231,8 +228,6 @@ def get_perpendicular_line(point, line):
     perpendicular_length = np.cos(theta) * hypotenuse
 
     return Line(start=point, end=point + new_unit_v * perpendicular_length)
-
-
 def is_on_left(line, point, contain_border=False):
     a = line.get_start()
     b = line.get_end()
@@ -272,8 +267,6 @@ def is_on_right_by_points(start, end, point, contain_border=False):
         return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) < 0
     else:
         return ((b[ 0 ] - a[ 0 ]) * (c[ 1 ] - a[ 1 ]) - (b[ 1 ] - a[ 1 ]) * (c[ 0 ] - a[ 0 ])) <= 0
-
-
 def get_line_length(line):
     """라인 모브젝트를 넣으면 길이를 반환."""
 
@@ -334,7 +327,6 @@ def get_halfway(A, B, z=0):
 
     return np.array([ x, y, z ])
 
-
 def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
     x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
     y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
@@ -345,6 +337,36 @@ def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
     z = point_goes_to[ 2 ] + z_compen
 
     return [ x, y, z ]
+
+
+# System
+def redraw(func):
+    mob = func()
+    mob.add_updater(lambda m: mob.become(func()))
+    return mob
+
+# Icons Mobs
+def coin(coin_ticker, type='color', radius=1):
+    """type : black , color, icon, white
+    coin ticker in lower case
+    """
+
+    svg_folder = Path('./svgs')
+    svg_file = svg_folder / 'coin' / f'{type}' / f'{coin_ticker}.svg'
+    # pprint(list(svg_folder.iterdir()))
+
+    return SVGMobject(svg_file).scale_to_fit_width(radius * 2)
+
+
+
+
+
+
+
+
+
+
+
 
 #
 # def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):

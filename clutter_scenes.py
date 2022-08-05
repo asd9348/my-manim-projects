@@ -2173,3 +2173,40 @@ class ParaSurface(ThreeDScene):
         self.wait()
 
 
+from manim import *
+import numpy as np
+class Inicio(ThreeDScene):
+    def construct(self):
+        n = ValueTracker(0)
+
+        axes = ThreeDAxes(x_range=[-10,10], x_length=10,y_range=[-10,10], y_length=10,z_range=[-10,10], z_length=10)
+        xaxis = axes.get_x_axis_label(MathTex("\hat{x}")).set_color(BLUE)
+        yaxis = axes.get_y_axis_label(MathTex("\hat{y}")).shift(UP*1.35).shift(RIGHT*0.15).set_color(BLUE)
+        zaxis = axes.get_z_axis_label(MathTex("\hat{z}")).shift(RIGHT*0.3).set_color(BLUE)
+
+        sqr = Square(stroke_width=1.5,color=RED, fill_opacity=0.25).rotate(PI/2,RIGHT).scale(2).shift(-IN*2).shift(RIGHT*2)
+        sqr2 = always_redraw(lambda: Surface(
+            lambda u, v: axes.c2p(u,0,v),
+            u_range=[0, 8],
+            v_range=[0, 8],
+            checkerboard_colors=[RED_D, RED_E],
+            fill_opacity= 0.25,
+            resolution=1,
+        ))a
+
+        surface = always_redraw(lambda: Surface(
+            lambda u, v: axes.c2p(v,u-n.get_value(),v+np.sin(2*u)),
+            u_range=[0, 8],
+            v_range=[-8, 8],
+            resolution=8,
+        ))
+
+        grp = always_redraw(lambda: ParametricFunction(lambda x:
+            axes.c2p(x,0,x+np.sin(2*n.get_value())),
+            color=YELLOW,
+            t_range = np.array([-8,8])
+        ))
+
+        self.set_camera_orientation(theta=-45 * DEGREES, phi=45 * DEGREES,focal_distance=99999999999)
+        self.add(axes,xaxis,yaxis,zaxis,surface,grp,sqr)
+        self.play(n.animate.set_value(PI),run_time=2)

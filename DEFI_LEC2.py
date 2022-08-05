@@ -2368,7 +2368,7 @@ class L02S06(MovingCameraScene):
         self.play(ReplacementTransform(why_lp,no_defi))
         self.wait(5)
         self.play(ReplacementTransform(no_defi,profit))
-        self.wait(15)
+        self.wait(30)
         # self.play(Uncreate(profit))
 
         # TODO 13.156 secs아까처럼 풀에서 코인을 사고 팔 때 수수료가 들고 그 수수료느 풀에 쌓이고 유동성 공급자들은 유동성을 제거할 때, 그동안 수수료가 쌓인 더 커진 풀에서 본인 지분을 가져오기 때문에 수익을 얻을 수 있습니다.
@@ -2728,7 +2728,7 @@ class L02S07(MovingCameraScene):
                   run_time=5)
         self.wait(2.041)
 
-        # self.wait(15)
+        self.wait(20)
 
 
 
