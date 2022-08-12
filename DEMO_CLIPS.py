@@ -1664,10 +1664,10 @@ class Helicoid(ThreeDScene):
         #                         u_range=[ 0, TAU ], v_range=[ 0, TAU ], shade_in_3d=True).set_color(color=RED, opacity=1)
         # heli = OpenGLSurface(lambda u, v: axes.c2p(u * np.cos(v), u * np.sin(v), v),
         #                      u_range=[ 0, 1 ], v_range=[ 0, TAU ], shade_in_3d=True).set_opacity(0.5)
-        heli = Surface(lambda u, v: axes.c2p(u * np.cos(v), u * np.sin(v), v),
-                       u_range=[ 0, 1 ], v_range=[ 0, TAU ], shade_in_3d=True,stroke_opacity=0.5,fill_opacity=0.5,checkerboard_colors=[ORANGE,ORANGE])
-        # heli = OpenGLSurface(lambda u, v: axes.c2p(u * np.cos(v), u * np.sin(v), v),
-        #                u_range=[ 0, 1 ], v_range=[ 0, TAU ], shade_in_3d=True,stroke_opacity=0).set_opacity(0.5).set_stroke(opacity=0)
+        # heli = Surface(lambda u, v: axes.c2p(u * np.cos(v), u * np.sin(v), v),
+        #                u_range=[ 0, 1 ], v_range=[ 0, TAU ], shade_in_3d=True,stroke_opacity=0.5,fill_opacity=0.5,checkerboard_colors=[ORANGE,ORANGE])
+        heli = OpenGLSurface(lambda u, v: axes.c2p(u * np.cos(v), u * np.sin(v), v),
+                       u_range=[ 0, 1 ], v_range=[ 0, TAU ], shade_in_3d=True,stroke_opacity=0).set_opacity(0.5)
         graph = ParametricFunction(lambda t: ((2 + np.cos(3 * t)) * np.cos(2 * t), (2 + np.cos(3 * t)) * np.sin(2 * t), np.sin(3 * t)),
                                    t_range=[ 0, TAU ], shade_in_3d=True).set_color(color=RED)
 
@@ -1750,7 +1750,11 @@ class Helicoid(ThreeDScene):
         # axes
         # axes.rotate(-90*DG, axis=Z)
         # axes.rotate(-135 * DG).rotate(-45 * DG, axis=X)
-        self.add(heli, axes, dot)
+        self.add(dot)
+        self.wait(q)
+        self.add(axes)
+        self.wait(q)
+        self.add(heli)
         #
         # self.add_fixed_in_frame_mobjects(axes)
 

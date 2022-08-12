@@ -1,3 +1,4 @@
+from random import *
 import numpy as np
 from manim import *
 
@@ -45,34 +46,6 @@ from pprint import pprint
 # default_size = 1
 # default_sense = 1
 
-# CONFIG = {
-#     "status": "S",  # S, I or R
-#     "height": 0.2,
-#     "color_map": COLOR_MAP,
-#     "infection_ring_style": {
-#         "stroke_color": RED,
-#         "stroke_opacity": 0.8,
-#         "stroke_width": 0,
-#     },
-#     "infection_radius": 0.5,
-#     "infection_animation_period": 2,
-#     "symptomatic": False,
-#     "p_symptomatic_on_infection": 1,
-#     "max_speed": 1,
-#     "dl_bound": [ -config.frame_width / 2, -config.frame_height / 2 ],
-#     "ur_bound": [ frame_width / 2, frame_height / 2 ],
-#     "gravity_well": None,
-#     "gravity_strength": 1,
-#     "wall_buffer": 1,
-#     "wander_step_size": 1,
-#     "wander_step_duration": 1,
-#     "social_distance_factor": 0,
-#     "social_distance_color_threshold": 2,
-#     "n_repulsion_points": 10,
-#     "social_distance_color": YELLOW,
-#     "max_social_distance_stroke_width": 5,
-#     "asymptomatic_color": YELLOW,
-# }
 dl_bound = [ -6, -4 ]
 ur_bound = [ 6, 4 ]
 max_speed = 1
@@ -196,10 +169,9 @@ class mytest(OpenGLVGroup):
 
         self.map_data = map_data
 
-        self.center_point = VectorizedPoint().move_to([ rd.uniform(map_data[ 'x_range' ][ 'min' ], map_data[ 'x_range' ][ 'max' ]),
-                                                        rd.uniform(map_data[ 'y_range' ][ 'min' ], map_data[ 'y_range' ][ 'max' ]), 0 ])
-        # self.center_point = VectorizedPoint().move_to([ -1,-1, 0 ])
-        # self.center_point = VectorizedPoint()
+        # self.center_point = VectorizedPoint().move_to([ uniform(map_data[ 'x_range' ][ 'min' ], map_data[ 'x_range' ][ 'max' ]),
+        #                                                 uniform(map_data[ 'y_range' ][ 'min' ], map_data[ 'y_range' ][ 'max' ]), 0 ])
+        self.center_point = VectorizedPoint().move_to([ -1,-1, 0 ])
 
         self.change_anims = []
 
@@ -227,8 +199,8 @@ class mytest(OpenGLVGroup):
         self.add(self.center_point)
         # Updaters
         self.add_updater(update_time)
-        self.add_updater(lambda m, dt: m.update_pos(dt))
-        # self.add_updater(lambda m, dt: m.moving_up(dt))
+        # self.add_updater(lambda m, dt: m.update_pos(dt))
+        self.add_updater(lambda m, dt: m.moving_up(dt))
         self.add_updater(lambda m: m.progress_through_change_anims())
 
         # self.add_updater(lambda m, dt: m.update_infection_ring(dt))
@@ -252,7 +224,7 @@ class mytest(OpenGLVGroup):
 
         if self.wander_step_size != 0:
             if (self.time - self.last_step_change) > self.wander_step_duration:
-                vect = rotate_vector(RIGHT, TAU * rd.random())
+                vect = rotate_vector(RIGHT, TAU * random())
                 self.gravity_well = center + self.wander_step_size * vect
                 self.last_step_change = self.time
 
@@ -308,7 +280,7 @@ class mytest(OpenGLVGroup):
                 print('below same')
 
             else:
-                anims = [ UpdateFromAlphaFunc(self.body, lambda m, a: m.set_color(interpolate_color(start_color, end_color,a/30))) ]
+                anims = [ UpdateFromAlphaFunc(self.body, lambda m, a: m.rotate(angle=PI*a), run_time=5) ]
                 self.status='above'
                 print('above to below')
 
@@ -326,9 +298,7 @@ class mytest(OpenGLVGroup):
 
 
                 anims = [ UpdateFromAlphaFunc(self.body, test, run_time=5, rate_func=linear),
-                          UpdateFromAlphaFunc(self.body, lambda m, a: m.set_color(interpolate_color(start_color, end_color,a/30)), run_time=1, rate_func=linear)]
-
-
+                          UpdateFromAlphaFunc(self.body, lambda m, a: m.set_color(RED), run_time=1, rate_func=linear)]
                 # body=self.body.get_center()
                 # anims = [ Flash(body) ]
                 self.status='above'
@@ -397,18 +367,18 @@ class working2(MovingCameraScene):
 
         map_data = get_rect_map_data(map)
         self.add(map)
-        tris=VGroup(*[mytest(map_data=map_data) for i in range(100)])
+        tris=OpenGLVGroup(*[mytest(map_data=map_data) for i in range(1)])
         # tri_2=mytest(map_data=map_data)
         # self.add(tri_1)
         # self.add(tri_2)
 
         # self.play(Flash(tris[0]))
 
-        # timer = DecimalNumber(0.05).to_corner(UL)
-        # timer.add_updater(lambda m, dt: m.set_value(tris[0].time))
+        timer = DecimalNumber(0.05).to_corner(UL)
+        timer.add_updater(lambda m, dt: m.set_value(tris[0].time))
         # timer=always_
         # redraw(lambda m, dt: m.set_value(m.get_value()+dt))
-        # self.add(timer)
+        self.add(timer)
 
 
         # instances =VGroup(*[mytest() for i in range(10) ])
@@ -417,7 +387,7 @@ class working2(MovingCameraScene):
         self.add(tris)
 
         # self.play(Create(tris))
-        self.wait(3)
+        self.wait(100)
 
         # timer.clear_updaters()
 

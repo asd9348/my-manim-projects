@@ -283,7 +283,8 @@ class working4(MovingCameraScene):
                 self.camera.frame.get_center(), UR, buff=0.5)))
         icon = SVGMobject('svgs/coin/color/usdt.svg')
         icon.add_updater(
-            lambda mob: mob.become(SVGMobject('svgs/coin/color/usdt.svg').scale(0.65).next_to(self.camera.frame.get_center(), DR, buff=0.5)))
+            lambda mob: mob.become(
+                SVGMobject('svgs/coin/color/usdt.svg').scale(0.65).next_to(self.camera.frame.get_center(), DR, buff=0.5)))
 
         self.play(Create(plane),
                   self.camera.frame.animate.scale(0.7).move_to(path.get_start()),
@@ -409,7 +410,7 @@ class working4(MovingCameraScene):
 
         supply_func = supply_graph.get_function()
 
-        self.play(Uncreate(VGroup(supply_graph, demand_graph, ax, axis_labels, cross_dot, cross_dot_text,lines)))
+        self.play(Uncreate(VGroup(supply_graph, demand_graph, ax, axis_labels, cross_dot, cross_dot_text, lines)))
 
         # new_dot = Dot(0.5, color=RED).move_to(ax.c2p(5, supply_graph.underlying_function(5)))
         #
@@ -446,12 +447,12 @@ class working4(MovingCameraScene):
         self.play(AnimationGroup(AnimationGroup(clock_min_angle.animate.set_value(PI / 2 - 4 * 2 * PI),
                                                 clock_hour_angle.animate.set_value(PI / 2 - 4 * 2 * PI / 12)), rate_func=linear,
                                  run_time=5))
-        cant_wait_text = Tex("Can't wait!").rotate(-30*DG).next_to(clock, UR, buff= -0.5)
+        cant_wait_text = Tex("Can't wait!").rotate(-30 * DG).next_to(clock, UR, buff=-0.5)
 
         self.play(FadeIn(cant_wait_text),
                   run_time=1)
 
-        self.play(FadeOut(VGroup(clock,cant_wait_text)), run_time=0.874)
+        self.play(FadeOut(VGroup(clock, cant_wait_text)), run_time=0.874)
 
         # TODO 6.693 secs누구나 더 높은 가격에 팔고 더 낮은 가격에 사고 싶기 때문에 호가창에는 지정가 주문들이 쌓이기 시작합니다
         # TODO 0:00:16.204  ~  0:00:22.897
@@ -721,11 +722,10 @@ class working4(MovingCameraScene):
                   run_time=order_book_runtime)
         self.wait(0.4)
 
-        px_not_moving = Tex(r'Price \\is not moving').scale(1.8).next_to(pair_rect,L)
+        px_not_moving = Tex(r'Price \\is not moving').scale(1.8).next_to(pair_rect, L)
 
         self.play(Create(px_not_moving))
         self.wait(9.614)
-
 
         # TODO 8.106 secs그러다가 누군가 기다림을 참지 못하고 시장가로 구매를 하면 호가창에 쌓여있던 물량이 시장가로 소화되면서 가격은 움직입니다
         # TODO 0:00:43.099  ~  0:00:51.205
@@ -733,26 +733,20 @@ class working4(MovingCameraScene):
         # TODO 0:00:51.205  ~  0:00:52.205
 
         curr_px_rect.set_color(GREEN)
-        self.play(Transform(limit_occured,market_occurred),
+        self.play(Transform(limit_occured, market_occurred),
                   FadeOut(px_not_moving),
-            change_waiting_order_by_perc(self, order_book_shrt_table, 5, 2, -30, order_book_runtime),
-            run_time=2)
+                  change_waiting_order_by_perc(self, order_book_shrt_table, 5, 2, -30, order_book_runtime),
+                  run_time=2)
 
         self.add(curr_px_number_101)
         self.remove(curr_px_number_100)
 
         self.wait(7.106)
 
-
-
-
         # TODO 6.233 secs잘 생각해보면 모든 사람이 지정가 주문만 넣으면 아무 일도 일어나지 않고 모두 기다리기만 합니다
         # TODO 0:00:52.205  ~  0:00:58.438
         # TODO 1.0secs pause
         # TODO 0:00:58.438  ~  0:00:59.438
-
-
-
 
         self.wait(10)
 
@@ -827,7 +821,7 @@ class working2(MovingCameraScene):
 class working2(MovingCameraScene):
     def construct(self):
 
-        map = Rectangle(width=12,height=8)
+        map = Rectangle(width=12, height=8)
 
         dot = Dot().move_to(map.point_from_proportion(0.33))
 
@@ -840,36 +834,395 @@ class working2(MovingCameraScene):
         y_range = [ DR_pos[ 1 ], UL_pos[ 1 ], UL_pos[ 1 ] - DR_pos[ 1 ] ]
 
         dots = VGroup()
+
         def get_pos_on_map(x_pos, y_pos, x_range, y_range):
             new_x_pos = x_range[ 2 ] * x_pos + x_range[ 0 ]
             new_y_pos = y_range[ 2 ] * y_pos + y_range[ 0 ]
 
-            return [ new_x_pos, new_y_pos,0 ]
+            return [ new_x_pos, new_y_pos, 0 ]
 
-
-
-        get_unit_v_by_angle(rd.uniform(0,TAU))
+        get_unit_v_by_angle(rd.uniform(0, TAU))
         for i in range(100):
-
-            dots.add(Dot().move_to(get_pos_on_map(rd.random(),rd.random(),x_range, y_range)))
-
+            dots.add(Dot().move_to(get_pos_on_map(rd.random(), rd.random(), x_range, y_range)))
 
         self.play(Create(map))
         self.play(Create(dots))
 
-        for i in range(50):
-            anims=[]
-            for dot in dots:
-                anims.append(dot.animate.shift(get_unit_v_by_angle(rd.uniform(0,TAU))*velocity))
+        self.play(Flash(dots[ 0 ].get_center()))
 
-            self.play(*anims, rate_func=linear)
+        for i in range(50):
+            anims = [ ]
+            for dot in dots:
+                anims.append(dot.animate.shift(get_unit_v_by_angle(rd.uniform(0, TAU)) * velocity))
+
+            # self.play(*anims, rate_func=linear)
 
         self.wait(2)
-# with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
-#                  'renderer': 'opengl', 'write_to_movie': True}):
-#     scene = working2test()
-# #     #     #     # scene = working2()
-# #     #     #     # scene = working3()
-# #     #     #     # scene = working4()
-# #     #     #     # scene = working5()
-#     scene.render()
+
+
+class working2(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes()
+        # surface = OpenGLSurface(lambda u, v : (u,v, -1), u_range=[0,1], v_range=[0,1], resolution= (5,5)).set_opacity(opacity=0.5)
+        # surface =Sphere(radius=1.5, opacity=0.5,resolution=(8,10))
+
+        u_tkr = ValueTracker(4)
+        v_tkr = ValueTracker(4)
+        surface = redraw(
+            lambda: Surface(lambda u, v: (u, v, -1), u_range=[ 0, u_tkr.get_value() ], v_range=[ 0, v_tkr.get_value() ], resolution=(5, 5)))
+        self.add(*[ Dot3D().move_to(point) for point in surface.points ])
+        self.add(axes)
+        self.add(surface)
+
+        self.add(index_labels(surface).shift(OUT * 1))
+
+        self.move_camera(phi=30 * DG)
+
+        torus = Torus(major_radius=3, minor_radius=1, u_range=(0, TAU), v_range=(0, TAU), resolution=(5, 5)).set_opacity(opacity=0.5)
+        # self.play()
+        # self.add(torus)
+        surface.clear_updaters()
+
+        surface[ 0 ].set_color(RED)
+        torus[ 8 ].set_color(RED)
+
+        # self.play(u_tkr.animate.set_value(1))
+        self.play(Transform(surface[ 0 ], torus[ 8 ]))
+
+        self.wait(5)
+
+
+class working2(ThreeDScene):
+    def construct(self):
+        # nxm의 사각형이라면 일단 5x3이라고 하고
+
+        point_list = np.array(
+            [ [ [ 0, 0, 0 ], [ 1, 0, 0 ] ],
+              [ [ 0, 1, 0 ], [ 1, 1, 0 ] ],
+              [ [ 0, 2, 0 ], [ 1, 2, 0 ] ] ]
+        )
+
+        print(point_list.shape)
+
+        n = point_list.shape[ 1 ]
+        m = point_list.shape[ 0 ]
+
+        # n cols
+        # m rows
+        for row in range(0, m):
+            for col in range(0, n):
+                point_list[ row, col ]
+
+                sqDL = point_list[ row, col ]
+                sqDR = point_list[ row, col + 1 ]
+                sqUR = point_list[ row + 1, col + 1 ]
+                sqUL = point_list[ row + 1, col ]
+
+        #
+
+        #
+        # self.add(NumberPlane())
+        # surface = Surface(lambda u, v :(u,v,0), u_range=[-2,2],v_range=[-2,2], resolution=(10,10))
+        #
+        # torus = Torus(resolution=(10,10))
+        #
+        # self.play(DrawBorderThenFill(surface[0]))
+        # # self.add(index_labels(torus))
+        # # self.play(DrawBorderThenFill(torus[0]))
+        #
+        # self.add(index_labels(surface[0]))
+        # print(surface[0].get_start_anchors())
+
+        class MySurfaceByPoints(VGroup, metaclass=ConvertToOpenGL):
+
+            def __init__(
+                    self,
+                    vertex_list: Sequence = [ [ 0, 0 ],
+                                              [ 1, 0 ],
+                                              [ 1, 1 ],
+                                              [ 0, 1 ] ],
+                    u_range: Sequence[ float ] = [ 0, 1 ],
+                    v_range: Sequence[ float ] = [ 0, 1 ],
+                    resolution: Sequence[ int ] = 32,
+                    surface_piece_config: dict = {},
+                    fill_color: Color = BLUE_D,
+                    fill_opacity: float = 1.0,
+                    checkerboard_colors: Sequence[ Color ] = [ BLUE_D, BLUE_E ],
+                    stroke_color: Color = LIGHT_GREY,
+                    stroke_width: float = 0.5,
+                    should_make_jagged: bool = False,
+                    pre_function_handle_to_anchor_scale_factor: float = 0.00001,
+                    **kwargs,
+            ) -> None:
+                self.u_range = u_range
+                self.v_range = v_range
+                super().__init__(**kwargs)
+                self.resolution = resolution
+                self.surface_piece_config = surface_piece_config
+                self.fill_color = fill_color
+                self.fill_opacity = fill_opacity
+                self.checkerboard_colors = checkerboard_colors
+                self.stroke_color = stroke_color
+                self.stroke_width = stroke_width
+                self.should_make_jagged = should_make_jagged
+                self.pre_function_handle_to_anchor_scale_factor = (
+                    pre_function_handle_to_anchor_scale_factor
+                )
+                # self.func = func
+                self._setup_in_uv_space()
+                # self.apply_function(lambda p: func(p[ 0 ], p[ 1 ]))
+                if self.should_make_jagged:
+                    self.make_jagged()
+
+            def _get_u_values_and_v_values(self):
+                res = tuplify(self.resolution)
+                if len(res) == 1:
+                    u_res = v_res = res[ 0 ]
+                else:
+                    u_res, v_res = res
+
+                u_values = np.linspace(*self.u_range, u_res + 1)
+                v_values = np.linspace(*self.v_range, v_res + 1)
+
+                return u_values, v_values
+
+            def _setup_in_uv_space(self):
+                u_values, v_values = self._get_u_values_and_v_values()
+                faces = VGroup()
+                for i in range(len(u_values) - 1):
+                    for j in range(len(v_values) - 1):
+                        u1, u2 = u_values[ i: i + 2 ]
+                        v1, v2 = v_values[ j: j + 2 ]
+                        face = ThreeDVMobject()
+                        face.set_points_as_corners(
+                            [
+                                [ u1, v1, 0 ],
+                                [ u2, v1, 0 ],
+                                [ u2, v2, 0 ],
+                                [ u1, v2, 0 ],
+                                [ u1, v1, 0 ],
+                            ],
+                        )
+                        faces.add(face)
+                        face.u_index = i
+                        face.v_index = j
+                        face.u1 = u1
+                        face.u2 = u2
+                        face.v1 = v1
+                        face.v2 = v2
+                faces.set_fill(color=self.fill_color, opacity=self.fill_opacity)
+                faces.set_stroke(
+                    color=self.stroke_color,
+                    width=self.stroke_width,
+                    opacity=self.stroke_opacity,
+                )
+                self.add(*faces)
+                if self.checkerboard_colors:
+                    self.set_fill_by_checkerboard(*self.checkerboard_colors)
+
+            def set_fill_by_checkerboard(self, *colors, opacity=None):
+                n_colors = len(colors)
+                for face in self:
+                    c_index = (face.u_index + face.v_index) % n_colors
+                    face.set_fill(colors[ c_index ], opacity=opacity)
+                return self
+
+        self.wait(3)
+
+        # self.play(Transform(surface[0], torus[4].set_opacity(opacity=0.5)))
+
+        # self.interactive_embed()
+
+
+class working2(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes()
+
+        axes[ 0 ].set_color(RED)
+        axes[ 1 ].set_color(GREEN)
+        axes[ 2 ].set_color(BLUE)
+
+        # self.add(axes)
+
+        # self.set_camera_orientation(phi =45*DG,theta=-80*DG, )
+        # self.set_camera_orientation(zoom=0.6 )
+        self.set_camera_orientation(phi=45 * DG, theta=-80 * DG, zoom=0.6)
+        # self.move_camera(theta=45*DG)
+
+        array = [ ]
+
+        u_min = -10
+        u_max = 10
+        v_min = -4
+        v_max = 4
+        for v in np.linspace(v_min, v_max, 10):
+            row = [ ]
+            for u in np.linspace(u_min, u_max, 20):
+                row.append([ u, v, 0 ])
+            array.append(row)
+
+        point_list = np.array(array)
+        # print(point_list)
+
+        n = point_list.shape[ 1 ]
+        m = point_list.shape[ 0 ]
+
+        points = VGroup()
+        points_without_rc = VGroup()
+        faces = VGroup()
+        faces_without_rc = VGroup()
+
+        for row in range(0, m):
+            row_group = VGroup()
+            for col in range(0, n):
+                coor = point_list[ row, col ]
+
+                dot = Dot().move_to(coor)
+                dot.r = row
+                dot.c = col
+                row_group.add(dot)
+                points_without_rc.add(dot)
+
+            points.add(row_group)
+            # points.add(Dot3D().move_to(coor))
+
+        # self.add(points)
+
+        for row in range(0, m - 1):
+            row_group = VGroup()
+            for col in range(0, n - 1):
+                sqDL = points[ row ][ col ]
+                sqDR = points[ row ][ col + 1 ]
+                sqUR = points[ row + 1 ][ col + 1 ]
+                sqUL = points[ row + 1 ][ col ]
+
+                globals()[ f'{row}_{col}' ] = points[ row ][ col ]
+                globals()[ f'{row}_{col + 1}' ] = points[ row ][ col + 1 ]
+                globals()[ f'{row + 1}_{col + 1}' ] = points[ row + 1 ][ col + 1 ]
+                globals()[ f'{row + 1}_{col}' ] = points[ row + 1 ][ col ]
+
+                face = ThreeDVMobject().set_points_as_corners([ sqDL.get_center(), sqDR.get_center(), sqUR.get_center(),
+                                                                sqUL.get_center(),
+                                                                sqDL.get_center() ]).set_style(fill_color=RED, fill_opacity=0.4,
+                                                                                               stroke_width=0.5, stroke_color=GRAY,
+                                                                                               stroke_opacity=0.5)
+
+                face.sqDL = points[ row ][ col ]
+                face.sqDR = points[ row ][ col + 1 ]
+                face.sqUR = points[ row + 1 ][ col + 1 ]
+                face.sqUL = points[ row + 1 ][ col ]
+
+                face.r= row
+                face.c=col
+
+                row_group.add(face)
+                # print(face.sqDL)
+
+                def face_func(mob):
+                    updated_mob = mob.set_points_as_corners(
+                        [ mob.sqDL.get_center(), mob.sqDR.get_center(), mob.sqUR.get_center(), mob.sqUL.get_center(),
+                          mob.sqDL.get_center() ])
+
+                    return updated_mob
+
+                face.add_updater(face_func)
+                faces_without_rc.add(face)
+            faces.add(row_group)
+
+        self.add(faces)
+        # self.add(index_labels(faces))
+        # self.add(index_labels(faces[0]))
+        self.wait(1)
+
+        coloring_anims = [ ]
+        for i in range(len(faces)):
+            coloring_anims.append(
+                faces[ i ].animate.set_color(Color(hue=i / len(faces), saturation=1, luminance=0.6)))
+
+        faces[0].set_style(fill_color=BLUE,fill_opacity=0.7)
+        faces[-1].set_style(fill_color=GREEN,fill_opacity=0.7)
+
+        for face in faces_without_rc:
+            if face.c ==0 :
+                face.set_style(fill_color=YELLOW,fill_opacity=0.7)
+            if face.c ==18 :
+                face.set_style(fill_color=ORANGE,fill_opacity=0.7)
+
+        points_without_rc.set_opacity(opacity=0)
+
+        roll_up_anims = [ ]
+        for point in points_without_rc:
+            x = point.get_center()[ 0 ]
+            y = point.get_center()[ 1 ]
+            z = point.get_center()[ 2 ]
+
+            new_x = x
+            new_y = np.cos(270 * DG + 90 / ((v_max - v_min) / 4) * y * DG) * (v_max - v_min) / 2 / PI
+            new_z = np.sin(270 * DG + 90 / ((v_max - v_min) / 4) * y * DG) * (v_max - v_min) / 2 / PI
+
+            new_coor = np.array([ new_x, new_y, new_z ])
+
+            roll_up_anims.append(point.animate.move_to(new_coor))
+
+            # for opengl
+            # point.move_to(new_coor)
+
+        self.play(*roll_up_anims, run_time=3)
+        print(points_without_rc[ 0 ].get_center())
+
+        round_up_anims = [ ]
+
+        for point in points_without_rc:
+            x = point.get_center()[ 0 ]
+            y = point.get_center()[ 1 ]
+            z = point.get_center()[ 2 ]
+
+            new_x = np.cos(270 * DG + 90 / ((u_max - u_min) / 4) * x * DG) * (-2 / PI * y + 6 / PI)
+            new_y = np.sin(270 * DG + 90 / ((u_max - u_min) / 4) * x * DG) * (-2 / PI * y + 6 / PI)
+            new_z = z
+
+            new_coor = np.array([ new_x, new_y, new_z ])
+
+            round_up_anims.append(point.animate.move_to(new_coor))
+            # for opengl
+            # point.move_to(new_coor)
+
+        self.play(*round_up_anims, run_time=3)
+
+        self.wait(1)
+
+        self.move_camera(phi=90 * DG, theta=-80 * DG, zoom=1.2)
+        self.wait(1)
+        # self.set_camera_orientation(phi =90*DG,theta=-80*DG)
+
+        self.begin_ambient_camera_rotation(rate=0.3)
+        self.move_camera(phi=0, run_time=10, rate_func=linear)
+
+        self.wait(5)
+
+        # self.interactive_embed()
+
+        # self.play(Create(Dot()))
+        # self.move_camera(theta=45*DG)
+        # with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',
+        #                  'renderer': 'opengl', 'write_to_movie': True}):
+        #     scene = working2test()
+        # #     #     #     # scene = working2()
+        # #     #     #     # scene = working3()
+        # #     #     #     # scene = working4()
+        # #     #     #     # scene = working5()
+        #     scene.render()
+# class working2(ThreeDScene):
+#     def construct(self):
+#
+#         rect = Square()
+#
+#         rect.set_sheen_direction(DL)
+#         rect.set_style(fill_color =[RED, BLUE], fill_opacity=1)
+#
+#         # dot.stroke_width = [[0.5]]
+#
+#         self.add(rect)
+#         # self.play(dot.animate.move_to(D*3+IN*2))
+#
+# #
