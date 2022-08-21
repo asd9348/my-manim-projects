@@ -1200,6 +1200,29 @@ class working2(ThreeDScene):
 
         self.wait(5)
 
+class working2(ThreeDScene):
+    def construct(self):
+        self.add(NumberPlane())
+        func = lambda pos: (pos[0] * UR + pos[1] * LEFT) - pos
+
+        def stream_func(pos):
+            x= pos[0]
+            y= pos[1]
+            z= pos[2]
+            if x >0:
+                return (pos[0] * UR + pos[1] * LEFT) - pos
+
+            else:
+                return np.sin(pos[ 0 ] / 2) * UR + np.cos(pos[ 1 ] / 2) * LEFT
+
+        stream_lines = StreamLines(
+            stream_func, stroke_width=3, max_anchors_per_line=5, virtual_time=1, color=BLUE
+        )
+        self.add(stream_lines)
+        stream_lines.start_animation(warm_up=False, flow_speed=1, time_width=2)
+        self.wait(1)
+        self.play(stream_lines.end_animation())
+
         # self.interactive_embed()
 
         # self.play(Create(Dot()))
