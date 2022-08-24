@@ -1223,8 +1223,7 @@ class working2(ThreeDScene):
         self.wait(1)
         self.play(stream_lines.end_animation())
 
-        # self.interactive_embed()
-
+        # self.interactive_embed()ss
         # self.play(Create(Dot()))
         # self.move_camera(theta=45*DG)
         # with tempconfig({"quality": "medium_quality", "preview": True, 'fps': '10',

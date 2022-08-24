@@ -4,7 +4,7 @@ from pathlib import Path
 from pprint import pprint
 import shutil
 
-main_dir = Path(r'C:\Users\asd93\PycharmProjects\Manim\media\videos\defi_lec_2\2160p60\partial_movie_files\L_02_S_08_amm_xyk_adv_px_up_3')
+main_dir = Path(r'/media/videos/defi_lec_2/2160p60/partial_movie_files/L_02_S_08_amm_xyk_adv_px_up_3')
 all_files = main_dir.rglob('*.*')
 file_list = [x for x in all_files if x.is_file() or x.is_dir()]
 size_list = list(map(lambda x:x.stat().st_size,file_list))
