@@ -2210,3 +2210,42 @@ class Inicio(ThreeDScene):
         self.set_camera_orientation(theta=-45 * DEGREES, phi=45 * DEGREES,focal_distance=99999999999)
         self.add(axes,xaxis,yaxis,zaxis,surface,grp,sqr)
         self.play(n.animate.set_value(PI),run_time=2)
+class working2(ThreeDScene):
+    config.background_color = DARK_GRAY
+    pixel_height = 2160/9*1
+    pixel_width = 3840
+
+    def construct(self):
+        plane = VMobject(shade_in_3d=True,fill_opacity=0.5,).set_points_as_corners(
+            [ (1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0) ]).set_style( fill_color=RED)
+
+        x_tkr = ValueTracker(0)
+        dot =redraw(lambda:Dot(radius=0.2, fill_opacity=1).move_to([0.33,0.33,0.33]))
+
+        p = 0.5
+        q =0.3
+        # dot =Sphere(radius=0.2, fill_opacity=1,resolution=10).move_to([0.333,0.35,0.35])
+
+        # def curr_p_with_IfOnSurface():
+        #     dot = Sphere(radius=0.2, color=GREEN).move_to([0.333,0.333,0.333])
+        #
+        #     return dot
+        #
+        # dot = redraw(curr_p_with_IfOnSurface)
+        #
+        # curr_p = redraw(curr_p_with_IfOnSurface)
+
+        self.set_camera_orientation(phi=30 * DG, theta=45 * DG)
+        self.play(Create(plane))
+        self.play(Create(dot))
+        self.play(dot.animate.move_to([0.1,0.2,0.6]),run_time=2)
+
+        self.wait(1)
+        self.begin_ambient_camera_rotation(rate=0.8)
+        self.wait(1)
+        # self.move_camera(theta=90*DG,zoom=1.2)
+        # self.move_camera(theta=180*DG,zoom=1.2)
+        # self.move_camera(theta=270*DG,zoom=1.2)
+        # self.move_camera(theta=360*DG,zoom=1.2)
+
+        # self.wait(3)

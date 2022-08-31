@@ -1207,6 +1207,10 @@ class working2(ThreeDScene):
         self.add(NumberPlane())
         func = lambda pos: (pos[ 0 ] * UR + pos[ 1 ] * LEFT) - pos
 
+        self.set_camera_orientation(phi=45*DG, theta=45*DG)
+        plane = VMobject().set_points_as_corners(
+            [ (1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0) ]).set_style(fill_opacity=0.5, fill_color=RED)
+        self.add(plane)
         def stream_func(pos):
             x = pos[ 0 ]
             y = pos[ 1 ]
@@ -1217,353 +1221,13 @@ class working2(ThreeDScene):
             else:
                 return np.sin(pos[ 0 ] / 2) * UR + np.cos(pos[ 1 ] / 2) * LEFT
 
-        stream_lines = StreamLines(
-            stream_func, stroke_width=3, max_anchors_per_line=5, virtual_time=1, color=BLUE
-        )
-        self.add(stream_lines)
-        stream_lines.start_animation(warm_up=False, flow_speed=1, time_width=2)
-        self.wait(1)
-        self.play(stream_lines.end_animation())
-
-# ternary plot
-class working2(ThreeDScene):
-    def construct(self):
-        # self.add(NumberPlane())
-        triangle = Triangle().scale_to_fit_width(6)
-
-        self.add(triangle)
-
-        print(triangle.get_start_anchors())
-        triangle_corner_L = triangle.get_start_anchors()[ 1 ]
-        triangle_corner_U = triangle.get_start_anchors()[ 0 ]
-        triangle_corner_R = triangle.get_start_anchors()[ 2 ]
-
-        triangle_edge_LU = Line(start=triangle_corner_L, end=triangle_corner_U)
-        triangle_edge_UR = Line(start=triangle_corner_U, end=triangle_corner_R)
-        triangle_edge_RL = Line(start=triangle_corner_R, end=triangle_corner_L)
-
-        H_label = Tex('Hawk').next_to(triangle_corner_L, L)
-        R_label = Tex('Retaliator').next_to(triangle_corner_U, U)
-        D_label = Tex('Dove').next_to(triangle_corner_R, R)
-
-        self.add(H_label, R_label, D_label)
-
-        Hawk = ValueTracker(0.333)
-        Retal = ValueTracker(0.333)
-        Dove = ValueTracker(0.333)
-
-        dot_1 = redraw(
-            lambda: Dot().move_to(triangle_edge_RL.point_from_proportion(1 if Hawk.get_value() * 1.5 > 1 else Hawk.get_value() * 1.5)))
-        line_1 = redraw(lambda: Line(start=dot_1.get_center(), end=triangle_corner_U, color=PINK))
-
-        dot_2 = redraw(
-            lambda: Dot().move_to(triangle_edge_LU.point_from_proportion(1 if Retal.get_value() * 1.5 > 1 else Retal.get_value() * 1.5)))
-        line_2 = redraw(lambda: Line(start=dot_2.get_center(), end=triangle_corner_R, color=RED))
-
-        dot_3 = redraw(
-            lambda: Dot().move_to(triangle_edge_UR.point_from_proportion(1 if Dove.get_value() * 1.5 > 1 else Dove.get_value() * 1.5)))
-        line_3 = redraw(lambda: Line(start=dot_3.get_center(), end=triangle_corner_L, color=YELLOW))
-
-        self.add(dot_1, line_1, dot_2, line_2, dot_3, line_3)
-
-        print(line_1.get_z())
-
-        dot_eq = redraw(lambda: Dot(radius=0.1, color=WHITE).move_to(
-            line_intersection([ line_1.get_start(), line_1.get_end() ], [ line_2.get_start(), line_2.get_end() ])))
-        self.add(dot_eq)
-
-        def DE(self, p, q):
-            v = 0.3
-            c = 0.5
-
-            H = p
-            D = q
-            R = 1 - p - q
-
-            H_avg_payoff = (v - c) / 2 * (1 - q) + q * v
-            D_avg_payoff = v * (1 - p) / 2
-            R_avg_payoff = (p * (v - c) + (1 - p) * v) / 2
-            avg_payoff = p * ((v - c) / 2 * (1 - q) + q * v) + q * (v * (1 - p) / 2) + (1 - p - q) * ((p * (v - c) + (1 - p) * v) / 2)
-
-            delta_H = H * (H_avg_payoff - avg_payoff)
-            delta_D = D * (D_avg_payoff - avg_payoff)
-            delta_R = R * (R_avg_payoff - avg_payoff)
-
-            new_H = H + delta_H
-            new_D = D + delta_D
-            new_R = R + delta_R
-
-            Hawk_val, Retal_val, Dove_val = Hawk.get_value(), Retal.get_value(), Dove.get_value()
-
-            self.play(Hawk.animate.set_value(new_H),
-                      Retal.animate.set_value(new_R),
-                      Dove.animate.set_value(new_D), rate_func=linear, run_time=0.1)
-            # Retal.set_value(new_R)
-            # Dove.set_value(new_D)
-
-            return (new_H, new_D, new_R)
-
-        new_p = 0.5
-        new_q = 0.3
-        for i in range(100):
-            DE(self, Hawk.get_value(), Retal.get_value())
-            # print(DE(new_p, new_q), 'total is ', DE(new_p, new_q)[ 0 ] + DE(new_p, new_q)[ 1 ] + DE(new_p, new_q)[ 2 ])
-
-        # DE(self,Hawk.get_value(), Retal.get_value())
-
-        def update_position(self, dt):
-            Hawk_val, Retal_val, Dove_val = Hawk.get_value(), Retal.get_value(), Dove.get_value()
-            deltas = DE(Hawk.get_value(), Retal.get_value())
-            print(deltas)
-            # new_H = Hawk.set_value()
-            # new_R = y_dot * dt/10
-            # new_D = z_dot * dt/10
-            Hawk.set_value(Hawk_val + deltas[ 0 ])
-            Retal.set_value(Retal_val + deltas[ 1 ])
-            Dove.set_value(Dove_val + deltas[ 2 ])
-
-            # self.shift(x/10*RIGHT + y/10*UP + z/10*OUT)
-
-        the_dot = Do
-
-        # self.wait(20)
-
-        # find_intersection(, , line_2.get_start(),line_2.get_end(), threshold=1e-05)
-
-
-class working2(ThreeDScene):
-    def construct(self):
-        axes = ThreeDAxes(x_range=[ 0, 1.25, 0.25 ],
-                          y_range=[ 0, 1.25, 0.25 ],
-                          z_range=[ 0, 1.25, 0.25 ],
-                          x_length=4,
-                          y_length=4,
-                          z_length=4,
-                          ).move_to(O)
-
-        # plane = OpenGLVMobject().set_points_as_corners(
-        plane = VMobject().set_points_as_corners(
-            [ axes.c2p(1, 0, 0), axes.c2p(0, 1, 0), axes.c2p(0, 0, 1), axes.c2p(1, 0, 0) ]).set_style(fill_opacity=0.5, fill_color=RED)
-
-        x_label = axes.get_x_axis_label('Dove')
-        y_label = axes.get_y_axis_label('Hawk')
-        z_label = axes.get_z_axis_label('Retal').rotate(axis=Z_AXIS, angle =90*DG)
-
-        self.add_fixed_orientation_mobjects(x_label, y_label, z_label)
-        self.add(axes, x_label, y_label, z_label)
-
-        self.add(plane)
-
-
-        def update_position(self, dt):
-
-            def DE(p, q):
-                v = 2
-                c = 3
-
-                D = p
-                H = q
-                R = 1 - p - q
-
-                D_avg_payoff = v * (1 - q) / 2
-                H_avg_payoff = p * v + (1 - p) * (v - c) / 2
-                R_avg_payoff = (q * (v - c) + (1 - q) * v) / 2
-                avg_payoff = p * D_avg_payoff + q * H_avg_payoff + (1 - p - q) * R_avg_payoff
-
-                delta_D = D * (D_avg_payoff - avg_payoff)
-                delta_H = H * (H_avg_payoff - avg_payoff)
-                delta_R = R * (R_avg_payoff - avg_payoff)
-
-                new_D = D + delta_D
-                new_H = H + delta_H
-                new_R = R + delta_R
-
-                return (new_D,new_H,new_R)
-
-            deltas = DE(self.init_p_tracker.get_value(), self.init_q_tracker.get_value())
-            self.init_p_tracker.set_value(deltas[ 0 ])
-            self.init_q_tracker.set_value(deltas[ 1 ])
-            new_D = deltas[ 0 ]
-            new_H = deltas[ 1 ]
-            new_R = deltas[ 2 ]
-
-            new_coor = [ new_D * RIGHT[ 0 ], new_H * UP[ 1 ], new_R * OUT[ 2 ] ]
-
-            print(new_coor)
-            self.move_to(axes.c2p(*new_coor))
-
-        dots = []
-        for i in range(6):
-            color = Color(hsl=(i/6, 1, 0.5))
-            locals()[ f'dot_{i}' ] = Dot(color = color)
-            locals()[ f'dot_{i}' ].init_p_tracker = ValueTracker(i*0.1*0.3)
-            locals()[ f'dot_{i}' ].init_q_tracker = ValueTracker(0.7)
-            locals()[ f'dot_{i}' ].path_diffuse = TracedPath(locals()[ f'dot_{i}' ].get_center, dissipating_time=None, stroke_opacity=[ 1, 0.5 ],stroke_color = color)
-            dots.append(locals()[ f'dot_{i}' ])
-            locals()[ f'dot_{i}' ].add_updater(update_position)
-            self.add(locals()[ f'dot_{i}' ], locals()[ f'dot_{i}' ].path_diffuse)
-
-
-        # self.set_camera_orientation(phi=45 * DG, theta=135 * DG)
-        self.set_camera_orientation(phi=45 * DG, theta=45 * DG)
-
-
-        self.wait(2)
-
-
-
-# play by time
-class working2(ThreeDScene):
-    def construct(self):
-        axes = ThreeDAxes(x_range=[ 0, 1.25, 0.25 ],
-                          y_range=[ 0, 1.25, 0.25 ],
-                          z_range=[ 0, 1.25, 0.25 ],
-                          x_length=4,
-                          y_length=4,
-                          z_length=4,
-                          ).move_to(O)
-
-        # plane = OpenGLVMobject().set_points_as_corners(
-        plane = VMobject().set_points_as_corners(
-            [ axes.c2p(1, 0, 0), axes.c2p(0, 1, 0), axes.c2p(0, 0, 1), axes.c2p(1, 0, 0) ]).set_style(fill_opacity=0.5, fill_color=RED)
-
-        x_label = axes.get_x_axis_label('Dove')
-        y_label = axes.get_y_axis_label('Hawk')
-        z_label = axes.get_z_axis_label('Retal').rotate(axis=Z_AXIS, angle =90*DG)
-
-        self.add_fixed_orientation_mobjects(x_label, y_label, z_label)
-        self.add(axes, x_label, y_label, z_label)
-
-        self.add(plane)
-
-
-        gen_tkr = ValueTracker(0)
-
-
-        def update_position(self):
-
-            def DE(p, q):
-                v = 2
-                c = 3
-
-                D = p
-                H = q
-                R = 1 - p - q
-
-                D_avg_payoff = v * (1 - q) / 2
-                H_avg_payoff = p * v + (1 - p) * (v - c) / 2
-                R_avg_payoff = (q * (v - c) + (1 - q) * v) / 2
-                avg_payoff = p * D_avg_payoff + q * H_avg_payoff + (1 - p - q) * R_avg_payoff
-
-                delta_D = D * (D_avg_payoff - avg_payoff)
-                delta_H = H * (H_avg_payoff - avg_payoff)
-                delta_R = R * (R_avg_payoff - avg_payoff)
-
-                new_D = D + delta_D
-                new_H = H + delta_H
-                new_R = R + delta_R
-
-                return (new_D,new_H,new_R)
-
-            # deltas = DE(self.init_p_tracker.get_value(), self.init_q_tracker.get_value())
-            deltas = DE(self.init_p, self.init_q)
-            for i in range(ceil(gen_tkr.get_value())):
-                self.init_q_tracker.set_value(deltas[ 1 ])
-                self.init_p_tracker.set_value(deltas[ 0 ])
-                deltas = DE(self.init_p_tracker.get_value(), self.init_q_tracker.get_value())
-            new_D = deltas[ 0 ]
-            new_H = deltas[ 1 ]
-            new_R = deltas[ 2 ]
-
-            new_coor = [ new_D * RIGHT[ 0 ], new_H * UP[ 1 ], new_R * OUT[ 2 ] ]
-
-            print(new_coor)
-            print('gen is', gen_tkr.get_value())
-            final_coor= axes.c2p(*new_coor)
-            self.move_to(final_coor)
-            # self.traj.add_smooth_curve_to(final_coor)
-
-
-        dots = []
-        for i in range(3):
-            color = Color(hsl=(i/3, 1, 0.5))
-            locals()[ f'dot_{i}' ] = Dot(color = color)
-            locals()[ f'dot_{i}' ].init_p = i*0.1*0.3
-            locals()[ f'dot_{i}' ].init_q = 0.7
-            locals()[ f'dot_{i}' ].init_p_tracker = ValueTracker(i*0.1*0.3)
-            locals()[ f'dot_{i}' ].init_q_tracker = ValueTracker(0.7)
-            locals()[ f'dot_{i}' ].path_diffuse = TracedPath(locals()[ f'dot_{i}' ].get_center, dissipating_time=None, stroke_opacity=[ 1, 0.5 ],stroke_color = color)
-
-            locals()[ f'dot_{i}' ].traj= VMobject()
-            dots.append(locals()[ f'dot_{i}' ])
-            locals()[ f'dot_{i}' ].add_updater(update_position)
-            self.add(locals()[ f'dot_{i}' ], locals()[ f'dot_{i}' ].path_diffuse,locals()[ f'dot_{i}' ].traj)
-
-
-        # self.set_camera_orientation(phi=45 * DG, theta=135 * DG)
-        self.set_camera_orientation(phi=45 * DG, theta=45 * DG)
-
-        self.play(gen_tkr.animate.set_value(1),run_time=1, rate_func=linear)
-        self.wait(1)
-        self.play(gen_tkr.animate.set_value(2),run_time=1, rate_func=linear)
-        self.wait(1)
-        self.play(gen_tkr.animate.set_value(3),run_time=1, rate_func=linear)
-        self.wait(1)
-        self.play(gen_tkr.animate.set_value(4),run_time=1, rate_func=linear)
-        self.wait(1)
-        self.play(gen_tkr.animate.set_value(5),run_time=1, rate_func=linear)
-        self.wait(1)
-
-        # self.wait(2)
-
-# play by gen
-class working2(ThreeDScene):
-
-    config.background_color=DARK_GRAY
-    def construct(self):
-        axes = ThreeDAxes(x_range=[ 0, 1.25, 0.25 ],
-                          y_range=[ 0, 1.25, 0.25 ],
-                          z_range=[ 0, 1.25, 0.25 ],
-                          x_length=4,
-                          y_length=4,
-                          z_length=4,
-                          ).move_to(O).shift(IN*1)
-
-        axes.move_to(get_compensated_coor(axes, center_of_mass([ axes.c2p(1, 0, 0), axes.c2p(0, 1, 0), axes.c2p(0, 0, 1)]), O))
-
-        # plane = OpenGLVMobject().set_points_as_corners(
-        plane = VMobject().set_points_as_corners(
-            [ axes.c2p(1, 0, 0), axes.c2p(0, 1, 0), axes.c2p(0, 0, 1), axes.c2p(1, 0, 0) ]).set_style(fill_opacity=0.5, fill_color=RED)
-
-        line_Dove2Hawk=Line(start=axes.c2p(1, 0, 0), end=axes.c2p(0, 1, 0))
-        line_Dove2Retal=Line(start=axes.c2p(1, 0, 0), end=axes.c2p(0, 0, 1))
-
-
-
-        start_line  = Line(start=line_Dove2Hawk.point_from_proportion(0.3), end=line_Dove2Retal.point_from_proportion(0.3), color= PINK)
-        start_line_label = Tex(r'70\% \\Dove').scale(0.7).next_to(start_line.get_start(),UR, buff=0.5)
-
-        self.add(start_line,start_line_label)
-
-
-        x_label = axes.get_x_axis_label('Dove', direction=R)
-        y_label = axes.get_y_axis_label('Hawk', direction=U,buff=0.5)
-        z_label = axes.get_z_axis_label('Retal', direction=OUT,buff=0.5).rotate(axis=X_AXIS, angle =-90*DG)
-        # z_label.rotate(axis=X_AXIS, angle =-90*DG, about_point=z_label.get_center())
-
-
-        gen_var = Variable(1,'Gen').to_corner(UR)
-        gen_num = Integer(1).to_corner(UR)
-
-
-        self.add_fixed_orientation_mobjects(x_label, y_label, z_label,start_line_label)
-        self.add_fixed_in_frame_mobjects(gen_num )
-        self.add(axes, x_label, y_label, z_label,plane,gen_num)
-
-        def DE(p, q):
+        def DE(pos):
             v = 2
             c = 3
 
+            p=pos[0]
+            q=pos[1]
+            r=pos[2]
             D = p
             H = q
             R = 1 - p - q
@@ -1581,66 +1245,48 @@ class working2(ThreeDScene):
             new_H = H + delta_H
             new_R = R + delta_R
 
-            return (new_D,new_H,new_R)
+            return np.array([new_D, new_H, new_R])
 
-        how_many_dot = 4
-        dots = []
-        paths= []
-        for i in range(how_many_dot):
-            color = Color(hsl=(i/how_many_dot, 1, 0.5))
-            locals()[ f'dot_{i}' ] = Dot(color = color)
-            locals()[ f'dot_{i}' ].p = 0.7
-            locals()[ f'dot_{i}' ].q = 0.3-i*0.3/(how_many_dot-1)# range-1만큼해야 전체 범위
+        stream_lines = StreamLines(
+            stream_func, stroke_width=1, max_anchors_per_line=5, virtual_time=1, color=BLUE,
+            x_range=[0,1],
+            y_range=[0,1],
+            z_range=[0,1],
+        )
+        self.add(stream_lines)
+        stream_lines.start_animation(warm_up=False, flow_speed=0.5, time_width=10)
+        self.wait(1)
+        self.play(stream_lines.end_animation())
 
-            locals()[ f'dot_{i}' ].move_to(axes.c2p(locals()[ f'dot_{i}' ].p, locals()[ f'dot_{i}' ].q, 1-locals()[ f'dot_{i}' ].p-locals()[ f'dot_{i}' ].q))
-            locals()[ f'dot_{i}' ].path_diffuse = TracedPath(locals()[ f'dot_{i}' ].get_center, dissipating_time=None, stroke_opacity=[ 1, 0.5 ],stroke_color = color)
-            locals()[ f'dot_{i}' ].traj= VMobject()
-
-            paths.append(locals()[ f'dot_{i}' ].path_diffuse)
-            dots.append(locals()[ f'dot_{i}' ])
-
-        # self.set_camera_orientation(phi=45 * DG, theta=135 * DG)
-        self.set_camera_orientation(phi=45 * DG, theta=45 * DG)
-
-        self.play(Create(VGroup(*dots)))
-        self.add(*paths)
-
-        self.begin_ambient_camera_rotation(rate=0.2)
-
-
-        how_many_gen= 15
-        for i in range(how_many_gen):
-            anims= []
-            for dot in dots:
-                new_coor = DE(dot.p, dot.q)
-                dot.p = new_coor[0]
-                dot.q = new_coor[1]
-                final_coor =axes.c2p(*new_coor)
-
-                anims.append(dot.animate.move_to(final_coor))
-
-            self.play(AnimationGroup(*anims),
-                      gen_num.animate.increment_value(1), rate_func= linear, run_time = 1)
-            self.add_fixed_in_frame_mobjects(gen_num)
-            self.wait(0.5)
-            # self.wait(1)
-
-
-        # self.wait(20)
-
-
-# class working2(ThreeDScene):
-#     def construct(self):
 #
-#         rect = Square()
 #
-#         rect.set_sheen_direction(DL)
-#         rect.set_style(fill_color =[RED, BLUE], fill_opacity=1)
-#
-#         # dot.stroke_width = [[0.5]]
-#
-#         self.add(rect)
-#         # self.play(dot.animate.move_to(D*3+IN*2))
-#
-# #
+class working2(ThreeDScene):
+    # config.background_color = '#090A3B'
+    def construct(self):
+        sat=1
+        lum=0.5
+        plus= 0.05
+
+        circle_1 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(0+plus,sat,lum)))
+        circle_2 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(1/3+plus,sat,lum)))
+        circle_3 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(1/6+plus,sat,lum)))
+        circle_4 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(2/3+plus,sat,lum)))
+
+        circles = VGroup(circle_1,circle_2,circle_3,circle_4).arrange_in_grid(2,2)
+
+        self.add(circles)
+class working2(ThreeDScene):
+
+    def construct(self):
+        wind = SVGMobject('svg/wind.svg')
+
+        self.play(FadeIn(wind, shift=DL), rate_func=smooth,run_time=0.5)
+        self.play(FadeOut(wind, shift=DL), rate_func=smooth,run_time=1.5)
+
+
+
+
+        self.wait(5)
+
+        # self.wait(5)
 # from manimlib.imports import *

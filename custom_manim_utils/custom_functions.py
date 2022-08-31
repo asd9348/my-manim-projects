@@ -328,6 +328,7 @@ def get_halfway(A, B, z=0):
     return np.array([ x, y, z ])
 
 def get_compensated_coor(main_mob, point_inside_main_mob, point_goes_to):
+
     x_compen = main_mob.get_x() - point_inside_main_mob[ 0 ]
     y_compen = main_mob.get_y() - point_inside_main_mob[ 1 ]
     z_compen = main_mob.get_z() - point_inside_main_mob[ 2 ]
