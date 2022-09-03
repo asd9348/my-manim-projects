@@ -1092,3 +1092,63 @@ class test(ThreeDScene):
         #          )
         #
         self.wait(3)
+class working2(MovingCameraScene):
+
+    def construct(self):
+        # self.add(NumberPlane())
+
+        vertical_shift = 2.5
+        upper = Circle(radius=1.5, fill_opacity=[1, 1 ], fill_color=BLUE, stroke_color=BLUE, stroke_opacity=0, sheen_direction=U,
+                       sheen_factor=0.1).shift(U * vertical_shift)
+        lower = Circle(radius=1.5, fill_opacity=[ 1, 1 ], fill_color=GREEN, stroke_color=BLUE, stroke_opacity=0, sheen_direction=D,
+        sheen_factor = 0.1).shift(D * vertical_shift)
+
+
+        shift_dist = 1.75
+        intersect_dist = vertical_shift - shift_dist
+
+        sclera = redraw(lambda: Intersection(upper, lower, fill_opacity=-upper.get_center()[ 1 ] / 2 + 1.25,
+                             fill_color=WHITE, stroke_opacity=0))
+
+        def iris_rad():
+            if upper.get_center()[ 1 ]>1.5:
+                return 0
+
+            else:
+                return -0.7*upper.get_center()[ 1 ]+1.05
+
+
+        iris= redraw(lambda: Circle(radius=iris_rad() ,fill_color=BLACK, fill_opacity= 1,stroke_width=0, stroke_color =BLUE))
+
+        self.play(FadeIn(upper, shift=D),
+                  FadeIn(lower, shift=U))
+        upper.add_updater(lambda x: x.set_fill(opacity=[ upper.get_center()[ 1 ] * 0.571 - 0.428 + 0.1, 1 ]))
+
+        lower.add_updater(lambda x: x.set_fill(opacity=[ upper.get_center()[ 1 ] * 0.571 - 0.428 + 0.1, 1 ]))
+
+        self.add(sclera)
+        self.add(iris)
+
+        self.play(upper.animate.shift(D *shift_dist),
+        lower.animate.shift(U * shift_dist),run_time=4)
+        self.wait(0.5)
+
+
+        upper.clear_updaters()
+        lower.clear_updaters()
+        iris.clear_updaters()
+        sclera.clear_updaters()
+
+        what_the = Tex(r'Altruism \\ EP.1 \\Evolutionary Game Theory').scale(0.12)
+        self.play(self.camera.frame.animate(rate_func=exponential_decay).scale(0.05),
+                  GrowFromCenter(what_the),
+                  run_time=1.5)
+
+
+        # self.play(
+        #           FadeOut(VGroup(upper, lower, iris, sclera)))
+        # #
+
+        self.wait(5)
+        #.rotate(angle=PI*8)
+

@@ -1207,10 +1207,11 @@ class working2(ThreeDScene):
         self.add(NumberPlane())
         func = lambda pos: (pos[ 0 ] * UR + pos[ 1 ] * LEFT) - pos
 
-        self.set_camera_orientation(phi=45*DG, theta=45*DG)
+        self.set_camera_orientation(phi=45 * DG, theta=45 * DG)
         plane = VMobject().set_points_as_corners(
             [ (1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0) ]).set_style(fill_opacity=0.5, fill_color=RED)
         self.add(plane)
+
         def stream_func(pos):
             x = pos[ 0 ]
             y = pos[ 1 ]
@@ -1225,9 +1226,9 @@ class working2(ThreeDScene):
             v = 2
             c = 3
 
-            p=pos[0]
-            q=pos[1]
-            r=pos[2]
+            p = pos[ 0 ]
+            q = pos[ 1 ]
+            r = pos[ 2 ]
             D = p
             H = q
             R = 1 - p - q
@@ -1245,48 +1246,418 @@ class working2(ThreeDScene):
             new_H = H + delta_H
             new_R = R + delta_R
 
-            return np.array([new_D, new_H, new_R])
+            return np.array([ new_D, new_H, new_R ])
 
         stream_lines = StreamLines(
             stream_func, stroke_width=1, max_anchors_per_line=5, virtual_time=1, color=BLUE,
-            x_range=[0,1],
-            y_range=[0,1],
-            z_range=[0,1],
+            x_range=[ 0, 1 ],
+            y_range=[ 0, 1 ],
+            z_range=[ 0, 1 ],
         )
         self.add(stream_lines)
         stream_lines.start_animation(warm_up=False, flow_speed=0.5, time_width=10)
         self.wait(1)
         self.play(stream_lines.end_animation())
 
+
 #
 #
 class working2(ThreeDScene):
-    # config.background_color = '#090A3B'
+    config.background_color = '#090A3B'
+
     def construct(self):
-        sat=1
-        lum=0.5
-        plus= 0.05
+        sat = 1
+        lum = 0.5
+        plus = 0.05
 
-        circle_1 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(0+plus,sat,lum)))
-        circle_2 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(1/3+plus,sat,lum)))
-        circle_3 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(1/6+plus,sat,lum)))
-        circle_4 =Circle(stroke_opacity=0,fill_opacity = 1, fill_color =Color(hsl=(2/3+plus,sat,lum)))
+        circle_1 = Circle(stroke_opacity=0, fill_opacity=1, fill_color=Color(hsl=(0 + plus, sat, lum)))
+        circle_2 = Circle(stroke_opacity=0, fill_opacity=1, fill_color=Color(hsl=(1 / 3 + plus, sat, lum)))
+        circle_3 = Circle(stroke_opacity=0, fill_opacity=1, fill_color=Color(hsl=(1 / 6 + plus, sat, lum)))
+        circle_4 = Circle(stroke_opacity=0, fill_opacity=1, fill_color=Color(hsl=(2 / 3 + plus, sat, lum)))
 
-        circles = VGroup(circle_1,circle_2,circle_3,circle_4).arrange_in_grid(2,2)
+        circles = VGroup(circle_1, circle_2, circle_3, circle_4).arrange_in_grid(2, 2)
 
         self.add(circles)
-class working2(ThreeDScene):
+
+
+class working2(MovingCameraScene):
 
     def construct(self):
-        wind = SVGMobject('svg/wind.svg')
+        # self.add(NumberPlane())
 
-        self.play(FadeIn(wind, shift=DL), rate_func=smooth,run_time=0.5)
-        self.play(FadeOut(wind, shift=DL), rate_func=smooth,run_time=1.5)
+        vertical_shift = 2.5
+        upper = Circle(radius=1.5, fill_opacity=[ 1, 1 ], fill_color=BLUE, stroke_color=BLUE, stroke_opacity=0, sheen_direction=U,
+                       sheen_factor=0.1).shift(U * vertical_shift)
+        lower = Circle(radius=1.5, fill_opacity=[ 1, 1 ], fill_color=GREEN, stroke_color=BLUE, stroke_opacity=0, sheen_direction=D,
+                       sheen_factor=0.1).shift(D * vertical_shift)
+
+        shift_dist = 1.75
+        intersect_dist = vertical_shift - shift_dist
+
+        sclera = redraw(lambda: Intersection(upper, lower, fill_opacity=-upper.get_center()[ 1 ] / 2 + 1.25,
+                                             fill_color=WHITE, stroke_opacity=0))
+
+        def iris_rad():
+            if upper.get_center()[ 1 ] > 1.5:
+                return 0
+
+            else:
+                return -0.7 * upper.get_center()[ 1 ] + 1.05
+
+        iris = redraw(lambda: Circle(radius=iris_rad(), fill_color=BLACK, fill_opacity=1, stroke_width=0, stroke_color=BLUE))
+
+        self.play(FadeIn(upper, shift=D),
+                  FadeIn(lower, shift=U))
+        upper.add_updater(lambda x: x.set_fill(opacity=[ upper.get_center()[ 1 ] * 0.571 - 0.428 + 0.1, 1 ]))
+
+        lower.add_updater(lambda x: x.set_fill(opacity=[ upper.get_center()[ 1 ] * 0.571 - 0.428 + 0.1, 1 ]))
+
+        self.add(sclera)
+        self.add(iris)
+
+        self.play(upper.animate.shift(D * shift_dist),
+                  lower.animate.shift(U * shift_dist), run_time=4)
+        self.wait(0.5)
+
+        upper.clear_updaters()
+        lower.clear_updaters()
+        iris.clear_updaters()
+        sclera.clear_updaters()
+
+        what_the = Tex(r'Altruism \\ EP.1 \\Evolutionary Game Theory').scale(0.12)
+        self.play(self.camera.frame.animate(rate_func=exponential_decay).scale(0.05),
+                  GrowFromCenter(what_the),
+                  run_time=1.5)
+
+        # self.play(
+        #           FadeOut(VGroup(upper, lower, iris, sclera)))
+        # #
+
+        self.wait(5)
 
 
+class working2(MovingCameraScene):
+
+    def construct(self):
+        sq_1 = Square(fill_opacity=1, fill_color=DARK_GREY, stroke_opacity=0)
+        sq_2 = Square(fill_opacity=1, fill_color=WHITE, stroke_opacity=0)
+        sq_3 = sq_1.copy()
+        sq_4 = sq_2.copy()
+
+        board = VGroup(sq_1, sq_2, sq_4, sq_3).arrange_in_grid(2, 2, buff=0)
+
+        subway = SVGMobject('svgs/지하철노선도 (3).svg').scale(2.5)
+
+        self.play(Create(subway))
+
+        self.add(index_labels(subway))
+
+        # subway[14].set_style(stroke_width=1).set_color(PINK)
+        # subway[7].scale(3).set_color(GREY)
+
+        s = Tex('S', color=WHITE).move_to(sq_1).scale(2)
+        t = Tex('T', color=DARK_GREY).move_to(sq_2).scale(2)
+        e = Tex('E', color=DARK_GREY).move_to(sq_4).scale(2)
+        m = Tex('M', color=WHITE).move_to(sq_3).scale(2).rotate(-30 * DG)
+
+        # self.play(Create(board))
+        # self.play(Create(s))
+        # self.play(Create(t))
+        # self.play(Create(e))
+        # self.play(Create(m))
+        #
+        #
+        #
+        self.wait(5)
+
+
+class working2(MovingCameraScene):
+
+    def construct(self):
+
+        self.add(NumberPlane())
+        slice_1 = Polygon([-2,6,0],[2,-6,0],[15,-6,0],[15,6,0], fill_color=RED)
+        slice_2 = Polygon([-2,6,0],[2,-6,0],[-15,-6,0],[-15,6,0], fill_color=BLUE).set_style(stroke_opacity=0)
+
+        # self.play(Create(slice_1))
+        self.add(slice_1,slice_2)
+
+
+        hole_1= Dot(radius=0.5,color =BLUE).move_to([-6,-2,0]).set_z_index(2)
+        hole_2= Dot(radius=0.5, color =RED).move_to([6,2,0]).set_z_index(2)
+
+        dot_exam= Dot().move_to([2,1,0])
+
+        self.play(Create(hole_1))
+        self.play(Create(hole_2))
+
+
+        self.play(Create(dot_exam))
+
+        unit = Line(start=dot_exam.get_center(), end=hole_2.get_center()).get_unit_vector()
+
+
+        self.play(dot_exam.animate.shift(unit*0.5))
+        self.play(dot_exam.animate.shift(unit*1))
+        self.play(dot_exam.animate.shift(unit*1.5))
+        self.play(dot_exam.animate.move_to(hole_2))
+
+        self.remove(dot_exam)
+
+        speed_scaler=0.04
+        def left_update_pos(mob,dt):
+
+            if float(get_dist_btwn_points(mob.get_center(),hole_1.get_center()))>0.3:
+                dist=float(get_dist_btwn_points(mob.get_center(),hole_1.get_center()))
+                unit=Line(start=mob.get_center(), end=hole_1.get_center()).get_unit_vector()
+                mob.shift(unit*((dist*speed_scaler)))
+
+        p1 = Dot().move_to([-7,3,0])
+        p1.add_updater(left_update_pos)
+        p2 = Dot().move_to([-5,2.7,0])
+        p2.add_updater(left_update_pos)
+        p3 = Dot().move_to([-6,1,0])
+        p3.add_updater(left_update_pos)
+        p4 = Dot().move_to([-2,1.3,0])
+        p4.add_updater(left_update_pos)
+        p5 = Dot().move_to([-4,-3.5,0])
+        p5.add_updater(left_update_pos)
+        p6 = Dot().move_to([-2,-1.5,0])
+        p6.add_updater(left_update_pos)
+
+        def right_update_pos(mob,dt):
+
+            if float(get_dist_btwn_points(mob.get_center(),hole_2.get_center()))>0.3:
+                dist=float(get_dist_btwn_points(mob.get_center(),hole_2.get_center()))
+                unit=Line(start=mob.get_center(), end=hole_2.get_center()).get_unit_vector()
+                mob.shift(unit*((dist*speed_scaler)))
+
+        p7 = Dot().move_to([1,3.3,0])
+        p7.add_updater(right_update_pos)
+        p8 = Dot().move_to([2,2,0])
+        p8.add_updater(right_update_pos)
+        p9 = Dot().move_to([5,3,0])
+        p9.add_updater(right_update_pos)
+        p10 = Dot().move_to([1,-1,0])
+        p10.add_updater(right_update_pos)
+        p11 = Dot().move_to([3,-3,0])
+        p11.add_updater(right_update_pos)
+        p12 = Dot().move_to([7,-2,0])
+        p12.add_updater(right_update_pos)
+        p13 = Dot().move_to([4,0,0])
+        p13.add_updater(right_update_pos)
+
+        left_dots = VGroup(p1,p2,p3,p4,p5,p6).set_color(BLUE_B)
+        right_dots = VGroup(p7,p8,p9,p10,p11,p12,p13).set_color(RED_B)
+        all_dots=VGroup(p1,p2,p3,p4,p5,p6,p11,p12,p13,p9,p10,p7,p8)
+
+
+
+        area_opacity=0.3
+
+
+        self.add(all_dots)
+
+
+
+
+        # for dot in all_dots:
+        #     self.add(dot)
+        #     self.wait(0.3)
+
+        # self.play(Create(VGroup(p1,p2,p3,p4,p5,p6)))
+        # self.play(AnimationGroup(*left_dots_anim,lag_ratio=0.7),run_time=8)
+        # self.play(Create(VGroup(p7,p8,p9,p10,p11, p12,p13)))
+        # self.play(AnimationGroup(*right_dots_anim,lag_ratio=0.7),run_time=8)
+
+        self.wait(6)
+
+        for dot in all_dots:
+            dot.clear_updaters()
+            # self.wait(0.3)
+
+        self.remove(all_dots)
+
+        for dot in all_dots:
+            self.remove(dot)
+
+        dots_grid_all= VGroup()
+        dots_grid_1= []
+        for i in np.linspace(-8, 8, 17):
+            for j in np.linspace(-4,4,9):
+                if j < -3*i:
+                    dots_grid_1.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_1.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+
+        dots_grid_1_group=VGroup(*dots_grid_1)
+        self.play(FadeIn(dots_grid_1_group))
+        self.wait(1)
+
+        dots_grid_05= []
+        for i in np.linspace(-8, 8,33):
+            for j in np.linspace(-4,4,17):
+                if j < -3*i:
+                    dots_grid_05.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_05.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+        dots_grid_05_group=VGroup(*dots_grid_05)
+
+        self.play(FadeIn(dots_grid_05_group),
+                  FadeOut(dots_grid_1_group))
+        self.wait(0.5)
+
+        # self.remove(dots_grid_1_group)
+
+        dots_grid_25= []
+        for i in np.linspace(-8, 8, 65):
+            for j in np.linspace(-4,4,33):
+                if j < -3*i:
+                    dots_grid_25.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_25.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+        dots_grid_25_group=VGroup(*dots_grid_25)
+
+        self.play(FadeIn(VGroup(*dots_grid_25)),
+                  FadeOut(dots_grid_05_group))
+        self.wait(0.5)
+
+        # self.remove(dots_grid_05_group)
+
+
+
+        self.play(slice_1.animate.set_fill(opacity=area_opacity),
+                  slice_2.animate.set_fill(opacity=area_opacity),
+                  FadeOut(dots_grid_25_group))
+
+
+        dot_eq = Dot()
+
+
+
+        self.play(Create(dot_eq))
+
+
+        hole_2_unit = Line(start=dot_eq.get_center(), end=hole_2.get_center()).get_unit_vector()
+        hole_1_unit = Line(start=dot_eq.get_center(), end=hole_1.get_center()).get_unit_vector()
+
+        hole_2_unit = Line(start=dot_eq.get_center(), end=hole_2.get_center()).get_unit_vector()
+        hole_1_unit = Line(start=dot_eq.get_center(), end=hole_1.get_center()).get_unit_vector()
+
+        speed_scaler=0.1
+
+        q_mark_1 =Tex('?').scale(2).rotate(30*DG).next_to(hole_1_unit*0.5+dot_eq.get_center(),L,buff=0.78).shift(D*2)
+        self.play(Write(q_mark_1))
+        q_mark_2 =Tex('?').scale(2).rotate(-25*DG).next_to(hole_2_unit*0.5+dot_eq.get_center(),R,buff=0.78).shift(U*2)
+        self.play(Write(q_mark_2))
+
+        wind = SVGMobject('svgs/wind.svg').flip(axis=Y_AXIS).next_to(dot_eq.get_center(),-hole_1_unit,buff=0).rotate(45*DG).set_color(BLUE_A).scale(0.3).set_stroke(width=3)
+        self.play(FadeIn(wind,shift=hole_1_unit),rate_func=linear,run_time=0.5)
+        self.play(FadeOut(wind,shift=hole_1_unit),
+                  dot_eq.animate.shift(hole_1_unit*0.5),
+                  rate_func=smooth,run_time=1.5)
+        self.wait(0.5)
+
+
+        dot_eq.add_updater(left_update_pos)
+
+        self.wait(3)
+
+        self.remove(dot_eq)
+
+        dot_eq_2=Dot()
+        self.play(Create(dot_eq_2))
+
+        wind = SVGMobject('svgs/wind.svg').next_to(dot_eq_2.get_center(),-hole_2_unit,buff=0).rotate(45*DG).set_color(BLUE_A).scale(0.3).set_stroke(width=3)
+        self.play(FadeIn(wind,shift=hole_2_unit),rate_func=linear,run_time=0.5)
+
+        self.play(FadeOut(wind,shift=hole_2_unit),
+                  dot_eq_2.animate.shift(hole_2_unit * 0.3),
+                  rate_func=smooth,run_time=1.5)
+        self.wait(0.5)
+
+
+        dot_eq_2.add_updater(right_update_pos)
+
+
+
+
+        self.wait(3)
+
+        self.remove(dot_eq, dot_eq_2)
+        self.play(FadeOut(VGroup(hole_1, hole_2, slice_1,slice_2, q_mark_2,q_mark_1)))
+
+
+        spiral_path=SVGMobject('svgs/spiral.svg', unpack_groups=False).scale(2).to_edge(DR)[1].reverse_points()
+        line_1=Line(start=[-9,-3,0], end=[9,3,0])
+        line_2=Line(start=[2,2,0], end=[-1,5,0])
+        line_3=Line(start=[-3,-2,0], end=[1,-5,0])
+        p1= Dot().move_to([-9,-3,0])
+        p2= Dot().move_to([2,2,0])
+        p3= Dot().move_to([-3,-2,0])
+
+        p4=Dot().move_to([-7,3,0])
+        p5=Dot().move_to(spiral_path.get_start())
+
+
+
+
+        self.add(TracedPath(p1.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p2.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p3.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p4.get_center,dissipating_time=2,stroke_opacity=[1,0]))
+        self.add(TracedPath(p5.get_center,dissipating_time=4,stroke_opacity=[1,0]))
+
+        self.play(Create(VGroup(p1,p2,p3,p4,p5)))
+
+        self.play(p1.animate.move_to([9,3,0]),
+                  p2.animate.move_to([-1,5,0]),
+                  p3.animate.move_to([1,-5,0]),
+                  MoveAlongPath(p5,spiral_path),
+                  Rotate(p4,angle=6*PI, about_point=p4.get_center()+D*1+R*1),
+                  run_time=10, rate_func=linear)
 
 
         self.wait(5)
 
-        # self.wait(5)
-# from manimlib.imports import *
+
+
+# #
+# class working2(MovingCameraScene):
+#
+#
+#     def construct(self):
+#
+#         # svg_test=SVGMobject('svgs/지하철노선도_gradation.svg')
+#         svg_test=SVGMobject('svgs/spiral.svg', unpack_groups=False).scale(2.5)
+#
+#
+#         self.play(Create(svg_test[1].set_style(stroke_color=RED, stroke_width=50)
+#                          ))
+#
+#         anims=[]
+#         # for mob in svg_test:
+#             # anims.append(mob)
+#
+#         self.play(svg_test.animate.arrange_in_grid(10,15))
+#         self.add(index_labels(svg_test).shift(D*0.5))
+#         self.wait(3)
+
+class working2(MovingCameraScene):
+
+
+    def construct(self):
+
+        axes =

@@ -432,6 +432,7 @@ class twod_simplex(ThreeDScene):
 
         how_many_below=30
 
+
         for i in range(how_many_below):
             print('previous p is ', previous_p)
             result = diffrence_eq(previous_p)
@@ -966,3 +967,174 @@ class ternary_plot_narrative(ThreeDScene):
 
         self.wait(3)
 
+class explicit_sol(MovingCameraScene):
+
+    def construct(self):
+        t = LabeledDot(r't', radius=0.5).scale_to_fit_width(1.2)
+        t_plus_1 = LabeledDot(r't+1').scale_to_fit_width(1.2)
+        t_plus_2 = LabeledDot(r't+2').scale_to_fit_width(1.2)
+        t_plus_3 = LabeledDot(r't+3').scale_to_fit_width(1.2)
+
+        ts = VGroup(t, t_plus_1, t_plus_2, t_plus_3).arrange(D, buff=0.7).to_edge(L)
+
+        t_plus_1_text_1 = MathTex(r'n_{A,t+1}={{(\# \ zygotes \ per \ individual) \times n_{A,t} \times (A \ type \ survival)}}',
+                                  font_size=40) \
+            .next_to(t_plus_1, R, buff=0.5)
+
+        t_plus_1_text_2 = MathTex(r'zn_{A,t}V(A)', font_size=40).next_to(t_plus_1_text_1[ 0 ], R)
+        self.play(FadeIn(t_plus_1, shift=D))
+
+        self.play(FadeIn(t, target_position=t_plus_1))
+
+        self.play(Write(t_plus_1_text_1))
+        self.wait(1)
+
+        self.play(Transform(t_plus_1_text_1[ 1 ], t_plus_1_text_2))
+        self.wait(1)
+
+        self.play(FadeIn(t_plus_2, target_position=t_plus_1))
+        self.wait(1)
+
+        t_plus_2_text_1 = MathTex(r'n_{A,t+1}={{(\# \ zygotes \ per \ individual) \times n_{A,t+1} \times (A \ type \ survival)}}',
+                                  font_size=40) \
+            .next_to(t_plus_2, R, buff=0.5)
+
+        t_plus_2_text_2 = MathTex(r'z\{zn_{A,t}V(A)\}V(A)', font_size=40).next_to(t_plus_2_text_1[ 0 ], R)
+        t_plus_2_text_3 = MathTex(r'n_{A,t}\{zV(A)\}^2', font_size=40).next_to(t_plus_2_text_1[ 0 ], R)
+
+        self.play(Write(t_plus_2_text_1))
+        self.wait(1)
+
+        self.play(ReplacementTransform(t_plus_2_text_1[ 1 ], t_plus_2_text_2))
+        self.wait(1)
+
+        self.play(ReplacementTransform(t_plus_2_text_2, t_plus_2_text_3))
+        self.wait(1)
+
+        self.play(FadeIn(t_plus_3, target_position=t_plus_2))
+        self.wait(1)
+
+        t_plus_3_text_1 = MathTex(r'n_{A,t+1}={{(\# \ zygotes \ per \ individual) \times n_{A,t+2} \times (A \ type \ survival)}}',
+                                  font_size=40) \
+            .next_to(t_plus_3, R, buff=0.5)
+
+        t_plus_3_text_2 = MathTex(r'z[z\{zn_{A,t}V(A)\}V(A)]V(A)', font_size=40).next_to(t_plus_3_text_1[ 0 ], R)
+        t_plus_3_text_3 = MathTex(r'n_{A,t}\{zV(A)\}^3', font_size=40).next_to(t_plus_3_text_1[ 0 ], R)
+
+        self.play(Write(t_plus_3_text_1))
+        self.wait(1)
+        self.play(ReplacementTransform(t_plus_3_text_1[ 1 ], t_plus_3_text_2))
+        self.wait(1)
+
+        self.play(ReplacementTransform(t_plus_3_text_2, t_plus_3_text_3))
+        self.wait(1)
+
+        self.play(t.animate.shift(D * t.get_y()),
+                  FadeOut(VGroup(t_plus_1_text_1), target_position=[ VGroup(t_plus_1_text_1).get_x(), 0, 0 ]),
+                  FadeOut(VGroup(t_plus_2_text_1[ 0 ], t_plus_2_text_3),
+                          target_position=[ VGroup(t_plus_2_text_1[ 0 ], t_plus_2_text_3).get_x(), 0, 0 ]),
+                  FadeOut(VGroup(t_plus_3_text_1[ 0 ], t_plus_3_text_3),
+                          target_position=[ VGroup(t_plus_3_text_1[ 0 ], t_plus_3_text_3).get_x(), 0, 0 ]),
+                  FadeOut(VGroup(t_plus_1, ), target_position=[ t_plus_1.get_x(), 0, 0 ]),
+                  FadeOut(VGroup(t_plus_2, ), target_position=[ t_plus_1.get_x(), 0, 0 ]),
+                  FadeOut(VGroup(t_plus_3, ), target_position=[ t_plus_1.get_x(), 0, 0 ]),
+                  )
+        general_form = MathTex(r'n_{A,t}=n_{A,0}\{zV(A)\}^t', font_size=40).next_to(t, R, buff=0.5)
+        general_form_b = MathTex(r',\ n_{B,t}=n_{B,0}\{zV(B)\}^t', font_size=40).next_to(general_form, R, buff=0.1)
+
+        self.play(FadeIn(general_form, shift=U))
+        self.wait(1)
+
+        self.play(FadeIn(general_form_b, shift=L))
+        self.wait(1)
+
+        self.play(FadeOut(general_form), FadeOut(general_form_b), FadeOut(t))
+
+        function = MathTex(r'p_t &=\frac{n_{A,t}}{ n_{A,t}+n_{B,t} } \\ '
+                           r'&=\frac{n_{A,0}V(A)^t}{n_{A,0}V(A)^t+n_{B,0}V(A)^t} \\'
+                           r'&=\frac{n_{A,t}}{1+(\frac{n_{A,0}}{n_{A,0}})+(\frac{V(A)}{V(A)})^t} ')
+
+        function[ 0 ][ 17:47 ].shift(D * 0.2)
+        function[ 0 ][ 47: ].shift(D * 0.4)
+        function.move_to(O)
+
+        div_by = MathTex(r'\big/ n_{A,0}V(A)^t')
+        div_by_1 = MathTex(r'/ n_{A,0}V(A)^t').scale(0.65).next_to(function[ 0 ][ 17:47 ], R).shift(U * 0.4)
+        div_by_2 = MathTex(r'/ n_{A,0}V(A)^t').scale(0.65).next_to(function[ 0 ][ 17:47 ], R).shift(D * 0.4)
+
+        self.play(Write(function[ 0 ][ 0:17 ]))
+        self.wait(0.5)
+        self.play(FadeIn(function[ 0 ][ 17:47 ], shift=R))
+        self.wait(0.5)
+
+        self.play(FadeIn(div_by_1, shift=L),
+                  FadeIn(div_by_2, shift=L),
+                  )
+        self.wait(0.5)
+
+        self.play(FadeIn(function[ 0 ][ 47: ], shift=R),
+                  FadeOut(div_by_1, shift=R),
+                  FadeOut(div_by_2, shift=R))
+        self.wait(1)
+
+
+
+        self.play(VGroup(function).animate.to_edge(L))
+
+        axes = Axes(x_range=[ 0, 20 ],
+                    y_range=[ 0, 1, 0.25 ],
+                    x_length=5.5,
+                    y_length=5.5,
+                    tips=False).shift(R * 3)
+
+
+        label_vals = [  MathTex(r"0"), MathTex(r"1") ]
+        label_pos = [  0, 1 ]
+        y_label_dict = dict(zip(label_pos, label_vals))
+        x_label_dict = {}
+
+        axes[1].add_labels(y_label_dict)
+
+        x_label = axes.get_x_axis_label('t', edge=D, direction=D)
+        y_label = axes.get_y_axis_label('p_t', edge=L, direction=L)
+
+        self.play(Create(axes))
+        self.play(Write(VGroup(x_label, y_label)))
+        self.wait(1)
+
+        V_A = 0.8
+        V_B = 0.5
+        n_A = 1
+        n_B = 99
+        z = 1
+
+        condition = MathTex(r'V(A)&=0.8\\'
+                            r'V(B)&=0.5\\'
+                            r'n_{A,0}&=1\\'
+                            r'n_{B,0}&=99\\'
+                            r'z&=1'
+                            ).scale(0.8).to_edge(R).shift(D*1)
+
+        self.play(Create(condition))
+        self.wait(1)
+
+        curve = axes.plot(lambda t: 1 / (1 + (n_B / n_A) * (V_B / V_A) ** t))
+        x_tkr = ValueTracker(20)
+
+        curve.add_updater(
+            lambda x: x.become(axes.plot(lambda t: 1 / (1 + (n_B / n_A) * (V_B / V_A) ** t), x_range=[ 0, x_tkr.get_value() ])))
+
+        curve_deriv = axes.plot_derivative_graph(curve, color=RED)
+
+        self.play(Create(curve))
+        self.wait(1)
+
+
+        self.play(Create(curve_deriv))
+        self.wait(1)
+
+
+        self.play(x_tkr.animate.set_value(100),
+                  self.camera.frame.animate.shift(R*18))
+
+        self.wait(5)
