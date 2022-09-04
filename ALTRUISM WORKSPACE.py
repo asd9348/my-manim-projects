@@ -364,7 +364,7 @@ class vector_3d_whole(ThreeDScene):
             self.add_fixed_in_frame_mobjects(gen_num)
             self.wait(0.3)
 
-class twod_simplex(ThreeDScene):
+class twodsimplex(ThreeDScene):
     config.background_color = DARK_GRAY
 
     def construct(self):
@@ -422,7 +422,7 @@ class twod_simplex(ThreeDScene):
         previous_p = 0.01
         previous_delta_p = 0
         self.play(Create(dot_from_zero))
-        wind = SVGMobject('svg/wind.svg').rotate(-45*DG).next_to(new_axes.c2p(0,0),UL,buff=-0.25).set_color(BLUE_A).scale(0.5).set_stroke(width=3)
+        wind = SVGMobject('svgs/wind.svg').rotate(-45*DG).next_to(new_axes.c2p(0,0),UL,buff=-0.25).set_color(BLUE_A).scale(0.5).set_stroke(width=3)
         self.play(FadeIn(wind,shift=DR),rate_func=linear,run_time=0.5)
         self.play(FadeOut(wind,shift=DR),rate_func=smooth,run_time=1.5)
         self.play(dot_from_zero.animate.move_to(new_axes.c2p(previous_p, 0)))
@@ -456,7 +456,7 @@ class twod_simplex(ThreeDScene):
         previous_p = 0.99
         previous_delta_p = 0
         self.play(Create(dot_from_one))
-        wind = SVGMobject('wind.svg').rotate(-135 * DG).next_to(new_axes.c2p(1, 0), UR, buff=-0.1).set_color(BLUE_A).scale(0.5).set_stroke(
+        wind = SVGMobject('svgs/wind.svg').rotate(-135 * DG).next_to(new_axes.c2p(1, 0), UR, buff=-0.1).set_color(BLUE_A).scale(0.5).set_stroke(
             width=3)
         self.play(FadeIn(wind, shift=DL), rate_func=smooth,run_time=0.5)
         self.play(FadeOut(wind, shift=DL), rate_func=smooth,run_time=1.5)
@@ -1138,3 +1138,789 @@ class explicit_sol(MovingCameraScene):
                   self.camera.frame.animate.shift(R*18))
 
         self.wait(5)
+class working2(MovingCameraScene):
+    def construct(self):
+
+        func = lambda pos: np.array([-pos[1] , pos[0], 0])/3
+        self.add(ArrowVectorField(func))
+
+        stream_lines = StreamLines(
+            func,
+            x_range=[-8, 8, 1],
+            y_range=[-4, 4, 1],
+            stroke_width=1,
+            virtual_time=15,  # use shorter lines
+            max_anchors_per_line=30,  # better performance with fewer anchors
+        )
+        # self.play(stream_lines.create())  # uses virtual_time as run_time
+
+        self.wait(1)
+
+        self.add(stream_lines)
+        # self.play(Create(stream_lines))
+        stream_lines.start_animation(warm_up=True, flow_speed=1.5)
+        # self.wait(stream_lines.virtual_time / stream_lines.flow_speed)
+
+        self.wait(10)
+
+class torus(ThreeDScene):
+    def construct(self):
+        axes = ThreeDAxes()
+
+        axes[ 0 ].set_color(RED)
+        axes[ 1 ].set_color(GREEN)
+        axes[ 2 ].set_color(BLUE)
+
+        # self.add(axes)
+
+        # self.set_camera_orientation(phi =45*DG,theta=-80*DG, )
+        # self.set_camera_orientation(zoom=0.6 )
+        self.set_camera_orientation(phi=45 * DG, theta=-80 * DG, zoom=0.6)
+        # self.move_camera(theta=45*DG)
+
+        array = [ ]
+
+        u_min = -10
+        u_max = 10
+        v_min = -4
+        v_max = 4
+        for v in np.linspace(v_min, v_max, 10):
+            row = [ ]
+            for u in np.linspace(u_min, u_max, 20):
+                row.append([ u, v, 0 ])
+            array.append(row)
+
+        point_list = np.array(array)
+        # print(point_list)
+
+        n = point_list.shape[ 1 ]
+        m = point_list.shape[ 0 ]
+
+        points = VGroup()
+        points_without_rc = VGroup()
+        faces = VGroup()
+        faces_without_rc = VGroup()
+
+        for row in range(0, m):
+            row_group = VGroup()
+            for col in range(0, n):
+                coor = point_list[ row, col ]
+
+                dot = Dot().move_to(coor)
+                dot.r = row
+                dot.c = col
+                row_group.add(dot)
+                points_without_rc.add(dot)
+
+            points.add(row_group)
+            # points.add(Dot3D().move_to(coor))
+
+        # self.add(points)
+
+        for row in range(0, m - 1):
+            row_group = VGroup()
+            for col in range(0, n - 1):
+                sqDL = points[ row ][ col ]
+                sqDR = points[ row ][ col + 1 ]
+                sqUR = points[ row + 1 ][ col + 1 ]
+                sqUL = points[ row + 1 ][ col ]
+
+                globals()[ f'{row}_{col}' ] = points[ row ][ col ]
+                globals()[ f'{row}_{col + 1}' ] = points[ row ][ col + 1 ]
+                globals()[ f'{row + 1}_{col + 1}' ] = points[ row + 1 ][ col + 1 ]
+                globals()[ f'{row + 1}_{col}' ] = points[ row + 1 ][ col ]
+
+                face = ThreeDVMobject().set_points_as_corners([ sqDL.get_center(), sqDR.get_center(), sqUR.get_center(),
+                                                                sqUL.get_center(),
+                                                                sqDL.get_center() ]).set_style(fill_color=RED, fill_opacity=0.4,
+                                                                                               stroke_width=0.5, stroke_color=GRAY,
+                                                                                               stroke_opacity=0.5)
+
+                face.sqDL = points[ row ][ col ]
+                face.sqDR = points[ row ][ col + 1 ]
+                face.sqUR = points[ row + 1 ][ col + 1 ]
+                face.sqUL = points[ row + 1 ][ col ]
+
+                face.r = row
+                face.c = col
+
+                row_group.add(face)
+
+                # print(face.sqDL)
+
+                def face_func(mob):
+                    updated_mob = mob.set_points_as_corners(
+                        [ mob.sqDL.get_center(), mob.sqDR.get_center(), mob.sqUR.get_center(), mob.sqUL.get_center(),
+                          mob.sqDL.get_center() ])
+
+                    return updated_mob
+
+                face.add_updater(face_func)
+                faces_without_rc.add(face)
+            faces.add(row_group)
+
+        self.add(faces)
+        # self.add(index_labels(faces))
+        # self.add(index_labels(faces[0]))
+        self.wait(1)
+
+        coloring_anims = [ ]
+        for i in range(len(faces)):
+            coloring_anims.append(
+                faces[ i ].animate.set_color(Color(hue=i / len(faces), saturation=1, luminance=0.6)))
+
+        faces[ 0 ].set_style(fill_color=BLUE, fill_opacity=0.7)
+        faces[ -1 ].set_style(fill_color=GREEN, fill_opacity=0.7)
+
+        for face in faces_without_rc:
+            if face.c == 0:
+                face.set_style(fill_color=YELLOW, fill_opacity=0.7)
+            if face.c == 18:
+                face.set_style(fill_color=ORANGE, fill_opacity=0.7)
+
+        points_without_rc.set_opacity(opacity=0)
+
+        roll_up_anims = [ ]
+        for point in points_without_rc:
+            x = point.get_center()[ 0 ]
+            y = point.get_center()[ 1 ]
+            z = point.get_center()[ 2 ]
+
+            new_x = x
+            new_y = np.cos(270 * DG + 90 / ((v_max - v_min) / 4) * y * DG) * (v_max - v_min) / 2 / PI
+            new_z = np.sin(270 * DG + 90 / ((v_max - v_min) / 4) * y * DG) * (v_max - v_min) / 2 / PI
+
+            new_coor = np.array([ new_x, new_y, new_z ])
+
+            roll_up_anims.append(point.animate.move_to(new_coor))
+
+            # for opengl
+            # point.move_to(new_coor)
+
+        self.play(*roll_up_anims, run_time=3)
+        print(points_without_rc[ 0 ].get_center())
+
+        round_up_anims = [ ]
+
+        for point in points_without_rc:
+            x = point.get_center()[ 0 ]
+            y = point.get_center()[ 1 ]
+            z = point.get_center()[ 2 ]
+
+            new_x = np.cos(270 * DG + 90 / ((u_max - u_min) / 4) * x * DG) * (-2 / PI * y + 6 / PI)
+            new_y = np.sin(270 * DG + 90 / ((u_max - u_min) / 4) * x * DG) * (-2 / PI * y + 6 / PI)
+            new_z = z
+
+            new_coor = np.array([ new_x, new_y, new_z ])
+
+            round_up_anims.append(point.animate.move_to(new_coor))
+            # for opengl
+            # point.move_to(new_coor)
+
+        self.play(*round_up_anims, run_time=3)
+
+        self.wait(1)
+
+        self.move_camera(phi=90 * DG, theta=-80 * DG, zoom=1.2)
+        self.wait(1)
+        # self.set_camera_orientation(phi =90*DG,theta=-80*DG)
+
+        self.begin_ambient_camera_rotation(rate=0.3)
+        self.move_camera(phi=0, run_time=10, rate_func=linear)
+
+        self.wait(5)
+
+class eq_anal(MovingCameraScene):
+
+    def construct(self):
+
+        self.add(NumberPlane())
+        slice_1 = Polygon([-2,6,0],[2,-6,0],[15,-6,0],[15,6,0], fill_color=RED)
+        slice_2 = Polygon([-2,6,0],[2,-6,0],[-15,-6,0],[-15,6,0], fill_color=BLUE).set_style(stroke_opacity=0)
+
+        # self.play(Create(slice_1))
+        self.add(slice_1,slice_2)
+
+
+        hole_1= Dot(radius=0.5,color =BLUE).move_to([-6,-2,0]).set_z_index(2)
+        hole_2= Dot(radius=0.5, color =RED).move_to([6,2,0]).set_z_index(2)
+
+        dot_exam= Dot().move_to([2,1,0])
+
+        self.play(Create(hole_1))
+        self.play(Create(hole_2))
+
+
+        self.play(Create(dot_exam))
+
+        unit = Line(start=dot_exam.get_center(), end=hole_2.get_center()).get_unit_vector()
+
+
+        self.play(dot_exam.animate.shift(unit*0.5))
+        self.play(dot_exam.animate.shift(unit*1))
+        self.play(dot_exam.animate.shift(unit*1.5))
+        self.play(dot_exam.animate.move_to(hole_2))
+
+        self.remove(dot_exam)
+
+        speed_scaler=0.04
+        def left_update_pos(mob,dt):
+
+            if float(get_dist_btwn_points(mob.get_center(),hole_1.get_center()))>0.3:
+                dist=float(get_dist_btwn_points(mob.get_center(),hole_1.get_center()))
+                unit=Line(start=mob.get_center(), end=hole_1.get_center()).get_unit_vector()
+                mob.shift(unit*((dist*speed_scaler)))
+
+        p1 = Dot().move_to([-7,3,0])
+        p1.add_updater(left_update_pos)
+        p2 = Dot().move_to([-5,2.7,0])
+        p2.add_updater(left_update_pos)
+        p3 = Dot().move_to([-6,1,0])
+        p3.add_updater(left_update_pos)
+        p4 = Dot().move_to([-2,1.3,0])
+        p4.add_updater(left_update_pos)
+        p5 = Dot().move_to([-4,-3.5,0])
+        p5.add_updater(left_update_pos)
+        p6 = Dot().move_to([-2,-1.5,0])
+        p6.add_updater(left_update_pos)
+
+        def right_update_pos(mob,dt):
+
+            if float(get_dist_btwn_points(mob.get_center(),hole_2.get_center()))>0.3:
+                dist=float(get_dist_btwn_points(mob.get_center(),hole_2.get_center()))
+                unit=Line(start=mob.get_center(), end=hole_2.get_center()).get_unit_vector()
+                mob.shift(unit*((dist*speed_scaler)))
+
+        p7 = Dot().move_to([1,3.3,0])
+        p7.add_updater(right_update_pos)
+        p8 = Dot().move_to([2,2,0])
+        p8.add_updater(right_update_pos)
+        p9 = Dot().move_to([5,3,0])
+        p9.add_updater(right_update_pos)
+        p10 = Dot().move_to([1,-1,0])
+        p10.add_updater(right_update_pos)
+        p11 = Dot().move_to([3,-3,0])
+        p11.add_updater(right_update_pos)
+        p12 = Dot().move_to([7,-2,0])
+        p12.add_updater(right_update_pos)
+        p13 = Dot().move_to([4,0,0])
+        p13.add_updater(right_update_pos)
+
+        left_dots = VGroup(p1,p2,p3,p4,p5,p6).set_color(BLUE_B)
+        right_dots = VGroup(p7,p8,p9,p10,p11,p12,p13).set_color(RED_B)
+        all_dots=VGroup(p1,p2,p3,p4,p5,p6,p11,p12,p13,p9,p10,p7,p8)
+
+
+
+        area_opacity=0.3
+
+
+        self.add(all_dots)
+
+
+
+
+        # for dot in all_dots:
+        #     self.add(dot)
+        #     self.wait(0.3)
+
+        # self.play(Create(VGroup(p1,p2,p3,p4,p5,p6)))
+        # self.play(AnimationGroup(*left_dots_anim,lag_ratio=0.7),run_time=8)
+        # self.play(Create(VGroup(p7,p8,p9,p10,p11, p12,p13)))
+        # self.play(AnimationGroup(*right_dots_anim,lag_ratio=0.7),run_time=8)
+
+        self.wait(6)
+
+        for dot in all_dots:
+            dot.clear_updaters()
+            # self.wait(0.3)
+
+        self.remove(all_dots)
+
+        for dot in all_dots:
+            self.remove(dot)
+
+        dots_grid_all= VGroup()
+        dots_grid_1= []
+        for i in np.linspace(-8, 8, 17):
+            for j in np.linspace(-4,4,9):
+                if j < -3*i:
+                    dots_grid_1.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_1.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+
+        dots_grid_1_group=VGroup(*dots_grid_1)
+        self.play(FadeIn(dots_grid_1_group))
+        self.wait(1)
+
+        dots_grid_05= []
+        for i in np.linspace(-8, 8,33):
+            for j in np.linspace(-4,4,17):
+                if j < -3*i:
+                    dots_grid_05.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_05.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+        dots_grid_05_group=VGroup(*dots_grid_05)
+
+        self.play(FadeIn(dots_grid_05_group),
+                  FadeOut(dots_grid_1_group))
+        self.wait(0.5)
+
+        # self.remove(dots_grid_1_group)
+
+        dots_grid_25= []
+        for i in np.linspace(-8, 8, 65):
+            for j in np.linspace(-4,4,33):
+                if j < -3*i:
+                    dots_grid_25.append(Dot(radius=0.1,color =BLUE, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                elif j > -3*i :
+                    dots_grid_25.append(Dot(radius=0.1,color =RED, fill_opacity=area_opacity).move_to([i,j,0]))
+
+                else:
+                    pass
+        dots_grid_25_group=VGroup(*dots_grid_25)
+
+        self.play(FadeIn(VGroup(*dots_grid_25)),
+                  FadeOut(dots_grid_05_group))
+        self.wait(0.5)
+
+        # self.remove(dots_grid_05_group)
+
+
+
+        self.play(slice_1.animate.set_fill(opacity=area_opacity),
+                  slice_2.animate.set_fill(opacity=area_opacity),
+                  FadeOut(dots_grid_25_group))
+
+
+        dot_eq = Dot()
+
+
+
+        self.play(Create(dot_eq))
+
+
+        hole_2_unit = Line(start=dot_eq.get_center(), end=hole_2.get_center()).get_unit_vector()
+        hole_1_unit = Line(start=dot_eq.get_center(), end=hole_1.get_center()).get_unit_vector()
+
+        hole_2_unit = Line(start=dot_eq.get_center(), end=hole_2.get_center()).get_unit_vector()
+        hole_1_unit = Line(start=dot_eq.get_center(), end=hole_1.get_center()).get_unit_vector()
+
+        speed_scaler=0.1
+
+        q_mark_1 =Tex('?').scale(2).rotate(30*DG).next_to(hole_1_unit*0.5+dot_eq.get_center(),L,buff=0.78).shift(D*2)
+        self.play(Write(q_mark_1))
+        q_mark_2 =Tex('?').scale(2).rotate(-25*DG).next_to(hole_2_unit*0.5+dot_eq.get_center(),R,buff=0.78).shift(U*2)
+        self.play(Write(q_mark_2))
+
+        wind = SVGMobject('svgs/wind.svg').flip(axis=Y_AXIS).next_to(dot_eq.get_center(),-hole_1_unit,buff=0).rotate(45*DG).set_color(BLUE_A).scale(0.3).set_stroke(width=3)
+        self.play(FadeIn(wind,shift=hole_1_unit),rate_func=linear,run_time=0.5)
+        self.play(FadeOut(wind,shift=hole_1_unit),
+                  dot_eq.animate.shift(hole_1_unit*0.5),
+                  rate_func=smooth,run_time=1.5)
+        self.wait(0.5)
+
+
+        dot_eq.add_updater(left_update_pos)
+
+        self.wait(3)
+
+        self.remove(dot_eq)
+
+        dot_eq_2=Dot()
+        self.play(Create(dot_eq_2))
+
+        wind = SVGMobject('svgs/wind.svg').next_to(dot_eq_2.get_center(),-hole_2_unit,buff=0).rotate(45*DG).set_color(BLUE_A).scale(0.3).set_stroke(width=3)
+        self.play(FadeIn(wind,shift=hole_2_unit),rate_func=linear,run_time=0.5)
+
+        self.play(FadeOut(wind,shift=hole_2_unit),
+                  dot_eq_2.animate.shift(hole_2_unit * 0.3),
+                  rate_func=smooth,run_time=1.5)
+        self.wait(0.5)
+
+
+        dot_eq_2.add_updater(right_update_pos)
+
+
+
+
+        self.wait(3)
+
+        self.remove(dot_eq, dot_eq_2)
+        self.play(FadeOut(VGroup(hole_1, hole_2, slice_1,slice_2, q_mark_2,q_mark_1)))
+
+
+        spiral_path=SVGMobject('svgs/spiral.svg', unpack_groups=False).scale(2).to_edge(DR)[1].reverse_points()
+        line_1=Line(start=[-9,-3,0], end=[9,3,0])
+        line_2=Line(start=[2,2,0], end=[-1,5,0])
+        line_3=Line(start=[-3,-2,0], end=[1,-5,0])
+        p1= Dot().move_to([-9,-3,0])
+        p2= Dot().move_to([2,2,0])
+        p3= Dot().move_to([-3,-2,0])
+
+        p4=Dot().move_to([-7,3,0])
+        p5=Dot().move_to(spiral_path.get_start())
+
+
+
+
+        self.add(TracedPath(p1.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p2.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p3.get_center,dissipating_time=3,stroke_opacity=[1,0]))
+        self.add(TracedPath(p4.get_center,dissipating_time=2,stroke_opacity=[1,0]))
+        self.add(TracedPath(p5.get_center,dissipating_time=4,stroke_opacity=[1,0]))
+
+        self.play(Create(VGroup(p1,p2,p3,p4,p5)))
+
+        self.play(p1.animate.move_to([9,3,0]),
+                  p2.animate.move_to([-1,5,0]),
+                  p3.animate.move_to([1,-5,0]),
+                  MoveAlongPath(p5,spiral_path),
+                  Rotate(p4,angle=6*PI, about_point=p4.get_center()+D*1+R*1),
+                  run_time=10, rate_func=linear)
+
+
+        self.wait(5)
+
+
+class eq_anal_1(MovingCameraScene):
+    config.background_color = DARK_GRAY
+
+    def construct(self):
+        delta_p_0 = MathTex(r'\Delta p = p(1-p)\frac{V(A)-V(B)}{\bar{w}}{{=0}}').scale(2)
+
+        self.play(Write(delta_p_0[ 0 ]))
+        self.wait(0.5)
+        self.play(FadeIn(delta_p_0[ 1 ], shift=L))
+
+        self.play(delta_p_0.animate.to_edge(U, buff=0.75))
+
+        self.play(delta_p_0[ 0 ][ 9:18 ].animate.set_color(BLUE),
+                  delta_p_0[ 0 ][ 3 ].animate.set_color(GREEN),
+                  delta_p_0[ 0 ][ 4:9 ].animate.set_color(RED))
+
+        conds = MathTex(r'p&=0\\'
+                        r'p&=1\\'
+                        r'V(A)&=V(B)', color=GREEN).scale(2).shift(D)
+
+        conds[ 0 ][ 3:6 ].set_color(RED)
+        conds[ 0 ][ 6: ].set_color(BLUE)
+
+        self.play(Write(conds[ 0 ][ 0:3 ]))
+        self.play(Write(conds[ 0 ][ 3:6 ]))
+        self.play(Write(conds[ 0 ][ 6: ]))
+
+        self.play(conds.animate.to_edge(R).shift(U * 0.5).scale(0.75))
+        self.play(AnimationGroup(FadeOut(delta_p_0[ 1 ], shift=R),
+                                 delta_p_0[ 0 ].animate.scale(0.5).to_edge(UR, buff=0.75).shift(D + R * 0.25), lag_ratio=0.7)
+                  )
+
+        # self.add(index_labels(delta_p_0[0]))
+        #
+
+        axes = Axes(x_range=[ 0, 1, 1 ],
+                    y_range=[ 0, 1, 1 ],
+                    x_length=6,
+                    y_length=6,
+                    tips=False).to_edge(L, buff=1)
+        x_label = axes.get_x_axis_label('p', edge=D, direction=D)
+        y_label = axes.get_y_axis_label("p'", edge=L, direction=L)
+        axis_labels = VGroup(x_label, y_label)
+
+        p_prime_1_label = MathTex('1').scale(0.8).next_to(axes.c2p(0, 1), L)
+        p_1_label = MathTex('1').scale(0.8).next_to(axes.c2p(1, 0), D)
+        p_0_label = MathTex('0').scale(0.8).next_to(axes.c2p(0, 0), DL, buff=0.2)
+        tick_labels = VGroup(p_prime_1_label, p_1_label, p_0_label)
+
+        dashed_line = axes.plot(lambda x: x, x_range=[ 0, 1 ])
+        dashed_line_label = axes.get_graph_label(dashed_line, label=r"p'=p", x_val=1, direction=R)
+
+        dashed_line = DashedVMobject(dashed_line)
+        v_a = 0.6
+        v_b = 0.2
+        w = np.average([ v_a, v_b ])
+        curve = axes.plot(lambda p: p * (1 - p) * (v_a - v_b) / w + p, color=YELLOW)
+
+        func = lambda p: p * (1 - p) * (v_a - v_b) / w + p
+
+        self.play(Create(axes))
+        self.play(Create(axis_labels))
+        self.play(Create(tick_labels))
+
+        self.play(Create(dashed_line))
+        self.play(Create(dashed_line_label))
+
+        v_a_v_b_conds = MathTex(r'V(A)=0.7\\V(B)=0.2').next_to(conds[ 0 ][ 3:6 ], D, buff=0.4).set_color(YELLOW)
+
+        self.play(ReplacementTransform(conds[ 0 ][ 6: ], v_a_v_b_conds))
+
+        self.play(Create(curve))
+
+        lines = VGroup()
+        dot_green_tkr = ValueTracker(0)
+        dot_green = redraw(
+            lambda: Dot(color=GREEN).move_to(axes.c2p(dot_green_tkr.get_value(), func(dot_green_tkr.get_value()))))
+
+        self.play(Create(dot_green))
+
+        self.play(dot_green_tkr.animate.set_value(0.05))
+
+        def green_dot_func():
+            dot_green_v_line_1 = DashedLine(start=axes.c2p(dot_green_tkr.get_value(), 0), end=dot_green)
+            self.play(Create(dot_green_v_line_1))
+
+            dot_green_h_line_1 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_1))
+
+            dot_green_v_line_2 = DashedLine(start=dot_green_h_line_1.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_2))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_2 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_2))
+
+            dot_green_v_line_3 = DashedLine(start=dot_green_h_line_2.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_3))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_3 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_3))
+
+            dot_green_v_line_4 = DashedLine(start=dot_green_h_line_3.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_4))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_4 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_4))
+
+            dot_green_v_line_5 = DashedLine(start=dot_green_h_line_4.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_5))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_5 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_5))
+
+            dot_green_v_line_6 = DashedLine(start=dot_green_h_line_5.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_6))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_6 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_6))
+
+            dot_green_v_line_7 = DashedLine(start=dot_green_h_line_6.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_7))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_7 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_7))
+
+            dot_green_v_line_8 = DashedLine(start=dot_green_h_line_7.get_end(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(func(dot_green_tkr.get_value()))))
+            self.play(Create(dot_green_v_line_8))
+
+            self.play(dot_green_tkr.animate.set_value(func(dot_green_tkr.get_value())))
+
+            dot_green_h_line_8 = DashedLine(start=dot_green.get_center(),
+                                            end=axes.c2p(func(dot_green_tkr.get_value()), func(dot_green_tkr.get_value())))
+            self.play(Create(dot_green_h_line_8))
+
+            lines.add(dot_green_v_line_1)
+            lines.add(dot_green_h_line_1)
+            lines.add(dot_green_v_line_2)
+            lines.add(dot_green_h_line_2)
+            lines.add(dot_green_v_line_3)
+            lines.add(dot_green_h_line_3)
+            lines.add(dot_green_v_line_4)
+            lines.add(dot_green_h_line_4)
+            lines.add(dot_green_v_line_5)
+            lines.add(dot_green_h_line_5)
+            lines.add(dot_green_v_line_6)
+            lines.add(dot_green_h_line_6)
+            lines.add(dot_green_v_line_7)
+            lines.add(dot_green_h_line_7)
+            lines.add(dot_green_v_line_8)
+            lines.add(dot_green_h_line_8)
+
+            # lines.reverse_direction()
+
+            return lines
+
+        lines = green_dot_func()
+
+        self.play(Uncreate(dot_green))
+        #
+        # for line in lines:
+        #     line.reverse_direction()
+        self.play(Uncreate(lines))
+
+        lines = VGroup()
+        dot_red_tkr = ValueTracker(1)
+        dot_red = redraw(
+            lambda: Dot(color=RED).move_to(axes.c2p(dot_red_tkr.get_value(), func(dot_red_tkr.get_value()))))
+
+        self.play(Create(dot_red))
+
+        self.play(dot_red_tkr.animate.set_value(0.9))
+
+        def red_dot_func():
+            dot_red_v_line_1 = DashedLine(start=axes.c2p(dot_red_tkr.get_value(), 0), end=dot_red)
+            self.play(Create(dot_red_v_line_1))
+
+            dot_red_h_line_1 = DashedLine(start=dot_red.get_center(),
+                                          end=axes.c2p(func(dot_red_tkr.get_value()), func(dot_red_tkr.get_value())))
+            self.play(Create(dot_red_h_line_1))
+
+            dot_red_v_line_2 = DashedLine(start=dot_red_h_line_1.get_end(),
+                                          end=axes.c2p(func(dot_red_tkr.get_value()), func(func(dot_red_tkr.get_value()))))
+            self.play(Create(dot_red_v_line_2))
+
+            self.play(dot_red_tkr.animate.set_value(func(dot_red_tkr.get_value())))
+
+            dot_red_h_line_2 = DashedLine(start=dot_red.get_center(),
+                                          end=axes.c2p(func(dot_red_tkr.get_value()), func(dot_red_tkr.get_value())))
+            self.play(Create(dot_red_h_line_2))
+
+            lines.add(dot_red_v_line_1)
+            lines.add(dot_red_h_line_1)
+            lines.add(dot_red_v_line_2)
+            lines.add(dot_red_h_line_2)
+
+            # lines.reverse_direction()
+
+            return lines
+
+        lines = red_dot_func()
+
+        self.play(Uncreate(dot_red))
+        #
+        # for line in lines:
+        #     line.reverse_direction()
+        self.play(Uncreate(lines))
+
+        self.wait(10)
+class simplex(ThreeDScene):
+
+    def construct(self):
+
+        # self.add(NumberPlane())
+        self.set_camera_orientation(phi=30*DG)
+
+        self.begin_ambient_camera_rotation(rate=0.2)
+        self.begin_ambient_camera_rotation(rate=0.05,about='phi')
+
+        dot = Dot()
+        line =Line(start=[-5,-1,0],end=[-3,-2,0], color =BLUE)
+
+
+        vertex_coords = [
+            [2, 2, 0],
+            [4, 2, 0],
+            [3,2+ np.sin(60*DG)*2, 0],
+        ]
+        faces_list = [
+            [0, 1, 2]
+        ]
+
+        tri =Triangle(fill_opacity=0.5, fill_color=RED).move_to(O).shift(R*3+U*3).scale(1.5)
+
+        vertex_coords = [
+            [0, 0, 0],
+            [2, 0, 0],
+            [1, np.sin(60*DG)*2, 0],
+            center_of_mass([[0, 0, 0],[2, 0, 0],[1, np.sin(60*DG)*2, 0]])+OUT*np.sin(60*DG)*2
+        ]
+        faces_list = [
+            [0, 1, 2],
+            [1, 2, 3],
+            [2, 0, 3],
+            [1, 0, 3]
+        ]
+        pyramid = Polyhedron(vertex_coords, faces_list,faces_config={'fill_opacity':0.3, 'fill_color':RED})
+        pyramid = Tetrahedron(faces_config={'fill_opacity':0.3, 'fill_color':RED}).scale(3)
+
+        pyramid[ 1 ][0].scale(0.5).set_style(fill_opacity=1,stroke_opacity=1)
+        pyramid[ 1 ][1].scale(0.5).set_style(fill_opacity=1,stroke_opacity=1)
+        pyramid[ 1 ][2].scale(0.5).set_style(fill_opacity=1,stroke_opacity=1)
+        pyramid[ 1 ][3].scale(0.5).set_style(fill_opacity=1,stroke_opacity=1)
+
+
+        self.play(Create(dot))
+        self.wait(2)
+        self.play(ReplacementTransform(dot,line))
+        self.wait(2)
+        self.play(ReplacementTransform(line,tri))
+        self.wait(2)
+        self.play(ReplacementTransform(tri,pyramid.faces))
+        self.wait(25)
+
+class maps(MovingCameraScene):
+
+
+    def construct(self):
+
+        # svg_test=SVGMobject('svgs/지하철노선도_gradation.svg')
+        svg_test=SVGMobject('svgs/지도.svg', unpack_groups=False).scale(2)
+
+        svg_test[ 0 ][ 1 ].set_style(stroke_width=15)
+
+        svg_test.save_state()
+        svg_test[ :3 ].arrange_in_grid(10, 15, buff=1)
+        # self.play()
+
+        self.play(Create(svg_test[0]))
+        self.wait(1)
+        self.play(Create(svg_test[1]))
+        self.wait(1)
+        self.play(Create(svg_test[2]))
+        self.wait(1)
+
+        self.play(svg_test.animate.restore())
+
+        anims=[]
+        for store in svg_test[2]:
+            anims.append(FadeOut(store))
+
+        self.wait(1)
+
+        self.play(AnimationGroup(*anims, lag_ratio=0.5))
+        self.wait(1)
+
+        anims=[]
+        for metro in svg_test[1]:
+            anims.append(FadeOut(metro))
+
+
+        self.play(AnimationGroup(*anims, lag_ratio=0.5))
+
+
+
+
+        self.wait(3)
