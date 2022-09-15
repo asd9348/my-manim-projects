@@ -171,11 +171,8 @@ class working2(MovingCameraScene):
         self.wait(5)
 
 
-
-
-
 class working2(ZoomedScene):
-# contributed by TheoremofBeethoven, www.youtube.com/c/TheoremofBeethoven
+    # contributed by TheoremofBeethoven, www.youtube.com/c/TheoremofBeethoven
     def __init__(self, **kwargs):
         ZoomedScene.__init__(
             self,
@@ -185,12 +182,12 @@ class working2(ZoomedScene):
             image_frame_stroke_width=20,
             zoomed_camera_config={
                 "default_frame_stroke_width": 3,
-                },
+            },
             zoomed_display_corner=UL,
             **kwargs
         )
 
-    config.background_color = DARK_GREY
+    # config.background_color = DARK_GREY
 
     def construct(self):
         # self.add(NumberPlane())
@@ -3308,8 +3305,8 @@ class working2(ZoomedScene):
         shuffle = SVGMobject('svgs/shuffle-svgrepo-com.svg', unpack_groups=False).scale(2.5)
 
         shuffle[ 2 ].set_sheen_direction(DR).set_color([ RED, BLUE ])
-        shuffle[ 1 ].set_color(GREEN)
-        shuffle[ 0 ].set_color(YELLOW)
+        shuffle[ 1 ].set_sheen_direction(UR).set_color([ GREEN, YELLOW ])
+        shuffle[ 0 ].set_sheen_direction(UR).set_color([ YELLOW, GREEN ])
 
         self.play(ReplacementTransform(VGroup(cross, dice), shuffle))
         # self.add(index_labels(shuffle))
@@ -3332,7 +3329,7 @@ class working2(ZoomedScene):
                   FadeIn(traceability, target_position=U * 1),
                   )
 
-        step_1 = LabeledDot('Idea').move_to([ -7, -1, 0 ])
+        step_1 = LabeledDot('Idea').move_to([ -7, -1.5, 0 ])
         step_2 = LabeledDot('Design').move_to([ -3, -2.5, 0 ])
         step_3 = LabeledDot('Prototype').move_to([ 0, 2, 0 ])
         step_4 = LabeledDot('Production').move_to([ 4, -2, 0 ])
@@ -3352,18 +3349,17 @@ class working2(ZoomedScene):
 
         self.play(Create(VGroup(line_1, line_2, line_3, line_4)))
 
-
         # self.play(self.zoomed_camera.frame.animate.scale(4))
         # self.play(self.zoomed_camera.frame.animate.shift(0.5 * DOWN))
 
-        # self.zoomed_camera.frame.set_color(RED)
+        self.zoomed_camera.frame.set_style(stroke_width=10, stroke_color=RED)
         self.zoomed_camera.frame.move_to(step_1)
-        # self.zoomed_display.display_frame.set_color(BLUE)
-        self.zoomed_display.shift(D*0.25)
-
-        self.activate_zooming(animate=False)
+        self.zoomed_display.display_frame.set_style(stroke_width=20, stroke_color=RED)
+        self.zoomed_display.shift(D * 0.25)
 
         # self.play(self.get_zoomed_display_pop_out_animation())
+        self.activate_zooming(animate=False)
+
         # self.get_zoom_in_animation()
 
         # self.play(self.zoomed_camera.frame.animate.scale(0.5))
@@ -3379,7 +3375,115 @@ class working2(ZoomedScene):
         self.wait(5)
         # self.play(son.animate.to_edge(UL))
 
-# class working2(ThreeDScene):
-#
-#     def construct(self):
-#         self.wait(5)
+
+
+class working2(ThreeDScene):
+
+    def construct(self):
+        self.add(NumberPlane())
+        pmt_circle = Circle(stroke_width=10, radius=3, color=WHITE).rotate(PI / 2)
+        pmt_circle_12 = Arc(radius=3, stroke_opacity=0, angle=2 * PI / 3).rotate(PI / 2, about_point=O)
+        pmt_circle_23 = Arc(radius=3, stroke_opacity=0, angle=2 * PI / 3).rotate(PI / 2 + 2 * PI / 3, about_point=O)
+        pmt_circle_31 = Arc(radius=3, stroke_opacity=0, angle=2 * PI / 3).rotate(PI / 2 + 2 * 2 * PI / 3, about_point=O)
+        dummy_radius = 3.7
+        circle_dummy = Circle(radius=dummy_radius, color=WHITE).rotate(PI / 2)
+        self.add(pmt_circle)
+
+        letter_1 = LabeledDot(r'\phi 1 ', color=GREEN).scale(2.5).move_to(pmt_circle.point_from_proportion(0))
+        letter_2 = LabeledDot(r'\phi 2 ', color=GREEN).scale(2.5).move_to(pmt_circle.point_from_proportion(1 / 3))
+        letter_3 = LabeledDot(r'\phi 3 ', color=GREEN).scale(2.5).move_to(pmt_circle.point_from_proportion(2 / 3))
+
+        pos_label_1 = Tex('1').next_to(letter_1, U)
+        pos_label_2 = Tex('2').next_to(letter_2, DL)
+        pos_label_3 = Tex('3').next_to(letter_3, DR)
+
+        P_2_ops = MathTex('\hat{P}_2').scale(1.5)
+        d_arrow_1 = DoubleArrow(start=letter_2.get_corner(UR), end=letter_1.get_corner(DL), color=GREEN_B)
+
+        swap = Tex('Swap!').next_to(P_2_ops, D)
+
+        P_3_ops = MathTex('\hat{P}_3').scale(1.5)
+
+        shift = Tex(r'Shift to the right\\by one unit!').scale_to_fit_width(2).next_to(P_3_ops, D)
+
+        paths_org = VGroup(pmt_circle_12,pmt_circle_23,pmt_circle_31)
+        pmt_circle_dummy = Circle(stroke_width=10, radius=3, color=WHITE).rotate(PI / 2).move_to([-5,2,0]).scale_to_fit_width(2.5)
+
+        self.play(VGroup(pmt_circle,paths_org).animate.move_to([-5,2,0]).scale_to_fit_width(2.5),
+                  letter_1.animate.move_to(pmt_circle_dummy.point_from_proportion(0)).scale_to_fit_width(1),
+                  letter_2.animate.move_to(pmt_circle_dummy.point_from_proportion(1/3)).scale_to_fit_width(1),
+                  letter_3.animate.move_to(pmt_circle_dummy.point_from_proportion(2/3)).scale_to_fit_width(1),
+                  )
+
+        letters_org = VGroup(letter_1,letter_2,letter_3)
+        paths_org = VGroup(pmt_circle_12,pmt_circle_23,pmt_circle_31)
+        system_org= VGroup(pmt_circle, letters_org,paths_org)
+
+        system_1_1 = system_org.copy().move_to([0,2,0])
+        system_1_2 = system_org.copy().move_to([5,2,0])
+        system_2_1 = system_org.copy().move_to([0,-2,0])
+        system_2_2 = system_org.copy().move_to([5,-2,0])
+
+        self.play(Create(system_1_1))
+        self.play(Create(system_1_2))
+        self.play(Create(system_2_1))
+        self.play(Create(system_2_2))
+
+
+
+        # self.play(Create(letter_1),
+        #           Create(letter_2),
+        #           Create(letter_3), )
+        # self.wait(1)
+        # self.play(Create(pos_label_1),
+        #           Create(pos_label_2),
+        #           Create(pos_label_3), )
+        #
+        # self.play(Write(P_2_ops))
+        # self.wait(1)
+        #
+        # # self.play(Create(c_arrow_12),
+        # #           Create(c_arrow_21),)
+        # self.play(Create(d_arrow_1), )
+        # self.wait(1)
+        #
+        # self.play(Write(swap))
+        # self.play(Indicate(swap))
+        # self.wait(1)
+        #
+        # self.play(Swap(letter_1, letter_2))
+        # self.wait(1)
+        #
+        # self.play(Unwrite(P_2_ops),
+        #           Uncreate(d_arrow_1),
+        #           Unwrite(swap),
+        #           Swap(letter_1, letter_2), run_time=2)
+        # self.wait(1)
+        #
+        # self.play(Write(P_3_ops))
+        #
+        # self.play(Write(shift))
+        # self.play(Indicate(shift))
+        #
+        # self.play(Create(c_arrow_12),
+        #           Create(c_arrow_23),
+        #           Create(c_arrow_31),
+        #           )
+        #
+        # p_3_2_123_1 = MathTex(r'\hat{P}_3^2 (123)').move_to(L * 6)
+        # p_3_2_123_2 = MathTex(r'\hat{P}_3 \hat{P}_3(123) ').move_to(p_3_2_123_1)
+        # p_3_2_123_3 = MathTex(r'\hat{P}_3(312)=(231) ').move_to(p_3_2_123_1)
+        #
+        # self.play(Write(p_3_2_123_1))
+        # self.play(Write(p_3_2_123_1))
+        # self.play(Write(p_3_2_123_1))
+        #
+        # self.play(MoveAlongPath(letter_1, pmt_circle_12),
+        #           MoveAlongPath(letter_2, pmt_circle_23),
+        #           MoveAlongPath(letter_3, pmt_circle_31),
+        #           )
+
+        # self.play()
+
+        self.wait(2)
+
