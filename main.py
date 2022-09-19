@@ -3380,7 +3380,7 @@ class working2(ZoomedScene):
 class working2(ThreeDScene):
 
     def construct(self):
-        self.add(NumberPlane())
+        # self.add(NumberPlane())
         pmt_circle = Circle(stroke_width=10, radius=3, color=WHITE).rotate(PI / 2)
         pmt_circle_12 = Arc(radius=3, stroke_opacity=0, angle=2 * PI / 3).rotate(PI / 2, about_point=O)
         pmt_circle_23 = Arc(radius=3, stroke_opacity=0, angle=2 * PI / 3).rotate(PI / 2 + 2 * PI / 3, about_point=O)
@@ -3419,17 +3419,108 @@ class working2(ThreeDScene):
         paths_org = VGroup(pmt_circle_12,pmt_circle_23,pmt_circle_31)
         system_org= VGroup(pmt_circle, letters_org,paths_org)
 
-        system_1_1 = system_org.copy().move_to([0,2,0])
-        system_1_2 = system_org.copy().move_to([5,2,0])
-        system_2_1 = system_org.copy().move_to([0,-2,0])
-        system_2_2 = system_org.copy().move_to([5,-2,0])
+        system_1_1 = system_org.copy().move_to([0,system_org.get_y(),0])
+        arrow_1_1 = Arrow(start=system_org.get_right(), end=system_1_1.get_left())
+        op_1_1 = MathTex('\hat{P}_3').next_to(arrow_1_1, U)
 
-        self.play(Create(system_1_1))
-        self.play(Create(system_1_2))
-        self.play(Create(system_2_1))
-        self.play(Create(system_2_2))
+        self.play(Create(arrow_1_1))
+        self.play(FadeIn(system_1_1, target_position=system_org))
+        self.play(Create(op_1_1))
+        self.play(CyclicReplace(system_1_1[1][0],system_1_1[1][1],system_1_1[1][2]))
 
 
+        system_1_2 = system_1_1.copy().move_to([5,system_org.get_y(),0])
+        arrow_1_2 = Arrow(start=system_1_1.get_right(), end=system_1_2.get_left())
+        op_1_2 = MathTex('\hat{P}_2').next_to(arrow_1_2, U)
+
+        self.play(Create(arrow_1_2))
+        self.play(FadeIn(system_1_2, target_position=system_1_1))
+        self.play(Create(op_1_2))
+        self.play(Swap(system_1_2[1][2],system_1_2[1][0]))
+
+        system_2_1 = system_org.copy().move_to([0,-system_org.get_y(),0])
+        arrow_2_1 = Arrow(start=system_org.get_right(), end=system_2_1.get_left())
+        op_2_1 = MathTex('\hat{P}_2').next_to(arrow_2_1.get_center(), DL)
+
+        self.play(Create(arrow_2_1))
+        self.play(FadeIn(system_2_1, target_position=system_org))
+        self.play(Create(op_2_1))
+        self.play(Swap(system_2_1[1][0],system_2_1[1][1]))
+
+        system_2_2 = system_2_1.copy().move_to([5,-system_org.get_y(),0])
+        arrow_2_2 = Arrow(start=system_2_1.get_right(), end=system_2_2.get_left())
+        op_2_2 = MathTex('\hat{P}_3').next_to(arrow_2_2, U)
+
+        self.play(Create(arrow_2_2))
+        self.play(FadeIn(system_2_2, target_position=system_2_1))
+        self.play(Create(op_2_2))
+        self.play(CyclicReplace(system_2_2[1][1],system_2_2[1][0],system_2_2[1][2]))
+
+        p_23_not_eq =Tex(r' $\hat{P}_2 \hat{P}_3(123)$ \\  $\neq$ \\ $\hat{P}_3 \hat{P}_2(123)$ ', tex_environment='center').move_to([-5,-2,0]).scale(1.5).shift(D*0.35)
+        self.play(Write(p_23_not_eq))
+        self.wait(3)
+
+        self.play(FadeOut(VGroup(system_1_1,
+                                 system_1_2,
+                                 system_2_1,
+                                 system_2_2,
+                                 arrow_1_1,
+                                 arrow_1_2,
+                                 arrow_2_1,
+                                 arrow_2_2,
+                                 op_1_1,
+                                 op_1_2,
+                                 op_2_1,
+                                 op_2_2,
+                                 p_23_not_eq),shift=R),)
+                  # system_org.animate.move_to([-5,0,0]))
+
+        system_3_1 = system_org.copy().move_to([0,system_org.get_y(),0])
+        arrow_3_1 = Arrow(start=system_org.get_right(), end=system_1_1.get_left())
+        op_3_1 = MathTex('\hat{P}_3').next_to(arrow_1_1, U)
+
+        self.play(Create(arrow_3_1))
+        self.play(FadeIn(system_3_1, target_position=system_org))
+        self.play(Create(op_3_1))
+        self.play(CyclicReplace(system_3_1[1][0],system_3_1[1][1],system_3_1[1][2]))
+
+        system_3_2 = system_3_1.copy().move_to([5,system_org.get_y(),0])
+        arrow_3_2 = Arrow(start=system_3_1.get_right(), end=system_3_2.get_left())
+        op_3_2 = MathTex('\hat{P}_3').next_to(arrow_3_2, U)
+
+        self.play(Create(arrow_3_2))
+        self.play(FadeIn(system_3_2, target_position=system_3_1))
+        self.play(Create(op_3_2))
+        self.play(CyclicReplace(system_3_2[1][0],system_3_2[1][1],system_3_2[1][2]))
+
+        square =MathTex('\hat{P}_3^2').scale(1.5).move_to(D*0.5)
+
+        self.play(ReplacementTransform(VGroup(op_3_1, op_3_2), square))
+        self.wait(1)
+
+
+        remember = Tex(r'Note! \\The sequence of operations are read from left to right, \\as given in the following example').next_to(square, D,buff=0.5)
+        self.play(Write(remember))
+        self.wait(4)
+
+        example = MathTex(' {{\hat{P}_3^3}} {{\hat{P}_2}} ').scale(1.5).move_to(square)
+
+        example_expl_1  =Tex(r'Apply $\hat{P}_2$ 1 time').next_to(example, D, buff=0.5)
+        example_expl_2  =Tex(r'Apply $\hat{P}_3$ 3 times \\').next_to(example_expl_1, D)
+        # example_expl_3  =Tex( r'Apply $\hat{P}_5$ 4 times \\').next_to(example_expl_2, D)
+        example_expl=VGroup(example_expl_1,example_expl_2)
+        # self.add(index_labels(example))
+        self.play(ReplacementTransform(VGroup(square, remember), VGroup(example)))
+
+        self.play(Write(example_expl_1))
+        self.play(Indicate(example_expl_1,scale_factor=1.1 ),
+                  Indicate(example[4],scale_factor=1.1 ))
+        self.play(Write(example_expl_2))
+        self.play(Indicate(example_expl_2, scale_factor=1.1),
+                  Indicate(example[2],scale_factor=1.1 ))
+        # self.play(Write(example_expl_3))
+        # self.play(Indicate(example_expl_3,scale_factor=1.1 ),
+        #           Indicate(example[0],scale_factor=1.1 ))
 
         # self.play(Create(letter_1),
         #           Create(letter_2),
@@ -3485,5 +3576,5 @@ class working2(ThreeDScene):
 
         # self.play()
 
-        self.wait(2)
+        self.wait(5)
 
